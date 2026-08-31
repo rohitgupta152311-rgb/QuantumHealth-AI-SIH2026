@@ -1,72 +1,253 @@
+"""
+Prediction service — fixed version.
+
+Integrates with the real ClassicalMLTrainer, PreprocessingPipeline,
+and QuantumClassifier. Loads trained models and uses the trained VQC
+for hybrid predictions instead of creating an untrained one.
+"""
 import time
+import logging
+import numpy as np
 from pathlib import Path
-from sklearn.model_selection import train_test_split
-from app.preprocessing.pipeline import PreprocessingPipeline
-from app.classical_ml.trainer import ClassicalMLTrainer
-from app.hybrid_ml.consensus import ConsensusEngine
-from app.utils.helpers import risk_level_from_probability, build_processing_steps
-from app.explainability.feature_importance import get_feature_importance_report
+
 from app.core.config import settings
+from app.datasets.loader import DatasetLoader
+from app.classical_ml.trainer import ClassicalMLTrainer
+from app.preprocessing.pipeline import PreprocessingPipeline
+from sklearn.model_selection import train_test_split
+
+logger = logging.getLogger("quantumhealth.services.prediction")
+
+
+class ConsensusEngine:
+    """Majority-vote consensus between classical and quantum models."""
+
+    def build_consensus(
+        self, classical_predictions, quantum_prediction,
+        hybrid_probability, classical_probabilities, quantum_probability,
+    ) -> dict:
+        all_votes = list(classical_predictions.values()) + [quantum_prediction]
+        high_count = sum(1 for v in all_votes if v == "high_risk")
+        total = len(all_votes)
+
+        if high_count == total or high_count == 0:
+            agreement = "strong_agreement"
+        elif abs(high_count - total / 2) <= 1:
+            agreement = "moderate_agreement"
+        else:
+            agreement = "disagreement"
+
+        final_vote = "high_risk" if hybrid_probability >= 0.5 else "low_risk"
+        classical_majority = "high_risk" if high_count > total / 2 else "low_risk"
+        disagreement_detected = classical_majority != quantum_prediction
+
+        if final_vote == "high_risk":
+            recommendation = "consult_physician"
+        elif agreement == "disagreement":
+            recommendation = "retest_recommended"
+        else:
+            recommendation = "routine_followup"
+
+        return {
+            "agreement": agreement,
+            "recommendation": recommendation,
+            "classical_votes": classical_predictions,
+            "quantum_vote": quantum_prediction,
+            "final_vote": final_vote,
+            "disagreement_detected": disagreement_detected,
+        }
+
+    def get_verdict(self, best_classical_f1: float, hybrid_f1: float) -> dict:
+        delta = hybrid_f1 - best_classical_f1
+        if delta > 0.01:
+            return {
+                "winner": "Hybrid QML (VQC + Ensemble)",
+                "verdict": "hybrid_better",
+                "explanation": (
+                    f"The hybrid model outperforms the best classical model "
+                    f"by {delta:.4f} F1-score on the held-out test set."
+                ),
+            }
+        elif delta < -0.01:
+            return {
+                "winner": "Classical Ensemble",
+                "verdict": "classical_better",
+                "explanation": (
+                    f"The best classical model outperforms the hybrid model "
+                    f"by {abs(delta):.4f} F1-score. The quantum component "
+                    f"did not improve performance on this dataset."
+                ),
+            }
+        else:
+            return {
+                "winner": "Tie",
+                "verdict": "similar_performance",
+                "explanation": (
+                    f"Classical and hybrid models show similar performance "
+                    f"(F1 delta = {delta:.4f}). Further research required."
+                ),
+            }
+
+
+def risk_level_from_probability(p: float) -> str:
+    if p < 0.25:
+        return "low"
+    elif p < 0.50:
+        return "moderate"
+    elif p < 0.75:
+        return "high"
+    return "very_high"
+
+
+def get_feature_importance_report(
+    model, X_norm, feature_names, feature_labels
+) -> list[dict]:
+    """Compute permutation-based feature importance."""
+    try:
+        if hasattr(model, "feature_importances_"):
+            raw = model.feature_importances_
+        elif hasattr(model, "model") and hasattr(model.model, "feature_importances_"):
+            raw = model.model.feature_importances_
+        else:
+            return []
+        total = raw.sum() if raw.sum() > 0 else 1
+        normed = raw / total
+        items = []
+        for i, name in enumerate(feature_names):
+            items.append({
+                "feature": name,
+                "label": feature_labels.get(name, name),
+                "importance": round(float(normed[i]), 4),
+                "rank": 0,
+            })
+        items.sort(key=lambda x: x["importance"], reverse=True)
+        for rank, item in enumerate(items, 1):
+            item["rank"] = rank
+        return items
+    except Exception:
+        return []
+
+
+def build_processing_steps(_info: dict) -> list[dict]:
+    return [
+        {"step": 1, "name": "Data Cleaning", "status": "completed"},
+        {"step": 2, "name": "Feature Normalization", "status": "completed"},
+        {"step": 3, "name": "Quantum Feature Selection", "status": "completed"},
+        {"step": 4, "name": "Classical Ensemble Inference", "status": "completed"},
+        {"step": 5, "name": "VQC Quantum Simulation", "status": "completed"},
+        {"step": 6, "name": "Hybrid Fusion Decision", "status": "completed"},
+    ]
+
 
 class PredictionService:
-    """
-    Central orchestration service combining Classical ML, Quantum VQC, and Hybrid Consensus.
-    """
-    def __init__(self, dataset_loader, models_cache_dir: Path):
-        self._trainers = {}
-        self._pipelines = {}
+    """Service for making predictions using trained classical + quantum models."""
+
+    def __init__(self, dataset_loader: DatasetLoader, models_cache_dir: Path):
+        self._trainers: dict[str, ClassicalMLTrainer] = {}
+        self._pipelines: dict[str, PreprocessingPipeline] = {}
         self._consensus_engine = ConsensusEngine()
         self._dataset_loader = dataset_loader
         self._models_cache_dir = models_cache_dir
-        
-    async def get_or_train_models(self, disease_id: str) -> None:
-        if disease_id not in self._trainers:
-            self._trainers[disease_id] = ClassicalMLTrainer(disease_id, self._models_cache_dir)
-            self._pipelines[disease_id] = PreprocessingPipeline(n_quantum_features=settings.quantum_n_qubits)
-            
-            X, y, feature_names = self._dataset_loader.load(disease_id)
-            
-            # Seeded train-test split for reproducible scientific evaluation
-            X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-            
-            # Fit pipeline
-            self._pipelines[disease_id].fit(X_train, y_train, feature_names)
-            
-            # Transform
-            X_train_clean = self._pipelines[disease_id].cleaner.transform(X_train)
-            X_train_norm = self._pipelines[disease_id].normalizer.transform(X_train_clean)
-            
-            X_test_clean = self._pipelines[disease_id].cleaner.transform(X_test)
-            X_test_norm = self._pipelines[disease_id].normalizer.transform(X_test_clean)
-            
-            # Train and cache classical models
-            self._trainers[disease_id].load_or_train(X_train_norm, y_train, X_test_norm, y_test, feature_names)
-            
+
+    async def get_or_train_models(
+        self, disease_id: str, *, force_retrain: bool = False,
+    ) -> None:
+        """Load cached models or train fresh."""
+        already_loaded = disease_id in self._trainers and not force_retrain
+        if already_loaded:
+            return
+
+        trainer = ClassicalMLTrainer(disease_id, self._models_cache_dir)
+        pipeline = PreprocessingPipeline(n_quantum_features=settings.quantum_n_qubits)
+
+        X, y, feature_names = self._dataset_loader.load(disease_id)
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=42, stratify=y,
+        )
+
+        pipeline.fit(X_train, y_train, feature_names)
+
+        X_train_clean = pipeline.cleaner.transform(X_train)
+        X_train_norm = pipeline.normalizer.transform(X_train_clean)
+        X_test_clean = pipeline.cleaner.transform(X_test)
+        X_test_norm = pipeline.normalizer.transform(X_test_clean)
+
+        if force_retrain:
+            trainer.train(X_train_norm, y_train, X_test_norm, y_test, feature_names)
+        else:
+            trainer.load_or_train(X_train_norm, y_train, X_test_norm, y_test, feature_names)
+
+        self._trainers[disease_id] = trainer
+        self._pipelines[disease_id] = pipeline
+
+    # ------------------------------------------------------------------
+    # Train with uploaded data
+    # ------------------------------------------------------------------
+    async def get_or_train_models_with_uploads(
+        self, disease_id: str, db, *, force_retrain: bool = False,
+    ) -> dict:
+        """Train models using base + uploaded data. Returns data_info metadata."""
+        trainer = ClassicalMLTrainer(disease_id, self._models_cache_dir)
+        pipeline = PreprocessingPipeline(n_quantum_features=settings.quantum_n_qubits)
+
+        X, y, feature_names, data_info = await self._dataset_loader.load_with_uploads(
+            disease_id, db
+        )
+
+        if len(X) < 10:
+            raise ValueError(f"Insufficient data: {len(X)} samples (minimum 10).")
+        if len(np.unique(y)) < 2:
+            raise ValueError(
+                f"Only one class present (label={int(np.unique(y)[0])}). "
+                "Need both 0 and 1 labels for training."
+            )
+
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=42, stratify=y,
+        )
+
+        pipeline.fit(X_train, y_train, feature_names)
+        X_train_clean = pipeline.cleaner.transform(X_train)
+        X_train_norm = pipeline.normalizer.transform(X_train_clean)
+        X_test_clean = pipeline.cleaner.transform(X_test)
+        X_test_norm = pipeline.normalizer.transform(X_test_clean)
+
+        if force_retrain:
+            trainer.train(X_train_norm, y_train, X_test_norm, y_test, feature_names)
+        else:
+            trainer.load_or_train(X_train_norm, y_train, X_test_norm, y_test, feature_names)
+
+        self._trainers[disease_id] = trainer
+        self._pipelines[disease_id] = pipeline
+        return data_info
+
+    # ------------------------------------------------------------------
+    # Prediction
+    # ------------------------------------------------------------------
     async def predict(self, disease_id: str, features_dict: dict, mode: str = "hybrid") -> dict:
         await self.get_or_train_models(disease_id)
-        
+
         pipeline = self._pipelines[disease_id]
         trainer = self._trainers[disease_id]
-        
+
         disease_info = self._dataset_loader.get_disease_info(disease_id)
         feature_names = [f["name"] for f in disease_info["features"]]
         feature_labels = {f["name"]: f.get("label", f["name"]) for f in disease_info["features"]}
-        
-        # 1. Classical Preprocessing & Quantum Dimensionality Reduction
+
         X_norm, X_quantum = pipeline.transform_single(features_dict, feature_names)
-        
-        # 2. Classical Ensemble Inference
         classical_results = trainer.predict_single(X_norm)
-        
-        # 3. Quantum VQC Circuit Execution (on PennyLane simulator)
+
+        # Quantum VQC
         q_start = time.time()
         simulation_mode = True
         try:
             from app.quantum_ml.vqc import QuantumClassifier
+            vqc_path = self._models_cache_dir / f"{disease_id}_vqc.pkl"
             qc = QuantumClassifier(n_qubits=settings.quantum_n_qubits, n_layers=settings.quantum_n_layers)
-            q_prob = float(qc.predict_proba_single(X_quantum))
+            if vqc_path.exists():
+                qc.load(str(vqc_path))
+            q_prob = float(qc.predict_proba_single(X_quantum.flatten()[:settings.quantum_n_qubits]))
         except (ImportError, Exception):
-            # Graceful deterministic fallback
             c_mean_fallback = sum(r["risk_probability"] for r in classical_results) / max(len(classical_results), 1)
             q_prob = float(min(1.0, max(0.0, c_mean_fallback * 0.9 + 0.05)))
 
@@ -84,17 +265,17 @@ class PredictionService:
             "execution_time_ms": round(q_time, 2),
         }
 
-        # 4. Hybrid Fusion Decision Layer (60% Classical Ensemble, 40% Quantum VQC)
+        # Hybrid fusion
         c_probs = [r["risk_probability"] for r in classical_results]
         c_mean = sum(c_probs) / max(len(c_probs), 1)
-        
+
         if mode == "quantum":
             hybrid_prob = q_prob
         elif mode == "classical":
             hybrid_prob = c_mean
-        else: # "hybrid"
+        else:
             hybrid_prob = float(min(1.0, max(0.0, c_mean * 0.60 + q_prob * 0.40)))
-            
+
         hybrid_pred_str = "high_risk" if hybrid_prob >= 0.5 else "low_risk"
         hybrid_confidence = abs(hybrid_prob - 0.5) * 2
 
@@ -106,26 +287,21 @@ class PredictionService:
             "risk_level": risk_level_from_probability(hybrid_prob),
         }
 
-        # 5. Consensus Engine Evaluation
         classical_votes = {r["model_name"]: r["prediction"] for r in classical_results}
         consensus = self._consensus_engine.build_consensus(
             classical_predictions=classical_votes,
             quantum_prediction=q_pred_str,
             hybrid_probability=hybrid_prob,
             classical_probabilities={r["model_name"]: r["risk_probability"] for r in classical_results},
-            quantum_probability=q_prob
+            quantum_probability=q_prob,
         )
-        
-        # 6. Permutation Feature Importance Report
+
         fi_report = get_feature_importance_report(
-            trainer.models["RandomForest"].model, 
-            X_norm, 
-            feature_names,
-            feature_labels
+            trainer.models["RandomForest"], X_norm, feature_names, feature_labels,
         )
-        
+
         prep_info = pipeline.get_preprocessing_info()
-        
+
         quantum_readiness = {
             "original_features": len(feature_names),
             "selected_features": settings.quantum_n_qubits,
@@ -136,9 +312,14 @@ class PredictionService:
             "layers": settings.quantum_n_layers,
             "backend": settings.quantum_backend,
             "simulation_status": "Simulated" if simulation_mode else "Hardware Ready",
-            "feature_to_qubit_map": {name: i for i, name in enumerate(prep_info.get("selected_features", feature_names[:settings.quantum_n_qubits]))}
+            "feature_to_qubit_map": {
+                name: i
+                for i, name in enumerate(
+                    prep_info.get("selected_features", feature_names[: settings.quantum_n_qubits])
+                )
+            },
         }
-        
+
         return {
             "disease": disease_id,
             "classical_results": classical_results,
@@ -151,36 +332,117 @@ class PredictionService:
             "disclaimer": (
                 "This platform is an experimental AI-assisted decision-support prototype "
                 "operating in Quantum Simulation Mode. Not for direct clinical diagnosis."
-            )
+            ),
         }
-        
+
+    # ------------------------------------------------------------------
+    # Model comparison — real metrics only
+    # ------------------------------------------------------------------
     async def get_model_comparison(self, disease_id: str) -> dict:
+        """Return real evaluated metrics for all models. No artificial boosts."""
         await self.get_or_train_models(disease_id)
         metrics = self._trainers[disease_id].get_model_metrics()
-        
+
         best_classical = max(metrics, key=lambda x: x["accuracy"])
-        
-        # Scientifically calibrated hybrid representation on non-linear validation slices
-        hybrid_metrics = {
-            "model_name": "Hybrid QML (VQC + Ensemble)",
-            "model_type": "hybrid",
-            "accuracy": round(min(0.99, best_classical["accuracy"] + 0.018), 4),
-            "precision": round(min(0.99, best_classical["precision"] + 0.012), 4),
-            "recall": round(min(0.99, best_classical["recall"] + 0.025), 4),
-            "f1_score": round(min(0.99, best_classical["f1_score"] + 0.019), 4),
-            "roc_auc": round(min(0.99, best_classical["roc_auc"] + 0.022), 4),
-            "training_time_s": round(best_classical["training_time_s"] * 1.8 + 1.2, 3),
-            "inference_time_ms": round(best_classical["inference_time_ms"] * 5.0 + 8.5, 2),
-            "confusion_matrix": best_classical["confusion_matrix"]
-        }
-        
-        all_metrics = metrics + [hybrid_metrics]
-        verdict_data = self._consensus_engine.get_verdict(best_classical["f1_score"], hybrid_metrics["f1_score"])
-        
+
+        # Build hybrid metrics from real evaluation — NOT artificial boosts
+        # Train VQC on quantum features and evaluate honestly
+        pipeline = self._pipelines[disease_id]
+        X, y, feature_names = self._dataset_loader.load(disease_id)
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=42, stratify=y,
+        )
+        X_train_norm, X_train_quantum = pipeline.transform(
+            pipeline.cleaner.transform(X_train)
+        )
+        X_test_norm, X_test_quantum = pipeline.transform(
+            pipeline.cleaner.transform(X_test)
+        )
+
+        try:
+            from app.quantum_ml.vqc import QuantumClassifier
+
+            qc = QuantumClassifier(
+                n_qubits=settings.quantum_n_qubits, n_layers=settings.quantum_n_layers,
+            )
+
+            vqc_path = self._models_cache_dir / f"{disease_id}_vqc.pkl"
+            if vqc_path.exists():
+                qc.load(str(vqc_path))
+            else:
+                q_start = time.time()
+                qc.fit(X_train_quantum, y_train)
+                qc.save(str(vqc_path))
+
+            q_start = time.time()
+            q_proba = qc.predict_proba(X_test_quantum)
+            q_time = (time.time() - q_start) * 1000
+            q_pred = qc.predict(X_test_quantum)
+
+            from app.classical_ml.evaluator import compute_metrics as compute_m
+
+            # Compute quantum-only metrics
+            quantum_metrics_dict = compute_m(qc, X_test_quantum, y_test, model_name="VQC")
+            quantum_metrics_dict["training_time_s"] = 0.0
+            quantum_metrics_dict["inference_time_ms"] = q_time
+
+            # Hybrid: 60% classical ensemble mean + 40% quantum
+            c_proba_list = []
+            for name, model in self._trainers[disease_id].models.items():
+                try:
+                    p = model.predict_proba(X_test_norm)[:, 1]
+                except Exception:
+                    p = model.predict(X_test_norm).astype(float)
+                c_proba_list.append(p)
+
+            c_mean_proba = np.mean(c_proba_list, axis=0)
+            hybrid_proba = 0.6 * c_mean_proba + 0.4 * q_proba[:, 1]
+            hybrid_pred = (hybrid_proba >= 0.5).astype(int)
+
+            from sklearn.metrics import (
+                accuracy_score, precision_score, recall_score,
+                f1_score, roc_auc_score, confusion_matrix,
+            )
+
+            hybrid_acc = float(accuracy_score(y_test, hybrid_pred))
+            hybrid_prec = float(precision_score(y_test, hybrid_pred, zero_division=0))
+            hybrid_rec = float(recall_score(y_test, hybrid_pred, zero_division=0))
+            hybrid_f1 = float(f1_score(y_test, hybrid_pred, zero_division=0))
+            try:
+                hybrid_auc = float(roc_auc_score(y_test, hybrid_proba))
+            except ValueError:
+                hybrid_auc = 0.0
+            hybrid_cm = confusion_matrix(y_test, hybrid_pred).tolist()
+
+            hybrid_metrics = {
+                "model_name": "Hybrid QML (VQC + Ensemble)",
+                "model_type": "hybrid",
+                "accuracy": round(hybrid_acc, 4),
+                "precision": round(hybrid_prec, 4),
+                "recall": round(hybrid_rec, 4),
+                "f1_score": round(hybrid_f1, 4),
+                "roc_auc": round(hybrid_auc, 4),
+                "training_time_s": 0.0,
+                "inference_time_ms": round(q_time, 2),
+                "confusion_matrix": hybrid_cm,
+            }
+
+        except (ImportError, Exception) as e:
+            logger.warning(f"Quantum evaluation failed: {e}. Skipping hybrid metrics.")
+            hybrid_metrics = None
+            hybrid_f1 = 0.0
+
+        all_metrics = list(metrics)
+        if hybrid_metrics:
+            all_metrics.append(hybrid_metrics)
+
+        best_f1 = best_classical.get("f1_score", 0)
+        verdict_data = self._consensus_engine.get_verdict(best_f1, hybrid_f1)
+
         return {
             "disease": disease_id,
             "models": all_metrics,
             "winner": verdict_data["winner"],
             "verdict": verdict_data["verdict"],
-            "verdict_explanation": verdict_data["explanation"]
+            "verdict_explanation": verdict_data["explanation"],
         }

@@ -1,0 +1,276 @@
+"""Dataset management endpoints"""
+import io
+import json
+from datetime import datetime
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends
+from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy import select
+from typing import Dict, List
+import pandas as pd
+import numpy as np
+
+from app.core.database import get_db
+from app.datasets.loader import DatasetLoader, get_dataset_loader
+from app.models.dataset_models import UploadedDataset, TrainingSample
+from app.schemas.dataset_schemas import (
+    DatasetUploadResponse,
+    RowValidationError,
+    DatasetInfoResponse,
+)
+
+router = APIRouter()
+
+MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
+MAX_ROWS = 50_000
+
+
+@router.get("/available")
+async def get_available_datasets(
+    db: AsyncSession = Depends(get_db),
+) -> Dict:
+    """Get list of available datasets including uploaded data counts."""
+    loader = get_dataset_loader()
+
+    datasets_info = {}
+    for disease in loader.disease_ids:
+        try:
+            X, y, feature_names, data_info = await loader.load_with_uploads(
+                disease, db
+            )
+            datasets_info[disease] = {
+                "base_samples": data_info["base_rows"],
+                "uploaded_samples": data_info["uploaded_rows"],
+                "total_samples": data_info["total_rows"],
+                "features": X.shape[1],
+                "positive_rate": float(y.mean()),
+                "feature_names": feature_names,
+                "source": data_info["source"],
+            }
+        except Exception as e:
+            datasets_info[disease] = {"error": str(e)}
+
+    return {"datasets": datasets_info}
+
+
+@router.get("/uploads", response_model=List[DatasetInfoResponse])
+async def list_uploaded_datasets(
+    disease: str = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """List all uploaded datasets, optionally filtered by disease."""
+    query = select(UploadedDataset)
+    if disease:
+        query = query.where(UploadedDataset.disease_id == disease)
+    query = query.order_by(UploadedDataset.created_at.desc())
+    result = await db.execute(query)
+    datasets = result.scalars().all()
+    return [
+        DatasetInfoResponse(
+            id=ds.id,
+            disease_id=ds.disease_id,
+            original_filename=ds.original_filename,
+            row_count=ds.row_count,
+            rejected_count=ds.rejected_count,
+            created_at=ds.created_at,
+        )
+        for ds in datasets
+    ]
+
+
+@router.get("/{disease}/schema")
+async def get_dataset_schema(disease: str) -> Dict:
+    """Get dataset schema for a specific disease"""
+    loader = get_dataset_loader()
+    try:
+        feature_names = loader.get_feature_names(disease)
+        return {
+            "disease": disease,
+            "features": feature_names,
+            "label": "label (0 or 1)",
+            "description": f"CSV must contain columns: {feature_names + ['label']}",
+        }
+    except ValueError as e:
+        raise HTTPException(status_code=404, detail=str(e))
+
+
+@router.post("/upload", response_model=DatasetUploadResponse, status_code=201)
+async def upload_dataset(
+    file: UploadFile = File(..., description="CSV file with feature columns + label"),
+    disease: str = Form(..., description="Disease ID: diabetes, heart_disease, or breast_cancer"),
+    db: AsyncSession = Depends(get_db),
+):
+    """
+    Upload a CSV dataset for a specific disease.
+
+    The CSV must contain exactly the feature columns for the disease plus a
+    `label` column with binary values (0 or 1). Rows with missing values,
+    non-numeric features, invalid labels, or duplicates are rejected with
+    per-row error details.
+    """
+    loader = get_dataset_loader()
+
+    # --- Validate disease ID ---
+    if disease not in loader.disease_ids:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Unknown disease '{disease}'. "
+            f"Available: {loader.disease_ids}",
+        )
+
+    expected_features = loader.get_feature_names(disease)
+    expected_columns = set(expected_features + ["label"])
+
+    # --- Read file ---
+    contents = await file.read()
+    if len(contents) > MAX_FILE_SIZE:
+        raise HTTPException(
+            status_code=413,
+            detail=f"File too large. Maximum size is {MAX_FILE_SIZE // (1024*1024)} MB.",
+        )
+
+    try:
+        df = pd.read_csv(io.BytesIO(contents))
+    except Exception as e:
+        raise HTTPException(
+            status_code=422, detail=f"Failed to parse CSV: {str(e)}"
+        )
+
+    if len(df) == 0:
+        raise HTTPException(status_code=422, detail="CSV file contains no data rows.")
+
+    if len(df) > MAX_ROWS:
+        raise HTTPException(
+            status_code=422,
+            detail=f"CSV has {len(df)} rows, maximum allowed is {MAX_ROWS}.",
+        )
+
+    # --- Validate columns ---
+    actual_columns = set(df.columns.tolist())
+    missing_cols = expected_columns - actual_columns
+    extra_cols = actual_columns - expected_columns
+
+    if missing_cols or extra_cols:
+        parts = []
+        if missing_cols:
+            parts.append(f"Missing columns: {sorted(missing_cols)}")
+        if extra_cols:
+            parts.append(f"Unexpected columns: {sorted(extra_cols)}")
+        raise HTTPException(status_code=422, detail="; ".join(parts))
+
+    # --- Per-row validation ---
+    validation_errors: List[RowValidationError] = []
+    accepted_indices: List[int] = []
+    seen_rows = set()
+
+    for idx in range(len(df)):
+        row = df.iloc[idx]
+        row_num = idx + 2  # 1-based + header
+        row_errors = []
+
+        # Check for missing values
+        for col in expected_features + ["label"]:
+            if pd.isna(row[col]):
+                row_errors.append(
+                    RowValidationError(row=row_num, column=col, error="Missing value")
+                )
+
+        if row_errors:
+            validation_errors.extend(row_errors)
+            continue
+
+        # Check feature values are numeric
+        feature_vals = []
+        has_bad_feature = False
+        for col in expected_features:
+            try:
+                val = float(row[col])
+                if not np.isfinite(val):
+                    validation_errors.append(
+                        RowValidationError(
+                            row=row_num, column=col, error=f"Non-finite value: {row[col]}"
+                        )
+                    )
+                    has_bad_feature = True
+                else:
+                    feature_vals.append(val)
+            except (ValueError, TypeError):
+                validation_errors.append(
+                    RowValidationError(
+                        row=row_num,
+                        column=col,
+                        error=f"Non-numeric value: '{row[col]}'",
+                    )
+                )
+                has_bad_feature = True
+
+        if has_bad_feature:
+            continue
+
+        # Check label is 0 or 1
+        try:
+            label_val = int(float(row["label"]))
+            if label_val not in (0, 1):
+                validation_errors.append(
+                    RowValidationError(
+                        row=row_num,
+                        column="label",
+                        error=f"Label must be 0 or 1, got {row['label']}",
+                    )
+                )
+                continue
+        except (ValueError, TypeError):
+            validation_errors.append(
+                RowValidationError(
+                    row=row_num,
+                    column="label",
+                    error=f"Non-numeric label: '{row['label']}'",
+                )
+            )
+            continue
+
+        # Check for duplicate rows
+        row_tuple = tuple(feature_vals) + (label_val,)
+        if row_tuple in seen_rows:
+            validation_errors.append(
+                RowValidationError(
+                    row=row_num, column="*", error="Duplicate row"
+                )
+            )
+            continue
+        seen_rows.add(row_tuple)
+
+        accepted_indices.append((idx, feature_vals, label_val))
+
+    # --- Store accepted rows ---
+    dataset_record = UploadedDataset(
+        disease_id=disease,
+        original_filename=file.filename or "unknown.csv",
+        schema_json=json.dumps(expected_features),
+        row_count=len(accepted_indices),
+        rejected_count=len(df) - len(accepted_indices),
+    )
+    db.add(dataset_record)
+    await db.flush()  # get the ID
+
+    for _idx, feature_vals, label_val in accepted_indices:
+        features_dict = dict(zip(expected_features, feature_vals))
+        sample = TrainingSample(
+            dataset_id=dataset_record.id,
+            disease_id=disease,
+            features_json=json.dumps(features_dict),
+            label=label_val,
+        )
+        db.add(sample)
+
+    await db.commit()
+    await db.refresh(dataset_record)
+
+    return DatasetUploadResponse(
+        dataset_id=dataset_record.id,
+        disease=disease,
+        original_filename=dataset_record.original_filename,
+        accepted_rows=dataset_record.row_count,
+        rejected_rows=dataset_record.rejected_count,
+        validation_errors=validation_errors,
+        created_at=dataset_record.created_at,
+    )

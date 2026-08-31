@@ -1,4 +1,4 @@
-﻿"""
+"""
 Variational Quantum Classifier (VQC) for QuantumHealth AI.
 Team Member 3 - Quantum ML Layer.
 
@@ -84,18 +84,16 @@ class QuantumClassifier:
 
     def _initialize(self) -> None:
         """
-        Instantiate the PennyLane device and QNode, and initialize parameters.
-
-        Raises:
-            ImportError: If PennyLane is not installed.
+        Instantiate the quantum device/circuit, and initialize parameters.
         """
-        if not PENNYLANE_AVAILABLE:
-            raise ImportError(
-                "PennyLane is not installed. "
-                "Install it with: pip install pennylane"
-            )
-        self._dev = qml.device("default.qubit", wires=self.n_qubits)
-        self._circuit = build_vqc_circuit(self.n_qubits, self.n_layers, self._dev)
+        if PENNYLANE_AVAILABLE:
+            try:
+                self._dev = qml.device("default.qubit", wires=self.n_qubits)
+                self._circuit = build_vqc_circuit(self.n_qubits, self.n_layers, self._dev)
+            except Exception:
+                self._circuit = build_vqc_circuit(self.n_qubits, self.n_layers)
+        else:
+            self._circuit = build_vqc_circuit(self.n_qubits, self.n_layers)
 
         # Initialize params with small random values to break symmetry
         rng = np.random.RandomState(42)
