@@ -1,32 +1,36 @@
+from pathlib import Path
 import numpy as np
+import pandas as pd
 
 class HeartDataset:
+    """Loads the validated real heart-disease CSV prepared for this project."""
+
+    _DATASET_FILE = Path(__file__).resolve().parents[2] / "heart_training_data.csv"
+    _FEATURE_NAMES = [
+        "age", "sex", "cp", "trestbps", "chol", "fbs", "restecg",
+        "thalach", "exang", "oldpeak", "slope", "ca", "thal"
+    ]
+
     def load(self) -> tuple[np.ndarray, np.ndarray, list[str]]:
-        np.random.seed(42)
-        n_samples = 303
-        
-        age = np.random.randint(29, 78, n_samples)
-        sex = np.random.randint(0, 2, n_samples)
-        cp = np.random.randint(0, 4, n_samples)
-        trestbps = np.random.normal(131, 17, n_samples).clip(94, 200)
-        chol = np.random.normal(246, 51, n_samples).clip(126, 564)
-        fbs = np.random.randint(0, 2, n_samples)
-        restecg = np.random.randint(0, 3, n_samples)
-        thalach = np.random.normal(149, 23, n_samples).clip(71, 202)
-        exang = np.random.randint(0, 2, n_samples)
-        oldpeak = np.random.exponential(1.0, n_samples).clip(0, 6.2)
-        slope = np.random.randint(0, 3, n_samples)
-        ca = np.random.randint(0, 5, n_samples)
-        thal = np.random.randint(0, 4, n_samples)
-        
-        X = np.column_stack([age, sex, cp, trestbps, chol, fbs, restecg, thalach, exang, oldpeak, slope, ca, thal])
-        
-        # Synthetic target based on features
-        risk = (age/78)*0.2 + (cp/3)*0.3 + (trestbps/200)*0.1 + (chol/564)*0.1 - (thalach/202)*0.2 + exang*0.1
-        y = (risk + np.random.normal(0, 0.1, n_samples) > 0.25).astype(int)
-        
-        feature_names = ["age", "sex", "cp", "trestbps", "chol", "fbs", "restecg", "thalach", "exang", "oldpeak", "slope", "ca", "thal"]
-        return X, y, feature_names
+        if not self._DATASET_FILE.exists():
+            raise FileNotFoundError(
+                "Real heart training data was not found. Expected "
+                f"'{self._DATASET_FILE}'. Create and validate "
+                "heart_training_data.csv before training."
+            )
+
+        df = pd.read_csv(self._DATASET_FILE)
+        required_columns = self._FEATURE_NAMES + ["label"]
+        missing_columns = [c for c in required_columns if c not in df.columns]
+        if missing_columns:
+            raise ValueError(
+                "The heart training CSV is missing required columns: "
+                f"{missing_columns}"
+            )
+
+        X = df[self._FEATURE_NAMES].to_numpy(dtype=float)
+        y = df["label"].to_numpy(dtype=int)
+        return X, y, self._FEATURE_NAMES.copy()
     
     def get_feature_info(self) -> list[dict]:
         return [
@@ -46,11 +50,14 @@ class HeartDataset:
         ]
         
     def get_disease_info(self) -> dict:
+        dataset_size = 0
+        if self._DATASET_FILE.exists():
+            dataset_size = len(pd.read_csv(self._DATASET_FILE))
         return {
             "id": "heart",
             "name": "Heart Disease",
             "description": "Heart disease risk prediction based on clinical data.",
             "features": self.get_feature_info(),
-            "dataset_size": 303,
+            "dataset_size": dataset_size,
             "status": "ready"
         }

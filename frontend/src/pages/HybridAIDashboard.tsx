@@ -10,7 +10,6 @@ import {
   Activity, Cpu, ShieldCheck, AlertTriangle, ArrowRight,
   FlaskConical, BarChart3, Download, Sparkles, RefreshCw, FileText
 } from 'lucide-react';
-import { getMockPrediction } from '../services/api';
 import type { PredictionResponse } from '../types';
 
 export const HybridAIDashboard: React.FC = () => {
@@ -23,13 +22,8 @@ export const HybridAIDashboard: React.FC = () => {
       try {
         setData(JSON.parse(saved));
       } catch {
-        setData(getMockPrediction());
+        localStorage.removeItem('qhai_last_prediction');
       }
-    } else {
-      // Auto-populate with sample so jury never sees an empty screen
-      const mock = getMockPrediction();
-      setData(mock);
-      localStorage.setItem('qhai_last_prediction', JSON.stringify(mock));
     }
   }, []);
 
@@ -42,19 +36,15 @@ export const HybridAIDashboard: React.FC = () => {
         <div>
           <h2 className="text-2xl font-bold text-white mb-2">No Analysis Data Available</h2>
           <p className="text-gray-400 max-w-md mx-auto text-sm">
-            Run a patient diagnostic prediction or load the demonstration profile to view hybrid results.
+            Run a research prediction to view real model output. This dashboard never displays invented results.
           </p>
         </div>
         <Button
           size="lg"
-          onClick={() => {
-            const mock = getMockPrediction();
-            setData(mock);
-            localStorage.setItem('qhai_last_prediction', JSON.stringify(mock));
-          }}
-          leftIcon={<Sparkles size={18} />}
+          onClick={() => navigate('/analyze')}
+          leftIcon={<Activity size={18} />}
         >
-          Load Demonstration Diagnostic Data
+          Run Research Prediction
         </Button>
       </div>
     );
@@ -89,7 +79,7 @@ export const HybridAIDashboard: React.FC = () => {
             leftIcon={<FileText size={16} />}
             className="border border-gray-800"
           >
-            Export Clinical Summary
+            Print Research Summary
           </Button>
           <Button
             size="sm"

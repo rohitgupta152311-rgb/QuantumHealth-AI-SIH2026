@@ -4,7 +4,7 @@ import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { QuantumCircuitViz } from '../components/quantum/QuantumCircuitViz';
 import { QuantumReadinessCard } from '../components/quantum/QuantumReadinessCard';
-import { getQuantumConfig, getMockPrediction } from '../services/api';
+import { getQuantumConfig } from '../services/api';
 import {
   Cpu, Binary, Sparkles, Copy, Check, Terminal,
   Maximize2, Zap, Layers, RefreshCw, Activity
@@ -23,11 +23,22 @@ export const QuantumLaboratory: React.FC = () => {
       try {
         const data = await getQuantumConfig('diabetes');
         setConfig(data);
+        setReadiness({
+          original_features: Object.keys(data.feature_to_qubit_map || {}).length,
+          selected_features: Object.keys(data.feature_to_qubit_map || {}).length,
+          qubits: data.n_qubits ?? data.qubits,
+          qubits_required: data.n_qubits ?? data.qubits,
+          encoding_method: data.encoding_method ?? data.encoding,
+          circuit_depth: data.circuit_depth ?? 0,
+          layers: data.n_layers ?? data.layers,
+          backend: data.backend,
+          simulation_status: 'Simulated',
+          feature_to_qubit_map: data.feature_to_qubit_map,
+        });
       } catch {
-        // Fallback
+        setConfig(null);
+        setReadiness(null);
       }
-      const mock = getMockPrediction();
-      if (mock.quantum_readiness) setReadiness(mock.quantum_readiness);
     };
     fetchConfig();
   }, []);

@@ -65,33 +65,3 @@ async def model_comparison(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Model comparison evaluation failed: {str(e)}"
         )
-
-@router.post(
-    "/train",
-    summary="Trigger Model Training & Persistence",
-    description="Forces retraining of Classical models and updates the cached serialized models."
-)
-async def train_models(
-    disease: str = "diabetes",
-    service: PredictionService = Depends(get_prediction_service),
-    loader: DatasetLoader = Depends(get_dataset_loader)
-):
-    try:
-        loader.get_disease_info(disease)
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Unknown disease module '{disease}': {str(e)}"
-        )
-    try:
-        await service.get_or_train_models(disease)
-        return {
-            "status": "success",
-            "message": f"Models for '{disease}' trained and cached successfully.",
-            "disease": disease
-        }
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Training failed: {str(e)}"
-        )

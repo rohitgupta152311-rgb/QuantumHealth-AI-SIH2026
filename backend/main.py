@@ -10,7 +10,7 @@ from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 from app.core.config import settings
-from app.core.database import engine, Base
+from app.core.database import engine, Base, run_sqlite_migrations
 from app.api.router import api_router
 
 # Configure logging
@@ -27,7 +27,8 @@ async def lifespan(app: FastAPI):
     try:
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
-        logger.info("SQLite database tables verified successfully.")
+        await run_sqlite_migrations(engine)
+        logger.info("SQLite database tables and migrations verified successfully.")
     except Exception as e:
         logger.warning(f"Database initialization note: {e}")
     yield

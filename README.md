@@ -89,8 +89,8 @@ q₃|0⟩ ─── RY(π·x₃) ─── RY(θ₀₃) ── RZ(φ₀₃) ─�
 
 | Module | Dataset | Samples | Features | Qubits Used |
 |--------|---------|---------|----------|-------------|
-| 🍬 Diabetes | Pima Indians Diabetes | 768 | 8 | 6 |
-| ❤️ Heart Disease | Cleveland Heart Disease | 303 | 13 | 6 |
+| 🍬 Diabetes | Pima Indians Diabetes | 768 validated rows | 8 | 6 |
+| ❤️ Heart Disease | Cleveland Heart Disease | 297 validated rows | 13 | 6 |
 | 🔬 Breast Cancer | Wisconsin Breast Cancer | 569 | 30 | 6 |
 
 ---
@@ -183,8 +183,8 @@ Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 cd backend
 python -m venv venv
 .\venv\Scripts\Activate.ps1
-pip install -r requirements.txt
-python main.py
+python -m pip install -r requirements.txt
+python -m uvicorn main:app --reload
 ```
 
 **Frontend (new terminal):**
@@ -214,10 +214,11 @@ npm run dev
 | GET | `/api/v1/diseases` | List all disease modules |
 | GET | `/api/v1/diseases/{id}` | Disease info + feature definitions |
 | POST | `/api/v1/predict` | Run hybrid prediction |
-| POST | `/api/v1/upload-dataset` | Upload custom CSV |
+| POST | `/api/v1/datasets/upload` | Upload validated custom CSV |
+| GET | `/api/v1/datasets/uploads` | List uploaded datasets |
 | GET | `/api/v1/models` | List trained models |
 | GET | `/api/v1/model-comparison` | Classical vs Hybrid metrics |
-| POST | `/api/v1/models/train` | Trigger model training |
+| POST | `/api/v1/models/train` | Force training with held-out test and CV metadata |
 | GET | `/api/v1/quantum-config` | Quantum circuit configuration |
 | GET | `/api/v1/experiment-results` | Historical results |
 

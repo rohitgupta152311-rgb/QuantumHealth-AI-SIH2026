@@ -81,32 +81,35 @@ export const DiseaseAnalysisPage: React.FC = () => {
       }
     } else if (selectedDisease === 'breast_cancer') {
       if (presetType === 'healthy') {
-        setFormData({
+        setFormData((previous) => ({
+          ...previous,
           'mean radius': 11.2,
           'mean texture': 14.5,
           'mean perimeter': 72.0,
           'mean area': 385.0,
           'mean smoothness': 0.082,
           'mean compactness': 0.048,
-        });
+        }));
       } else if (presetType === 'moderate') {
-        setFormData({
+        setFormData((previous) => ({
+          ...previous,
           'mean radius': 14.8,
           'mean texture': 19.2,
           'mean perimeter': 96.5,
           'mean area': 680.0,
           'mean smoothness': 0.102,
           'mean compactness': 0.115,
-        });
+        }));
       } else {
-        setFormData({
+        setFormData((previous) => ({
+          ...previous,
           'mean radius': 20.5,
           'mean texture': 25.8,
           'mean perimeter': 138.0,
           'mean area': 1320.0,
           'mean smoothness': 0.125,
           'mean compactness': 0.245,
-        });
+        }));
       }
     }
   };

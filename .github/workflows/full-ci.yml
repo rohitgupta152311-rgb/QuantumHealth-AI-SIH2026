@@ -24,7 +24,7 @@ jobs:
         working-directory: backend
         env:
           PYTHONPATH: .
-        run: pytest ../tests/backend/ -v --tb=short
+        run: pytest tests -v --tb=short
 
   frontend:
     name: Frontend (React + TypeScript)
@@ -45,14 +45,3 @@ jobs:
       - name: Build
         working-directory: frontend
         run: npm run build
-
-  integration:
-    name: Integration Check
-    runs-on: ubuntu-latest
-    needs: [backend, frontend]
-    steps:
-      - uses: actions/checkout@v4
-      - name: Check API contracts exist
-        run: test -f shared/api-contracts/contracts.ts
-      - name: Success
-        run: echo "All checks passed ✓"
