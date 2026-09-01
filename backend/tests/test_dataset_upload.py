@@ -28,8 +28,65 @@ async def test_valid_csv_upload(client: AsyncClient):
     assert body["disease"] == "diabetes"
     assert body["accepted_rows"] == 20
     assert body["rejected_rows"] == 0
+    assert body["duplicate_rows"] == 0
     assert body["validation_errors"] == []
     assert body["dataset_id"] >= 1
+
+
+# ---- Duplicate CSV re-upload returns 409 ----------------------------------
+
+async def test_duplicate_csv_reupload_returns_409(client: AsyncClient):
+    """Uploading the exact same CSV content twice for the same disease must return 409 Conflict."""
+    csv_buf1 = make_diabetes_csv()
+    resp1 = await client.post(
+        UPLOAD_URL,
+        data={"disease": "diabetes"},
+        files={"file": ("batch1.csv", csv_buf1, "text/csv")},
+    )
+    assert resp1.status_code == 201
+
+    # Upload exact identical CSV content again
+    csv_buf2 = make_diabetes_csv()
+    resp2 = await client.post(
+        UPLOAD_URL,
+        data={"disease": "diabetes"},
+        files={"file": ("batch1_copy.csv", csv_buf2, "text/csv")},
+    )
+    assert resp2.status_code == 409
+    assert "duplicate" in resp2.json()["detail"].lower()
+
+
+# ---- Cross-upload duplicate row detection --------------------------------
+
+async def test_duplicate_row_across_uploads_rejected(client: AsyncClient):
+    """A row that was already uploaded in a previous file must be detected as duplicate."""
+    # First upload: 1 row
+    cols = DIABETES_FEATURES + ["label"]
+    row_common = [100, 80, 25, 45, 100, 30, 2, 0.5, 1]
+    csv1 = make_csv_bytes(cols, [row_common])
+
+    resp1 = await client.post(
+        UPLOAD_URL,
+        data={"disease": "diabetes"},
+        files={"file": ("upload1.csv", csv1, "text/csv")},
+    )
+    assert resp1.status_code == 201
+    assert resp1.json()["accepted_rows"] == 1
+
+    # Second upload: row_common (duplicate) + new row
+    row_new = [120, 85, 28, 50, 150, 32, 3, 0.6, 0]
+    csv2 = make_csv_bytes(cols, [row_common, row_new])
+
+    resp2 = await client.post(
+        UPLOAD_URL,
+        data={"disease": "diabetes"},
+        files={"file": ("upload2.csv", csv2, "text/csv")},
+    )
+    assert resp2.status_code == 201
+    body = resp2.json()
+    assert body["accepted_rows"] == 1
+    assert body["rejected_rows"] == 1
+    assert body["duplicate_rows"] == 1
 
 
 # ---- Invalid schema -------------------------------------------------------
@@ -125,10 +182,10 @@ async def test_missing_values_rejected(client: AsyncClient):
     assert len(missing_errors) >= 1
 
 
-# ---- Duplicate rows -------------------------------------------------------
+# ---- Duplicate rows in same file ------------------------------------------
 
 async def test_duplicate_rows_rejected(client: AsyncClient):
-    """Identical rows should be deduplicated (keep first, reject rest)."""
+    """Identical rows within the same file should be deduplicated (keep first, reject rest)."""
     cols = DIABETES_FEATURES + ["label"]
     row = [100, 80, 25, 45, 100, 30, 2, 0.5, 1]
     rows = [row, row, row]  # 3 identical
@@ -142,6 +199,7 @@ async def test_duplicate_rows_rejected(client: AsyncClient):
     body = resp.json()
     assert body["accepted_rows"] == 1  # first kept
     assert body["rejected_rows"] == 2  # two duplicates
+    assert body["duplicate_rows"] == 2
     dup_errors = [e for e in body["validation_errors"] if "Duplicate" in e["error"]]
     assert len(dup_errors) == 2
 

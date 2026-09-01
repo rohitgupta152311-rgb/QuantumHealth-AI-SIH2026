@@ -1,20 +1,20 @@
 """
-Prediction service — fixed version.
+Prediction service — with persisted preprocessing, dual scaling, and honest metrics.
 
-Integrates with the real ClassicalMLTrainer, PreprocessingPipeline,
-and QuantumClassifier. Loads trained models and uses the trained VQC
-for hybrid predictions instead of creating an untrained one.
+Integrates ClassicalMLTrainer, PreprocessingPipeline, and QuantumClassifier.
+Loads trained models and persisted preprocessing pipelines.
 """
 import time
 import logging
 import numpy as np
 from pathlib import Path
+from sklearn.model_selection import train_test_split
 
 from app.core.config import settings
 from app.datasets.loader import DatasetLoader
 from app.classical_ml.trainer import ClassicalMLTrainer
 from app.preprocessing.pipeline import PreprocessingPipeline
-from sklearn.model_selection import train_test_split
+from app.quantum_ml.vqc import QuantumClassifier
 
 logger = logging.getLogger("quantumhealth.services.prediction")
 
@@ -102,7 +102,7 @@ def risk_level_from_probability(p: float) -> str:
 def get_feature_importance_report(
     model, X_norm, feature_names, feature_labels
 ) -> list[dict]:
-    """Compute permutation-based feature importance."""
+    """Compute feature importance."""
     try:
         if hasattr(model, "feature_importances_"):
             raw = model.feature_importances_
@@ -131,16 +131,17 @@ def get_feature_importance_report(
 def build_processing_steps(_info: dict) -> list[dict]:
     return [
         {"step": 1, "name": "Data Cleaning", "status": "completed"},
-        {"step": 2, "name": "Feature Normalization", "status": "completed"},
-        {"step": 3, "name": "Quantum Feature Selection", "status": "completed"},
-        {"step": 4, "name": "Classical Ensemble Inference", "status": "completed"},
-        {"step": 5, "name": "VQC Quantum Simulation", "status": "completed"},
-        {"step": 6, "name": "Hybrid Fusion Decision", "status": "completed"},
+        {"step": 2, "name": "Classical Feature Normalization (StandardScaler)", "status": "completed"},
+        {"step": 3, "name": "Quantum Feature Normalization (MinMaxScaler [0,1])", "status": "completed"},
+        {"step": 4, "name": "Quantum Feature Selection (SelectKBest)", "status": "completed"},
+        {"step": 5, "name": "Classical Ensemble Inference", "status": "completed"},
+        {"step": 6, "name": "VQC Quantum Simulation", "status": "completed"},
+        {"step": 7, "name": "Hybrid Fusion Decision", "status": "completed"},
     ]
 
 
 class PredictionService:
-    """Service for making predictions using trained classical + quantum models."""
+    """Service for making predictions using trained classical + quantum models and persisted preprocessing."""
 
     def __init__(self, dataset_loader: DatasetLoader, models_cache_dir: Path):
         self._trainers: dict[str, ClassicalMLTrainer] = {}
@@ -152,43 +153,56 @@ class PredictionService:
     async def get_or_train_models(
         self, disease_id: str, *, force_retrain: bool = False,
     ) -> None:
-        """Load cached models or train fresh."""
-        already_loaded = disease_id in self._trainers and not force_retrain
+        """Load cached models and preprocessing pipeline or train fresh."""
+        already_loaded = disease_id in self._trainers and disease_id in self._pipelines and not force_retrain
         if already_loaded:
             return
 
+        pipeline_path = self._models_cache_dir / f"{disease_id}_pipeline.pkl"
         trainer = ClassicalMLTrainer(disease_id, self._models_cache_dir)
         pipeline = PreprocessingPipeline(n_quantum_features=settings.quantum_n_qubits)
 
+        if pipeline_path.exists() and not force_retrain:
+            try:
+                pipeline.load(pipeline_path)
+            except Exception:
+                pipeline = None
+
         X, y, feature_names = self._dataset_loader.load(disease_id)
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, random_state=42, stratify=y,
+            X, y, test_size=0.2, random_state=settings.random_seed, stratify=y,
         )
 
-        pipeline.fit(X_train, y_train, feature_names)
+        if pipeline is None or not pipeline._fitted:
+            pipeline = PreprocessingPipeline(
+                n_quantum_features=settings.quantum_n_qubits,
+                model_version=f"{disease_id}_v1.0"
+            )
+            pipeline.fit(X_train, y_train, feature_names)
+            pipeline.save(pipeline_path)
 
-        X_train_clean = pipeline.cleaner.transform(X_train)
-        X_train_norm = pipeline.normalizer.transform(X_train_clean)
-        X_test_clean = pipeline.cleaner.transform(X_test)
-        X_test_norm = pipeline.normalizer.transform(X_test_clean)
+        X_train_classical, X_train_quantum = pipeline.transform(X_train)
+        X_test_classical, X_test_quantum = pipeline.transform(X_test)
 
         if force_retrain:
-            trainer.train(X_train_norm, y_train, X_test_norm, y_test, feature_names)
+            trainer.train(X_train_classical, y_train, X_test_classical, y_test, feature_names)
+            pipeline.save(pipeline_path)
         else:
-            trainer.load_or_train(X_train_norm, y_train, X_test_norm, y_test, feature_names)
+            trainer.load_or_train(X_train_classical, y_train, X_test_classical, y_test, feature_names)
 
         self._trainers[disease_id] = trainer
         self._pipelines[disease_id] = pipeline
 
-    # ------------------------------------------------------------------
-    # Train with uploaded data
-    # ------------------------------------------------------------------
     async def get_or_train_models_with_uploads(
         self, disease_id: str, db, *, force_retrain: bool = False,
     ) -> dict:
-        """Train models using base + uploaded data. Returns data_info metadata."""
+        """Train models using base + uploaded data."""
         trainer = ClassicalMLTrainer(disease_id, self._models_cache_dir)
-        pipeline = PreprocessingPipeline(n_quantum_features=settings.quantum_n_qubits)
+        pipeline = PreprocessingPipeline(
+            n_quantum_features=settings.quantum_n_qubits,
+            model_version=f"{disease_id}_v1.0"
+        )
+        pipeline_path = self._models_cache_dir / f"{disease_id}_pipeline.pkl"
 
         X, y, feature_names, data_info = await self._dataset_loader.load_with_uploads(
             disease_id, db
@@ -203,19 +217,19 @@ class PredictionService:
             )
 
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, random_state=42, stratify=y,
+            X, y, test_size=0.2, random_state=settings.random_seed, stratify=y,
         )
 
         pipeline.fit(X_train, y_train, feature_names)
-        X_train_clean = pipeline.cleaner.transform(X_train)
-        X_train_norm = pipeline.normalizer.transform(X_train_clean)
-        X_test_clean = pipeline.cleaner.transform(X_test)
-        X_test_norm = pipeline.normalizer.transform(X_test_clean)
+        pipeline.save(pipeline_path)
+
+        X_train_classical, X_train_quantum = pipeline.transform(X_train)
+        X_test_classical, X_test_quantum = pipeline.transform(X_test)
 
         if force_retrain:
-            trainer.train(X_train_norm, y_train, X_test_norm, y_test, feature_names)
+            trainer.train(X_train_classical, y_train, X_test_classical, y_test, feature_names)
         else:
-            trainer.load_or_train(X_train_norm, y_train, X_test_norm, y_test, feature_names)
+            trainer.load_or_train(X_train_classical, y_train, X_test_classical, y_test, feature_names)
 
         self._trainers[disease_id] = trainer
         self._pipelines[disease_id] = pipeline
@@ -234,22 +248,35 @@ class PredictionService:
         feature_names = [f["name"] for f in disease_info["features"]]
         feature_labels = {f["name"]: f.get("label", f["name"]) for f in disease_info["features"]}
 
-        X_norm, X_quantum = pipeline.transform_single(features_dict, feature_names)
-        classical_results = trainer.predict_single(X_norm)
+        # 1. Preprocessing: StandardScaler for Classical, MinMaxScaler [0, 1] for Quantum
+        X_classical, X_quantum = pipeline.transform_single(features_dict, feature_names)
+        classical_results = trainer.predict_single(X_classical)
 
-        # Quantum VQC
+        # 2. Quantum VQC Inference
         q_start = time.time()
         simulation_mode = True
+        vqc_path = self._models_cache_dir / f"{disease_id}_vqc.pkl"
+        if not vqc_path.exists():
+            raise RuntimeError(
+                f"No trained quantum model is available for '{disease_id}'. "
+                "Train the model first using POST /api/v1/models/train."
+            )
+
         try:
-            from app.quantum_ml.vqc import QuantumClassifier
-            vqc_path = self._models_cache_dir / f"{disease_id}_vqc.pkl"
-            qc = QuantumClassifier(n_qubits=settings.quantum_n_qubits, n_layers=settings.quantum_n_layers)
+            qc = QuantumClassifier(
+                n_qubits=settings.quantum_n_qubits,
+                n_layers=settings.quantum_n_layers,
+                n_epochs=settings.quantum_vqc_epochs,
+                max_training_samples=settings.quantum_max_train_samples,
+            )
             if vqc_path.exists():
-                qc.load(str(vqc_path))
+                qc.load(vqc_path)
             q_prob = float(qc.predict_proba_single(X_quantum.flatten()[:settings.quantum_n_qubits]))
-        except (ImportError, Exception):
-            c_mean_fallback = sum(r["risk_probability"] for r in classical_results) / max(len(classical_results), 1)
-            q_prob = float(min(1.0, max(0.0, c_mean_fallback * 0.9 + 0.05)))
+        except Exception as exc:
+            raise RuntimeError(
+                f"The trained quantum model for '{disease_id}' could not be loaded or evaluated. "
+                "Retrain it using POST /api/v1/models/train."
+            ) from exc
 
         q_pred_str = "high_risk" if q_prob >= 0.5 else "low_risk"
         q_time = (time.time() - q_start) * 1000
@@ -265,7 +292,7 @@ class PredictionService:
             "execution_time_ms": round(q_time, 2),
         }
 
-        # Hybrid fusion
+        # 3. Hybrid Fusion Decision Layer
         c_probs = [r["risk_probability"] for r in classical_results]
         c_mean = sum(c_probs) / max(len(c_probs), 1)
 
@@ -297,7 +324,7 @@ class PredictionService:
         )
 
         fi_report = get_feature_importance_report(
-            trainer.models["RandomForest"], X_norm, feature_names, feature_labels,
+            trainer.models["RandomForest"], X_classical, feature_names, feature_labels,
         )
 
         prep_info = pipeline.get_preprocessing_info()
@@ -339,40 +366,33 @@ class PredictionService:
     # Model comparison — real metrics only
     # ------------------------------------------------------------------
     async def get_model_comparison(self, disease_id: str) -> dict:
-        """Return real evaluated metrics for all models. No artificial boosts."""
+        """Return real evaluated metrics for all models without artificial boosts."""
         await self.get_or_train_models(disease_id)
         metrics = self._trainers[disease_id].get_model_metrics()
-
         best_classical = max(metrics, key=lambda x: x["accuracy"])
 
-        # Build hybrid metrics from real evaluation — NOT artificial boosts
-        # Train VQC on quantum features and evaluate honestly
         pipeline = self._pipelines[disease_id]
         X, y, feature_names = self._dataset_loader.load(disease_id)
         X_train, X_test, y_train, y_test = train_test_split(
-            X, y, test_size=0.2, random_state=42, stratify=y,
+            X, y, test_size=0.2, random_state=settings.random_seed, stratify=y,
         )
-        X_train_norm, X_train_quantum = pipeline.transform(
-            pipeline.cleaner.transform(X_train)
-        )
-        X_test_norm, X_test_quantum = pipeline.transform(
-            pipeline.cleaner.transform(X_test)
-        )
+        X_train_classical, X_train_quantum = pipeline.transform(X_train)
+        X_test_classical, X_test_quantum = pipeline.transform(X_test)
 
         try:
-            from app.quantum_ml.vqc import QuantumClassifier
-
             qc = QuantumClassifier(
-                n_qubits=settings.quantum_n_qubits, n_layers=settings.quantum_n_layers,
+                n_qubits=settings.quantum_n_qubits,
+                n_layers=settings.quantum_n_layers,
+                n_epochs=settings.quantum_vqc_epochs,
+                max_training_samples=settings.quantum_max_train_samples,
             )
 
             vqc_path = self._models_cache_dir / f"{disease_id}_vqc.pkl"
             if vqc_path.exists():
-                qc.load(str(vqc_path))
+                qc.load(vqc_path)
             else:
-                q_start = time.time()
                 qc.fit(X_train_quantum, y_train)
-                qc.save(str(vqc_path))
+                qc.save(vqc_path)
 
             q_start = time.time()
             q_proba = qc.predict_proba(X_test_quantum)
@@ -381,18 +401,18 @@ class PredictionService:
 
             from app.classical_ml.evaluator import compute_metrics as compute_m
 
-            # Compute quantum-only metrics
-            quantum_metrics_dict = compute_m(qc, X_test_quantum, y_test, model_name="VQC")
+            # Quantum-only metrics
+            quantum_metrics_dict = compute_m(qc, X_test_quantum, y_test, model_name="VQC", model_type="quantum")
             quantum_metrics_dict["training_time_s"] = 0.0
-            quantum_metrics_dict["inference_time_ms"] = q_time
+            quantum_metrics_dict["inference_time_ms"] = round(q_time, 3)
 
             # Hybrid: 60% classical ensemble mean + 40% quantum
             c_proba_list = []
             for name, model in self._trainers[disease_id].models.items():
                 try:
-                    p = model.predict_proba(X_test_norm)[:, 1]
+                    p = model.predict_proba(X_test_classical)[:, 1]
                 except Exception:
-                    p = model.predict(X_test_norm).astype(float)
+                    p = model.predict(X_test_classical).astype(float)
                 c_proba_list.append(p)
 
             c_mean_proba = np.mean(c_proba_list, axis=0)

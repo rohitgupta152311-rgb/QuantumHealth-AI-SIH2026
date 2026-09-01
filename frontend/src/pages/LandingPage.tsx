@@ -64,7 +64,7 @@ export const LandingPage: React.FC = () => {
       step: '06',
       title: 'Consensus Decision Engine',
       subtitle: 'Hybrid Intelligence Fusion',
-      desc: 'Aggregates classical Random Forest, SVM, and Logistic Regression with Quantum VQC (60/40 weighted fusion) and flags clinical disagreements.',
+      desc: 'Aggregates classical Random Forest, SVM, and Logistic Regression with a simulated Quantum VQC (60/40 weighted fusion) and flags research-model disagreement.',
       icon: Shield,
       layer: 'Hybrid Layer',
       badge: 'Consensus Engine'

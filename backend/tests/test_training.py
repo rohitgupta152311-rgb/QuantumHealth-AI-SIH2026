@@ -1,10 +1,12 @@
 """Tests for model training (POST /api/v1/models/train)."""
 import json
+from pathlib import Path
 import pytest
 import pytest_asyncio
 from httpx import AsyncClient
 
-from tests.conftest import make_diabetes_csv
+from app.core.config import settings
+from tests.conftest import make_diabetes_csv, make_heart_csv
 
 pytestmark = pytest.mark.asyncio
 
@@ -58,6 +60,36 @@ async def test_force_retrain_overwrites_cached(client: AsyncClient):
     assert id2 > id1, "Second train should create a new model_version"
 
 
+async def test_training_returns_cv_summary_and_held_out_metrics(client: AsyncClient):
+    """CV must be real, summarized, and separate from final held-out metrics."""
+    upload_resp = await client.post(
+        UPLOAD_URL,
+        data={"disease": "diabetes"},
+        files={"file": ("cv_diabetes.csv", make_diabetes_csv(), "text/csv")},
+    )
+    assert upload_resp.status_code == 201, upload_resp.text
+
+    resp = await client.post(
+        TRAIN_URL,
+        json={"disease": "diabetes", "force_retrain": True},
+    )
+    assert resp.status_code == 200, resp.text
+    body = resp.json()
+
+    # Final metrics are still returned from the untouched 20% held-out test set.
+    for metric in ("accuracy", "precision", "recall", "f1_score", "auc_roc"):
+        assert metric in body["metrics"]["classical"]
+
+    cv = body["training_config"]["cross_validation"]
+    assert cv["available"] is True
+    assert cv["n_splits"] == 5
+    assert len(cv["folds"]) == 5
+    for model_type in ("classical", "quantum", "hybrid"):
+        for metric in ("accuracy", "precision", "recall", "f1_score", "auc_roc"):
+            assert "mean" in cv["summary"][model_type][metric]
+            assert "std" in cv["summary"][model_type][metric]
+
+
 # ---- Cached models (no retrain) ------------------------------------------
 
 async def test_cached_models_used_when_no_retrain(client: AsyncClient):
@@ -78,14 +110,13 @@ async def test_cached_models_used_when_no_retrain(client: AsyncClient):
 
 # ---- Uploaded samples included in training --------------------------------
 
-async def test_uploaded_samples_in_training(client: AsyncClient):
-    """Uploaded CSV rows should appear in the training data metadata."""
-    # Upload 20 rows
+async def test_uploaded_samples_in_training_diabetes(client: AsyncClient):
+    """Uploaded CSV rows should appear in the training data metadata for diabetes."""
     csv_buf = make_diabetes_csv()
     upload_resp = await client.post(
         UPLOAD_URL,
         data={"disease": "diabetes"},
-        files={"file": ("train.csv", csv_buf, "text/csv")},
+        files={"file": ("train_diabetes.csv", csv_buf, "text/csv")},
     )
     assert upload_resp.status_code == 201
 
@@ -97,7 +128,34 @@ async def test_uploaded_samples_in_training(client: AsyncClient):
     assert train_resp.status_code == 200
     data_info = train_resp.json()["data_info"]
     assert data_info["uploaded_rows"] == 20
-    assert data_info["total_rows"] == data_info["base_rows"] + 20
+    assert data_info["total_rows"] == 20  # For diabetes, trains on real uploaded data
+
+
+async def test_heart_training_uses_13_feature_uploaded_data(client: AsyncClient):
+    """Heart disease module training must use real uploaded data with 13 features."""
+    csv_buf = make_heart_csv()
+    upload_resp = await client.post(
+        UPLOAD_URL,
+        data={"disease": "heart"},
+        files={"file": ("train_heart.csv", csv_buf, "text/csv")},
+    )
+    assert upload_resp.status_code == 201
+    assert upload_resp.json()["accepted_rows"] == 25
+
+    # Train heart model
+    train_resp = await client.post(
+        TRAIN_URL,
+        json={"disease": "heart", "force_retrain": True},
+    )
+    assert train_resp.status_code == 200, train_resp.text
+    body = train_resp.json()
+    assert body["disease"] == "heart"
+    assert body["data_info"]["uploaded_rows"] == 25
+    assert body["data_info"]["source"] == "uploaded_real_csv"
+
+    # Verify pipeline was saved
+    pipeline_path = settings.models_cache_dir / "heart_pipeline.pkl"
+    assert pipeline_path.exists()
 
 
 # ---- Validation errors on bad data ---------------------------------------

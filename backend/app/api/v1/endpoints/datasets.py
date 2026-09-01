@@ -1,15 +1,16 @@
 """Dataset management endpoints"""
 import io
 import json
+import hashlib
 from datetime import datetime
-from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends
+from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from typing import Dict, List
 import pandas as pd
 import numpy as np
 
-from app.core.database import get_db
+from app.core.database import get_db, compute_sample_fingerprint
 from app.datasets.loader import DatasetLoader, get_dataset_loader
 from app.models.dataset_models import UploadedDataset, TrainingSample
 from app.schemas.dataset_schemas import (
@@ -28,7 +29,7 @@ MAX_ROWS = 50_000
 async def get_available_datasets(
     db: AsyncSession = Depends(get_db),
 ) -> Dict:
-    """Get list of available datasets including uploaded data counts."""
+    """Get list of available datasets including uploaded data counts without double-counting."""
     loader = get_dataset_loader()
 
     datasets_info = {}
@@ -42,7 +43,7 @@ async def get_available_datasets(
                 "uploaded_samples": data_info["uploaded_rows"],
                 "total_samples": data_info["total_rows"],
                 "features": X.shape[1],
-                "positive_rate": float(y.mean()),
+                "positive_rate": float(y.mean()) if len(y) > 0 else 0.0,
                 "feature_names": feature_names,
                 "source": data_info["source"],
             }
@@ -96,16 +97,20 @@ async def get_dataset_schema(disease: str) -> Dict:
 @router.post("/upload", response_model=DatasetUploadResponse, status_code=201)
 async def upload_dataset(
     file: UploadFile = File(..., description="CSV file with feature columns + label"),
-    disease: str = Form(..., description="Disease ID: diabetes, heart_disease, or breast_cancer"),
+    disease: str = Form(..., description="Disease ID: diabetes, heart, or breast_cancer"),
     db: AsyncSession = Depends(get_db),
 ):
     """
     Upload a CSV dataset for a specific disease.
 
     The CSV must contain exactly the feature columns for the disease plus a
-    `label` column with binary values (0 or 1). Rows with missing values,
-    non-numeric features, invalid labels, or duplicates are rejected with
-    per-row error details.
+    `label` column with binary values (0 or 1).
+
+    Validation:
+    - Rejects identical file re-uploads with 409 Conflict.
+    - Rejects missing columns, extra columns, invalid labels, non-numeric values.
+    - Detects duplicate rows within the uploaded file and against previously uploaded samples in the database.
+    - Returns accepted_rows, rejected_rows, duplicate_rows, and validation_errors.
     """
     loader = get_dataset_loader()
 
@@ -120,12 +125,29 @@ async def upload_dataset(
     expected_features = loader.get_feature_names(disease)
     expected_columns = set(expected_features + ["label"])
 
-    # --- Read file ---
+    # --- Read file contents ---
     contents = await file.read()
     if len(contents) > MAX_FILE_SIZE:
         raise HTTPException(
             status_code=413,
             detail=f"File too large. Maximum size is {MAX_FILE_SIZE // (1024*1024)} MB.",
+        )
+
+    # --- Check for duplicate file upload (409 Conflict) ---
+    file_hash = hashlib.sha256(contents).hexdigest()
+    existing_file_stmt = select(UploadedDataset).where(
+        UploadedDataset.disease_id == disease,
+        UploadedDataset.file_hash == file_hash,
+    )
+    existing_file_res = await db.execute(existing_file_stmt)
+    existing_file = existing_file_res.scalars().first()
+    if existing_file:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail=(
+                f"Duplicate dataset: An identical CSV file has already been uploaded "
+                f"for '{disease}' (Dataset ID #{existing_file.id}, uploaded {existing_file.created_at})."
+            ),
         )
 
     try:
@@ -157,10 +179,19 @@ async def upload_dataset(
             parts.append(f"Unexpected columns: {sorted(extra_cols)}")
         raise HTTPException(status_code=422, detail="; ".join(parts))
 
+    # Fetch existing fingerprints from database for this disease
+    existing_fps_stmt = select(TrainingSample.fingerprint).where(
+        TrainingSample.disease_id == disease,
+        TrainingSample.fingerprint.isnot(None),
+    )
+    existing_fps_res = await db.execute(existing_fps_stmt)
+    db_fingerprints = set(existing_fps_res.scalars().all())
+
     # --- Per-row validation ---
     validation_errors: List[RowValidationError] = []
-    accepted_indices: List[int] = []
-    seen_rows = set()
+    accepted_records: List[tuple] = []
+    seen_batch_fps = set()
+    duplicate_rows_count = 0
 
     for idx in range(len(df)):
         row = df.iloc[idx]
@@ -228,36 +259,40 @@ async def upload_dataset(
             )
             continue
 
-        # Check for duplicate rows
-        row_tuple = tuple(feature_vals) + (label_val,)
-        if row_tuple in seen_rows:
+        feat_dict = dict(zip(expected_features, feature_vals))
+        fp = compute_sample_fingerprint(disease, feat_dict, label_val)
+
+        # Check duplicate against database or current upload batch
+        if fp in db_fingerprints or fp in seen_batch_fps:
+            duplicate_rows_count += 1
             validation_errors.append(
                 RowValidationError(
-                    row=row_num, column="*", error="Duplicate row"
+                    row=row_num, column="*", error="Duplicate row (already exists in database or file)"
                 )
             )
             continue
-        seen_rows.add(row_tuple)
 
-        accepted_indices.append((idx, feature_vals, label_val))
+        seen_batch_fps.add(fp)
+        accepted_records.append((idx, feature_vals, label_val, fp, feat_dict))
 
     # --- Store accepted rows ---
     dataset_record = UploadedDataset(
         disease_id=disease,
         original_filename=file.filename or "unknown.csv",
+        file_hash=file_hash,
         schema_json=json.dumps(expected_features),
-        row_count=len(accepted_indices),
-        rejected_count=len(df) - len(accepted_indices),
+        row_count=len(accepted_records),
+        rejected_count=len(df) - len(accepted_records),
     )
     db.add(dataset_record)
     await db.flush()  # get the ID
 
-    for _idx, feature_vals, label_val in accepted_indices:
-        features_dict = dict(zip(expected_features, feature_vals))
+    for _idx, _feature_vals, label_val, fp, feat_dict in accepted_records:
         sample = TrainingSample(
             dataset_id=dataset_record.id,
             disease_id=disease,
-            features_json=json.dumps(features_dict),
+            fingerprint=fp,
+            features_json=json.dumps(feat_dict),
             label=label_val,
         )
         db.add(sample)
@@ -271,6 +306,7 @@ async def upload_dataset(
         original_filename=dataset_record.original_filename,
         accepted_rows=dataset_record.row_count,
         rejected_rows=dataset_record.rejected_count,
+        duplicate_rows=duplicate_rows_count,
         validation_errors=validation_errors,
         created_at=dataset_record.created_at,
     )

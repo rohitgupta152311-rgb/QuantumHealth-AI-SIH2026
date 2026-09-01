@@ -57,9 +57,9 @@ export const ConsensusDisplay: React.FC<{ consensus: ConsensusResult }> = ({ con
           <div className="bg-yellow-500/10 border border-yellow-500/30 rounded-lg p-3.5 flex items-start gap-3">
             <AlertTriangle className="text-yellow-400 flex-shrink-0 mt-0.5" size={18} />
             <div>
-              <div className="font-medium text-yellow-200 text-sm">Model Disagreement Detected — Clinical Review Advised</div>
+              <div className="font-medium text-yellow-200 text-sm">Research Model Disagreement Detected</div>
               <div className="text-xs text-yellow-400/80 mt-1">
-                {consensus.recommendation || 'Classical models and quantum circuit produced divergent risk outputs. Further clinical investigation recommended.'}
+                {consensus.recommendation || 'Classical and simulated quantum models produced different research outputs. Do not use this result for diagnosis.'}
               </div>
             </div>
           </div>
@@ -69,7 +69,7 @@ export const ConsensusDisplay: React.FC<{ consensus: ConsensusResult }> = ({ con
             <div>
               <div className="font-medium text-green-200 text-sm">Strong Quantum-Classical Agreement</div>
               <div className="text-xs text-green-400/80 mt-1">
-                {consensus.recommendation || 'Both classical and simulated quantum models strongly agree on the diagnostic risk classification.'}
+                {consensus.recommendation || 'Both classical and simulated quantum models agree for this research input. Agreement is not clinical validation.'}
               </div>
             </div>
           </div>

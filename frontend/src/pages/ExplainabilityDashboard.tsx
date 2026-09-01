@@ -7,7 +7,6 @@ import {
   ShieldAlert, Sparkles, Activity, Info, BarChart3,
   HelpCircle, ArrowRight, CheckCircle2, AlertTriangle, Layers
 } from 'lucide-react';
-import { getMockPrediction } from '../services/api';
 import type { PredictionResponse } from '../types';
 
 export const ExplainabilityDashboard: React.FC = () => {
@@ -20,20 +19,20 @@ export const ExplainabilityDashboard: React.FC = () => {
       try {
         setData(JSON.parse(saved));
       } catch {
-        setData(getMockPrediction());
+        localStorage.removeItem('qhai_last_prediction');
       }
-    } else {
-      const mock = getMockPrediction();
-      setData(mock);
-      localStorage.setItem('qhai_last_prediction', JSON.stringify(mock));
     }
   }, []);
 
   if (!data) {
     return (
       <div className="flex flex-col items-center justify-center p-16 space-y-4 text-center">
-        <div className="w-12 h-12 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin"></div>
-        <div className="text-lg font-semibold text-gray-200">Loading Explainability Engine...</div>
+        <div className="w-12 h-12 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+          <BarChart3 size={22} />
+        </div>
+        <div className="text-lg font-semibold text-gray-200">No Research Prediction Available</div>
+        <p className="max-w-md text-sm text-gray-400">Run a prediction first. Explainability is shown only for a real saved response.</p>
+        <Button onClick={() => navigate('/analyze')} leftIcon={<Activity size={16} />}>Run Research Prediction</Button>
       </div>
     );
   }

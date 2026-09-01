@@ -57,7 +57,7 @@ New-Item -ItemType Directory -Force backend\models_cache
 ```powershell
 cd backend
 .\venv\Scripts\Activate.ps1
-python main.py
+python -m uvicorn main:app --reload
 ```
 
 Backend starts at: `http://localhost:8000`
@@ -150,8 +150,8 @@ git checkout -b feature/classical-ml-your-feature
 cd backend
 .\venv\Scripts\Activate.ps1
 # Work in app/preprocessing/, app/classical_ml/, app/datasets/
-pytest ../tests/backend/test_preprocessing.py -v
-pytest ../tests/backend/test_classical_ml.py -v
+pytest tests/test_preprocessing_quantum.py -v
+pytest tests/test_training.py -v
 ```
 
 ### Team Member 3 (Quantum ML)
@@ -160,7 +160,7 @@ git checkout -b feature/quantum-ml-your-feature
 cd backend
 .\venv\Scripts\Activate.ps1
 # Work in app/quantum_ml/, app/hybrid_ml/
-pytest ../tests/backend/test_quantum_ml.py -v
+pytest tests/test_preprocessing_quantum.py -v
 ```
 
 ### Team Member 4 (Backend/DevOps)
@@ -169,7 +169,7 @@ git checkout -b feature/backend-api-your-feature
 cd backend
 .\venv\Scripts\Activate.ps1
 # Work in app/api/, app/core/, app/services/
-pytest ../tests/backend/test_api.py -v
+pytest tests/test_dataset_upload.py -v
 # Test with: http://localhost:8000/docs
 ```
 
@@ -181,14 +181,15 @@ pytest ../tests/backend/test_api.py -v
 # All backend tests
 cd backend
 .\venv\Scripts\Activate.ps1
-pytest ../tests/backend/ -v
+pytest tests -v
 
 # Specific test file
-pytest ../tests/backend/test_preprocessing.py -v
+pytest tests/test_preprocessing_quantum.py -v
 
-# Frontend tests
+# Frontend type check and production build
 cd frontend
-npm test
+npx tsc --noEmit
+npm run build
 ```
 
 ---
@@ -228,5 +229,5 @@ The frontend is configured to connect to this URL automatically.
 ### Models not training (timeout)
 The first prediction request trains all ML models. This takes:
 - Classical models: ~5-10 seconds
-- Quantum VQC (50 iterations, 100 samples): ~30-120 seconds
-If you need faster startup, reduce `n_epochs` in VQC configuration.
+- Quantum VQC evaluation may take several minutes. Training includes a held-out test and stratified cross-validation.
+- Do not close the terminal while a training request is in progress. Stop the server with `Ctrl+C` only after it finishes.

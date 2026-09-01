@@ -13,6 +13,7 @@ class DatasetUploadResponse(BaseModel):
     original_filename: str
     accepted_rows: int
     rejected_rows: int
+    duplicate_rows: int = 0
     validation_errors: List[RowValidationError]
     created_at: datetime
 

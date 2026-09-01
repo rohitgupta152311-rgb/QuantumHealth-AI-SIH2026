@@ -6,7 +6,7 @@ interface ConfusionMatrixProps {
 }
 
 export const ConfusionMatrix: React.FC<ConfusionMatrixProps> = ({
-  matrix = [[120, 15], [20, 85]],
+  matrix,
   labels = ['Negative (0)', 'Positive (1)']
 }) => {
   const tn = matrix[0]?.[0] ?? 0;
@@ -61,7 +61,7 @@ export const ConfusionMatrix: React.FC<ConfusionMatrixProps> = ({
         </div>
       </div>
 
-      {/* Calculated Clinical Diagnostic Metrics */}
+      {/* Calculated held-out evaluation metrics */}
       <div className="grid grid-cols-3 gap-2 pt-2 text-center text-xs font-mono">
         <div className="bg-gray-950 p-2.5 rounded-xl border border-gray-800">
           <span className="text-gray-500 text-[10px] block">Accuracy</span>

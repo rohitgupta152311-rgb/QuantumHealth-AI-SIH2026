@@ -58,6 +58,9 @@ async def db_session() -> AsyncGenerator[AsyncSession, None]:
 def tmp_model_dir(monkeypatch):
     d = tempfile.mkdtemp(prefix="qhtest_models_")
     monkeypatch.setattr(settings, "models_cache_dir", Path(d))
+    # Keep integration tests fast. Production defaults remain 150 VQC iterations.
+    monkeypatch.setattr(settings, "quantum_vqc_epochs", 2)
+    monkeypatch.setattr(settings, "quantum_max_train_samples", 20)
     yield d
     shutil.rmtree(d, ignore_errors=True)
 
@@ -86,7 +89,7 @@ async def client(db_session: AsyncSession, tmp_model_dir) -> AsyncGenerator[Asyn
 # CSV helpers
 # ---------------------------------------------------------------------------
 def make_diabetes_csv(rows: list[dict] | None = None) -> io.BytesIO:
-    """Build a valid diabetes CSV. Caller can override rows."""
+    """Build a valid diabetes CSV."""
     import pandas as pd
 
     loader = get_dataset_loader()
@@ -96,6 +99,40 @@ def make_diabetes_csv(rows: list[dict] | None = None) -> io.BytesIO:
             {f: round(50 + i * 0.3 + j, 2) for j, f in enumerate(features)}
             | {"label": i % 2}
             for i in range(20)
+        ]
+    df = pd.DataFrame(rows)
+    buf = io.BytesIO()
+    df.to_csv(buf, index=False)
+    buf.seek(0)
+    return buf
+
+
+def make_heart_csv(rows: list[dict] | None = None) -> io.BytesIO:
+    """Build a valid heart disease CSV with exactly 13 features."""
+    import pandas as pd
+
+    loader = get_dataset_loader()
+    features = loader.get_feature_names("heart")
+    assert len(features) == 13, f"Heart features must be 13, got {len(features)}"
+    if rows is None:
+        rows = [
+            {
+                "age": 40 + i,
+                "sex": i % 2,
+                "cp": (i % 4),
+                "trestbps": 120 + i,
+                "chol": 200 + i * 2,
+                "fbs": (i % 2),
+                "restecg": (i % 3),
+                "thalach": 150 - i,
+                "exang": (i % 2),
+                "oldpeak": round(0.5 + i * 0.1, 1),
+                "slope": (i % 3),
+                "ca": (i % 4),
+                "thal": (i % 4),
+                "label": (i % 2),
+            }
+            for i in range(25)
         ]
     df = pd.DataFrame(rows)
     buf = io.BytesIO()

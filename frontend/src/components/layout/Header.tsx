@@ -10,7 +10,7 @@ interface HeaderProps {
 
 export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar, isMobileSidebarOpen }) => {
   const location = useLocation();
-  const [backendStatus, setBackendStatus] = useState<'connected' | 'simulated' | 'checking'>('checking');
+  const [backendStatus, setBackendStatus] = useState<'connected' | 'offline' | 'checking'>('checking');
   const [backendInfo, setBackendInfo] = useState<string>('PennyLane default.qubit');
 
   useEffect(() => {
@@ -22,7 +22,8 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar, isMobileS
           setBackendInfo(res.quantum_backend);
         }
       } catch {
-        setBackendStatus('simulated');
+        setBackendStatus('offline');
+        setBackendInfo('Offline');
       }
     };
     checkStatus();

@@ -13,6 +13,7 @@ class TrainResponse(BaseModel):
     model_version_id: int
     data_hash: str
     data_info: Dict[str, Any]
+    training_config: Dict[str, Any]
 
 class ModelComparisonResponse(BaseModel):
     classical: Dict[str, Any]

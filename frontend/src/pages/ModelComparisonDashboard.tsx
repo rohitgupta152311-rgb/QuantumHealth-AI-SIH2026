@@ -17,13 +17,16 @@ export const ModelComparisonDashboard: React.FC = () => {
   const [selectedDisease, setSelectedDisease] = useState<string>('diabetes');
   const [isRetraining, setIsRetraining] = useState<boolean>(false);
   const [retrainSuccess, setRetrainSuccess] = useState<boolean>(false);
+  const [error, setError] = useState<string | null>(null);
 
   const fetchComparison = async (disease: string) => {
     try {
+      setError(null);
       const res = await getModelComparison(disease);
       setData(res);
-    } catch {
-      // Fallback
+    } catch (err) {
+      setData(null);
+      setError(err instanceof Error ? err.message : 'Unable to load real model metrics.');
     }
   };
 
@@ -39,6 +42,8 @@ export const ModelComparisonDashboard: React.FC = () => {
       await fetchComparison(selectedDisease);
       setRetrainSuccess(true);
       setTimeout(() => setRetrainSuccess(false), 3000);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Training failed.');
     } finally {
       setIsRetraining(false);
     }
@@ -47,8 +52,12 @@ export const ModelComparisonDashboard: React.FC = () => {
   if (!data) {
     return (
       <div className="flex flex-col items-center justify-center p-16 space-y-4 text-center">
-        <div className="w-12 h-12 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin"></div>
-        <div className="text-lg font-semibold text-gray-200">Loading Model Comparison Benchmarks...</div>
+        <div className="w-12 h-12 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+          <BarChart3 size={22} />
+        </div>
+        <div className="text-lg font-semibold text-gray-200">Real Metrics Unavailable</div>
+        <p className="max-w-md text-sm text-gray-400">{error || 'Train the selected model, then refresh this page.'}</p>
+        <Button onClick={() => fetchComparison(selectedDisease)}>Refresh Real Metrics</Button>
       </div>
     );
   }
@@ -140,9 +149,9 @@ export const ModelComparisonDashboard: React.FC = () => {
 
         <Card title="Comparative Receiver Operating Characteristic (ROC)" className="bg-gray-900/60 border-gray-800 backdrop-blur">
           <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-            <Zap size={18} className="text-quantum-400" /> Simulated ROC Curves & AUC Score
+            <Zap size={18} className="text-quantum-400" /> Held-out ROC-AUC Scores
           </h3>
-          <p className="text-xs text-gray-400 mb-4">Comparing decision threshold sensitivity between models.</p>
+          <p className="text-xs text-gray-400 mb-4">Actual ROC-AUC values returned by the latest held-out evaluation. Full curves are not shown because the backend does not return curve points.</p>
           <ROCCurveChart models={data.models} />
         </Card>
       </div>
@@ -206,9 +215,13 @@ export const ModelComparisonDashboard: React.FC = () => {
               <ShieldAlert size={18} className="text-quantum-400" /> Hybrid Model Confusion Matrix
             </h3>
             <p className="text-xs text-gray-400 mb-4">
-              Classification distribution across positive (diseased) and negative (healthy) cohorts.
+              Held-out evaluation distribution for the returned model metrics.
             </p>
-            <ConfusionMatrix matrix={data.confusion_matrix || [[120, 15], [20, 85]]} />
+            {data.confusion_matrix ? (
+              <ConfusionMatrix matrix={data.confusion_matrix} />
+            ) : (
+              <p className="text-sm text-gray-500">No confusion matrix was returned by the backend.</p>
+            )}
           </Card>
         </div>
 
@@ -218,7 +231,7 @@ export const ModelComparisonDashboard: React.FC = () => {
               <Sparkles size={18} className="text-yellow-400" /> Hackathon Evaluation Rationale
             </h3>
             <p className="text-sm text-gray-300 leading-relaxed">
-              In biomedical diagnostics, <strong>Sensitivity (Recall)</strong> is paramount: minimizing False Negatives ensures early-stage disease cases are not missed. The Hybrid VQC architecture projects feature interactions into Hilbert space, effectively enhancing sensitivity while maintaining competitive overall accuracy against standalone classical models.
+              Compare the returned held-out metrics and cross-validation results directly. A hybrid or quantum result is not assumed to be better than a classical model; differences must be demonstrated by the dataset used in this experiment.
             </p>
             <div className="grid sm:grid-cols-2 gap-3 pt-2 text-xs font-mono">
               <div className="bg-gray-950 p-3 rounded-xl border border-gray-800">

@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey
+from sqlalchemy import Column, Integer, String, DateTime, Text, ForeignKey, Index
 from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.core.database import Base
@@ -9,6 +9,7 @@ class UploadedDataset(Base):
     id = Column(Integer, primary_key=True, index=True)
     disease_id = Column(String, index=True)
     original_filename = Column(String)
+    file_hash = Column(String, index=True, nullable=True)
     schema_json = Column(Text)
     row_count = Column(Integer)
     rejected_count = Column(Integer, default=0)
@@ -23,6 +24,7 @@ class TrainingSample(Base):
     id = Column(Integer, primary_key=True, index=True)
     dataset_id = Column(Integer, ForeignKey('uploaded_datasets.id'), index=True)
     disease_id = Column(String, index=True)
+    fingerprint = Column(String, index=True, nullable=True)
     features_json = Column(Text)
     label = Column(Integer)
     created_at = Column(DateTime, default=datetime.utcnow)
