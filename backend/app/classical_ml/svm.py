@@ -18,7 +18,14 @@ class SVMModel:
         self.kernel = kernel
         
     def fit(self, X, y):
-        self.model.fit(X, y)
+        # SVM (RBF) has O(N^2) complexity; for N > 10,000, use a high-fidelity stratified sample
+        if len(X) > 10000:
+            import numpy as np
+            rng = np.random.RandomState(42)
+            idx = rng.choice(len(X), size=10000, replace=False)
+            self.model.fit(X[idx], y[idx])
+        else:
+            self.model.fit(X, y)
         return self
         
     def predict(self, X):

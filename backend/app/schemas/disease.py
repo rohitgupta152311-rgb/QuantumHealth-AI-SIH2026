@@ -18,6 +18,7 @@ class DiseaseInfo(BaseModel):
     features: List[FeatureInfo]
     dataset_size: int
     status: Literal["ready", "training", "not_trained"]
+    source: Optional[str] = None
 
 class DiseaseListResponse(BaseModel):
     diseases: List[DiseaseInfo]
