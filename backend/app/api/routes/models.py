@@ -6,9 +6,8 @@ from app.core.config import settings
 
 router = APIRouter()
 
-def get_prediction_service() -> PredictionService:
-    loader = get_dataset_loader()
-    return PredictionService(loader, settings.models_cache_dir)
+from app.api.routes.predict import get_prediction_service
+
 
 @router.get(
     "",

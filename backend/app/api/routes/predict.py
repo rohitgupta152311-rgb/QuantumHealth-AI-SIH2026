@@ -8,9 +8,15 @@ from app.core.config import settings
 logger = logging.getLogger("quantumhealth.api.predict")
 router = APIRouter()
 
+_global_prediction_service = None
+
 def get_prediction_service() -> PredictionService:
-    loader = get_dataset_loader()
-    return PredictionService(loader, settings.models_cache_dir)
+    global _global_prediction_service
+    if _global_prediction_service is None:
+        loader = get_dataset_loader()
+        _global_prediction_service = PredictionService(loader, settings.models_cache_dir)
+    return _global_prediction_service
+
 
 @router.post(
     "",

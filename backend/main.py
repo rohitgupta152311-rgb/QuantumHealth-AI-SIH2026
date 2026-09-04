@@ -31,7 +31,23 @@ async def lifespan(app: FastAPI):
         logger.info("SQLite database tables and migrations verified successfully.")
     except Exception as e:
         logger.warning(f"Database initialization note: {e}")
+
+    # Pre-warm all 4 disease models and quantum circuits in RAM for sub-150ms instant predictions
+    try:
+        from app.api.routes.predict import get_prediction_service
+        pred_service = get_prediction_service()
+        for disease in ["diabetes", "heart", "kidney", "breast_cancer"]:
+            await pred_service.get_or_train_models(disease)
+            d_info = pred_service._dataset_loader.get_disease_info(disease)
+            dummy_feats = {f["name"]: 0.0 for f in d_info["features"]}
+            await pred_service.predict(disease, dummy_feats)
+        logger.info("All 4 disease models and quantum circuits pre-warmed in memory for instant inference.")
+    except Exception as e:
+        logger.warning(f"Model warm-up note: {e}")
+
     yield
+
+
     # Shutdown
     logger.info("Shutting down QuantumHealth AI services...")
     await engine.dispose()

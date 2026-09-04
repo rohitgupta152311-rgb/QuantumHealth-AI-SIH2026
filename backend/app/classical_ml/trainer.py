@@ -90,13 +90,21 @@ class ClassicalMLTrainer:
                 
         if all_loaded:
             self._trained = True
-            # Compute metrics on test set
+            # Compute metrics on representative test sample (< 1000 samples for high speed)
             self._metrics = []
+            if len(X_test) > 1000:
+                rng = np.random.RandomState(42)
+                sub_idx = rng.choice(len(X_test), size=1000, replace=False)
+                eval_X, eval_y = X_test[sub_idx], y_test[sub_idx]
+            else:
+                eval_X, eval_y = X_test, y_test
+
             for name, model in self.models.items():
-                metrics = compute_metrics(model, X_test, y_test, model_name=name)
+                metrics = compute_metrics(model, eval_X, eval_y, model_name=name)
                 self._metrics.append(metrics)
         else:
             self.train(X_train, y_train, X_test, y_test, feature_names)
+
             
     def get_model_metrics(self) -> list[dict]:
         return self._metrics

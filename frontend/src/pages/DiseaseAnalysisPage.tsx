@@ -167,9 +167,10 @@ export const DiseaseAnalysisPage: React.FC = () => {
     if (result && !predictLoading) {
       setTimeout(() => {
         navigate('/dashboard');
-      }, 1000);
+      }, 150);
     }
   }, [result, predictLoading, navigate]);
+
 
   if (diseaseLoading) {
     return (

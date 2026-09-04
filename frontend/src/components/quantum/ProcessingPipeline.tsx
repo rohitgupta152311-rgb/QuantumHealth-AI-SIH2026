@@ -15,9 +15,10 @@ export const ProcessingPipeline: React.FC<{ steps: ProcessingStep[] }> = ({ step
             key={index}
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: index * 0.4 }}
+            transition={{ delay: index * 0.08 }}
             className="flex items-start gap-4 relative z-10"
           >
+
             <div className="bg-gray-950 rounded-full p-1">
               {step.status === 'completed' && <CheckCircle className="text-green-500" size={24} />}
               {step.status === 'in_progress' && <Loader2 className="text-quantum-500 animate-spin" size={24} />}
