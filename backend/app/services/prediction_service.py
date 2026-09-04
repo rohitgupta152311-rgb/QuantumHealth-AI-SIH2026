@@ -256,21 +256,25 @@ class PredictionService:
         q_start = time.time()
         simulation_mode = True
         vqc_path = self._models_cache_dir / f"{disease_id}_vqc.pkl"
-        if not vqc_path.exists():
-            raise RuntimeError(
-                f"No trained quantum model is available for '{disease_id}'. "
-                "Train the model first using POST /api/v1/models/train."
-            )
 
         try:
             qc = QuantumClassifier(
                 n_qubits=settings.quantum_n_qubits,
                 n_layers=settings.quantum_n_layers,
-                n_epochs=settings.quantum_vqc_epochs,
-                max_training_samples=settings.quantum_max_train_samples,
+                n_epochs=min(settings.quantum_vqc_epochs, 20),
+                max_training_samples=min(settings.quantum_max_train_samples, 50),
             )
             if vqc_path.exists():
                 qc.load(vqc_path)
+            else:
+                # Auto-fit fast VQC on a representative subset
+                X_base, y_base, _ = self._dataset_loader.load(disease_id)
+                _, X_sample_q = pipeline.transform(X_base[:50])
+                qc.fit(X_sample_q, y_base[:50])
+                try:
+                    qc.save(vqc_path)
+                except Exception:
+                    pass
             q_prob = float(qc.predict_proba_single(X_quantum.flatten()[:settings.quantum_n_qubits]))
         except Exception as exc:
             raise RuntimeError(

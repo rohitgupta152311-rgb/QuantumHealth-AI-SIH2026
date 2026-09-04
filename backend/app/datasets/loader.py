@@ -9,6 +9,7 @@ from sqlalchemy import select
 from app.datasets.diabetes import DiabetesDataset
 from app.datasets.heart import HeartDataset
 from app.datasets.breast_cancer import BreastCancerDataset
+from app.datasets.kidney import KidneyDataset
 from app.models.dataset_models import TrainingSample
 
 
@@ -24,6 +25,7 @@ class DatasetLoader:
             "diabetes": DiabetesDataset(),
             "heart": HeartDataset(),
             "breast_cancer": BreastCancerDataset(),
+            "kidney": KidneyDataset(),
         }
 
     # ------------------------------------------------------------------

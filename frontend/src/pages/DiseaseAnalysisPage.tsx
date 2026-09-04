@@ -111,6 +111,26 @@ export const DiseaseAnalysisPage: React.FC = () => {
           'mean compactness': 0.245,
         }));
       }
+    } else if (selectedDisease === 'kidney') {
+      if (presetType === 'healthy') {
+        setFormData({
+          age: 35, bp: 70, sg: 1.020, al: 0, su: 0,
+          bgr: 95, bu: 25, sc: 0.8, sod: 140, pot: 4.2,
+          hemo: 15.0, htn: 0
+        });
+      } else if (presetType === 'moderate') {
+        setFormData({
+          age: 52, bp: 80, sg: 1.015, al: 1, su: 1,
+          bgr: 135, bu: 48, sc: 1.4, sod: 136, pot: 4.6,
+          hemo: 12.2, htn: 0
+        });
+      } else {
+        setFormData({
+          age: 64, bp: 95, sg: 1.008, al: 3, su: 2,
+          bgr: 210, bu: 115, sc: 4.8, sod: 128, pot: 5.8,
+          hemo: 8.4, htn: 1
+        });
+      }
     }
   };
 

@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Activity, HeartPulse, ShieldAlert } from 'lucide-react';
+import { Activity, HeartPulse, ShieldAlert, Droplets } from 'lucide-react';
 import type { DiseaseInfo } from '../../types';
 
 interface DiseaseSelectorProps {
@@ -15,10 +15,11 @@ export const DiseaseSelector: React.FC<DiseaseSelectorProps> = ({ diseases, sele
     heart: <HeartPulse size={24} />,
     heart_disease: <HeartPulse size={24} />,
     breast_cancer: <ShieldAlert size={24} />,
+    kidney: <Droplets size={24} />,
   };
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
+    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
       {diseases.map((disease) => {
         const isSelected = disease.id === selectedId;
         return (

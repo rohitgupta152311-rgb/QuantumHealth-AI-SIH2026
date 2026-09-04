@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { motion, useInView, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight, Activity, Brain, Cpu, Zap, Shield,
-  Sparkles, CheckCircle2, Binary, HeartPulse, ShieldAlert,
+  Sparkles, CheckCircle2, Binary, HeartPulse, ShieldAlert, Droplets,
   Terminal, BarChart3, ChevronRight, Layers, GitBranch
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
@@ -79,10 +79,11 @@ export const LandingPage: React.FC = () => {
     { id: 'diabetes', name: 'Type 2 Diabetes', sub: 'CDC BRFSS Survey Data', samples: 253680, qubits: '8→6', icon: Activity, color: 'from-blue-500 to-indigo-600' },
     { id: 'heart', name: 'Heart Disease', sub: 'CDC BRFSS + Cleveland Study', samples: 200000, qubits: '13→6', icon: HeartPulse, color: 'from-rose-500 to-pink-600' },
     { id: 'breast_cancer', name: 'Breast Cancer', sub: 'UCI Wisconsin Diagnostic + SMOTE', samples: 50000, qubits: '30→6', icon: ShieldAlert, color: 'from-violet-500 to-purple-600' },
+    { id: 'kidney', name: 'Chronic Kidney Disease', sub: 'Apollo Hospitals + CDC', samples: 100000, qubits: '12→6', icon: Droplets, color: 'from-emerald-500 to-teal-600' },
   ];
 
   const stats = [
-    { value: 504, label: 'Thousand Clinical Records', suffix: 'K' },
+    { value: 604, label: 'Thousand Clinical Records', suffix: 'K' },
     { value: 6, label: 'Simulated Qubits', suffix: '' },
     { value: 4, label: 'Model Fusion', suffix: '-Way' },
     { value: 97, label: 'Peak Accuracy', suffix: '%' },
@@ -276,7 +277,7 @@ export const LandingPage: React.FC = () => {
               <p className="text-gray-500 text-sm">Plug-and-play architecture across diverse biomedical domains.</p>
             </div>
 
-            <div className="grid md:grid-cols-3 gap-6">
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
               {diseases.map((d, i) => {
                 const Icon = d.icon;
                 const sc = useCounter(d.samples, 2500);

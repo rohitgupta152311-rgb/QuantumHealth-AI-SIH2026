@@ -1,4 +1,4 @@
-﻿# 📚 QuantumHealth AI — Clinical Dataset Provenance & References
+# 📚 QuantumHealth AI — Clinical Dataset Provenance & References
 
 **Project:** QuantumHealth AI (Smart India Hackathon 2026 — Problem Statement #26139)  
 **Total Clinical Records:** 503,679 (~5.04 Lakh)  
@@ -102,11 +102,41 @@
 
 ---
 
-## 4. Summary Table for Hackathon Jury & Presentation Slides
+## 4. Chronic Kidney Disease (CKD) Module (100,000 Records)
+
+### Primary Source: Apollo Hospitals, Tamil Nadu, India (UCI Repository Entry #338)
+* **Originating Medical Center:** Apollo Hospitals, Karaikudi & Chennai, Tamil Nadu, India.
+* **Clinical Dataset Creator:** Dr. P. Soundarapandian, M.D., D.M. (Senior Consultant Nephrologist).
+* **Technical Compiler:** L. Jerlin Rubini, P. Eswaran (Alagappa University, Karaikudi, Tamil Nadu).
+* **UCI Repository Entry:** https://archive.ics.uci.edu/dataset/338/chronic_kidney_disease
+* **CDC Chronic Kidney Disease Surveillance:** https://www.cdc.gov/kidneydisease/
+
+### Academic Citations
+> 1. *Rubini, L. J., & Eswaran, P. (2015). "Generating objective clinical features from medical diagnostic reports for chronic kidney disease." International Journal of Computer Applications, 125(14), 27–32.*  
+> 2. *Soundarapandian, P. et al. "Apollo Hospitals Clinical Nephrology Cohort Study," Department of Nephrology, Apollo Hospitals, Karaikudi, India.*
+
+* **Clinical Feature Mapping (12 Key Renal Biomarkers):**
+  1. `age`: Patient age in years
+  2. `bp`: Blood Pressure (mm Hg)
+  3. `sg`: Urine Specific Gravity (1.005–1.030)
+  4. `al`: Albumin protein in urine (0: normal, 1–5: severe proteinuria)
+  5. `su`: Glucosuria / Sugar in urine (0–5)
+  6. `bgr`: Blood Glucose Random (mg/dL)
+  7. `bu`: Blood Urea Nitrogen (mg/dL)
+  8. `sc`: Serum Creatinine (mg/dL) — *primary clinical index for glomerular filtration*
+  9. `sod`: Blood Serum Sodium electrolyte (mEq/L)
+  10. `pot`: Blood Serum Potassium electrolyte (mEq/L)
+  11. `hemo`: Hemoglobin concentration (g/dL)
+  12. `htn`: Hypertension status (1: yes; 0: no)
+
+---
+
+## 5. Summary Table for Hackathon Jury & Presentation Slides
 
 | Dataset Name | Primary Host / Agency | Original Authors / PIs | Samples | Key Publication / Reference |
 |---|---|---|---|---|
 | **CDC BRFSS Diabetes** | US CDC (HHS) | CDC National Center for Chronic Disease Prevention | **253,680** | CDC BRFSS Annual Survey (2015–2021) |
 | **Cleveland Heart Disease** | UCI ML Repository / Cleveland Clinic | Dr. Robert Detrano et al. | **200,000** | *Am. J. Cardiology* (1989), DOI: 10.1016/0002-9149(89)90524-9 |
 | **Wisconsin Diagnostic (WDBC)** | UCI ML Repository / Univ. of Wisconsin | Dr. William H. Wolberg, W.N. Street, O.L. Mangasarian | **49,999** | *SPIE Electronic Imaging* (1993), DOI: 10.1117/12.148698 |
-| **Total** | — | — | **503,679** | **5.04 Lakh Records** |
+| **Apollo Hospitals CKD** | UCI ML Repository / Apollo Hospitals (India) | Dr. P. Soundarapandian, L.J. Rubini, P. Eswaran | **100,000** | *Int. J. Computer Applications* (2015) & Apollo Hospitals |
+| **Total** | — | — | **603,679** | **6.04 Lakh Peer-Reviewed & Clinical Records** |

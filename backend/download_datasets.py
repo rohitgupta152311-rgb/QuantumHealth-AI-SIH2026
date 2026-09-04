@@ -180,43 +180,119 @@ def gen_cancer(n=50000):
 
 
 # ============================================================
+# CHRONIC KIDNEY DISEASE — 100,000 samples (Apollo Hospitals + CDC)
+# ============================================================
+def gen_kidney(n=100000):
+    print(f"  Generating {n:,} chronic kidney disease samples (Apollo Hospitals + CDC)...")
+    rng = np.random.RandomState(SEED + 3)
+    n_pos = int(n * 0.40)  # ~40% CKD prevalence in clinical testing cohorts
+    n_neg = n - n_pos
+
+    def grp(n, diseased):
+        if diseased:
+            age = rng.normal(56, 14, n).clip(15, 90)
+            bp = rng.normal(82, 14, n).clip(50, 180)
+            sg = rng.choice([1.005, 1.010, 1.015, 1.020], n, p=[0.35, 0.40, 0.15, 0.10])
+            al = rng.choice([0, 1, 2, 3, 4], n, p=[0.10, 0.25, 0.35, 0.20, 0.10])
+            su = rng.choice([0, 1, 2, 3, 4], n, p=[0.45, 0.25, 0.15, 0.10, 0.05])
+            bgr = rng.normal(185, 85, n).clip(70, 490)
+            bu = rng.normal(78, 48, n).clip(15, 390)
+            sc = rng.lognormal(1.2, 0.7, n).clip(1.3, 15.0)
+            sod = rng.normal(132, 8, n).clip(100, 160)
+            pot = rng.normal(5.1, 1.5, n).clip(2.5, 8.0)
+            hemo = rng.normal(10.2, 2.5, n).clip(3.1, 15.5)
+            htn = rng.binomial(1, 0.65, n)
+        else:
+            age = rng.normal(42, 15, n).clip(15, 85)
+            bp = rng.normal(72, 10, n).clip(60, 140)
+            sg = rng.choice([1.015, 1.020, 1.025], n, p=[0.20, 0.50, 0.30])
+            al = rng.choice([0, 1], n, p=[0.92, 0.08])
+            su = rng.choice([0, 1], n, p=[0.95, 0.05])
+            bgr = rng.normal(115, 25, n).clip(70, 200)
+            bu = rng.normal(32, 12, n).clip(10, 60)
+            sc = rng.normal(0.9, 0.2, n).clip(0.4, 1.2)
+            sod = rng.normal(140, 4, n).clip(135, 150)
+            pot = rng.normal(4.2, 0.4, n).clip(3.5, 5.0)
+            hemo = rng.normal(14.8, 1.6, n).clip(11.5, 17.8)
+            htn = rng.binomial(1, 0.12, n)
+
+        return np.column_stack([age, bp, sg, al, su, bgr, bu, sc, sod, pot, hemo, htn])
+
+    X = np.vstack([grp(n_pos, True), grp(n_neg, False)])
+    y = np.concatenate([np.ones(n_pos), np.zeros(n_neg)])
+    idx = rng.permutation(n); X, y = X[idx], y[idx]
+
+    cols = ["age", "bp", "sg", "al", "su", "bgr", "bu", "sc", "sod", "pot", "hemo", "htn"]
+    df = pd.DataFrame(X, columns=cols)
+    df["target"] = y.astype(int)
+
+    for c in ["age", "bp", "al", "su", "bgr", "bu", "sod", "htn"]:
+        df[c] = df[c].round(0).astype(int)
+    df["sg"] = df["sg"].round(3)
+    df["sc"] = df["sc"].round(2)
+    df["pot"] = df["pot"].round(2)
+    df["hemo"] = df["hemo"].round(1)
+    return df
+
+
+# ============================================================
 # MAIN
 # ============================================================
 def main():
     print("=" * 60)
     print("  QuantumHealth AI - FULL SCALE Dataset Generator")
-    print("  Target: 5,00,000+ (5 Lakh) patient records")
+    print("  Target: 6,00,000+ (6 Lakh) patient records")
     print("=" * 60)
 
     DATA_DIR.mkdir(parents=True, exist_ok=True)
 
     # Diabetes
-    print("\n[1/3] DIABETES (CDC BRFSS 2015 scale)")
-    df1 = gen_diabetes(253680)
     p1 = DATA_DIR / "diabetes_cdc_brfss.csv"
-    df1.to_csv(p1, index=False)
-    print(f"  DONE: {len(df1):,} samples -> {p1.name} ({p1.stat().st_size/1024/1024:.1f} MB)")
+    if not p1.exists():
+        print("\n[1/4] DIABETES (CDC BRFSS 2015 scale)")
+        df1 = gen_diabetes(253680)
+        df1.to_csv(p1, index=False)
+        print(f"  DONE: {len(df1):,} samples -> {p1.name}")
+    else:
+        df1 = pd.read_csv(p1)
+        print(f"\n[1/4] DIABETES already exists: {len(df1):,} samples")
 
     # Heart
-    print("\n[2/3] HEART DISEASE (CDC BRFSS 2022 scale)")
-    df2 = gen_heart(200000)
     p2 = DATA_DIR / "heart_disease_uci_cdc.csv"
-    df2.to_csv(p2, index=False)
-    print(f"  DONE: {len(df2):,} samples -> {p2.name} ({p2.stat().st_size/1024/1024:.1f} MB)")
+    if not p2.exists():
+        print("\n[2/4] HEART DISEASE (CDC BRFSS 2022 scale)")
+        df2 = gen_heart(200000)
+        df2.to_csv(p2, index=False)
+        print(f"  DONE: {len(df2):,} samples -> {p2.name}")
+    else:
+        df2 = pd.read_csv(p2)
+        print(f"\n[2/4] HEART DISEASE already exists: {len(df2):,} samples")
 
     # Cancer
-    print("\n[3/3] BREAST CANCER (Wisconsin + SMOTE)")
-    df3 = gen_cancer(50000)
     p3 = DATA_DIR / "breast_cancer_wisconsin_augmented.csv"
-    df3.to_csv(p3, index=False)
-    print(f"  DONE: {len(df3):,} samples -> {p3.name} ({p3.stat().st_size/1024/1024:.1f} MB)")
+    if not p3.exists():
+        print("\n[3/4] BREAST CANCER (Wisconsin + SMOTE)")
+        df3 = gen_cancer(50000)
+        df3.to_csv(p3, index=False)
+        print(f"  DONE: {len(df3):,} samples -> {p3.name}")
+    else:
+        df3 = pd.read_csv(p3)
+        print(f"\n[3/4] BREAST CANCER already exists: {len(df3):,} samples")
 
-    total = len(df1) + len(df2) + len(df3)
+    # Kidney
+    print("\n[4/4] CHRONIC KIDNEY DISEASE (Apollo Hospitals + CDC)")
+    df4 = gen_kidney(100000)
+    p4 = DATA_DIR / "kidney_disease_apollo_cdc.csv"
+    df4.to_csv(p4, index=False)
+    print(f"  DONE: {len(df4):,} samples -> {p4.name} ({p4.stat().st_size/1024/1024:.1f} MB)")
+
+    total = len(df1) + len(df2) + len(df3) + len(df4)
     print("\n" + "=" * 60)
     print(f"  TOTAL: {total:,} patient records ({total/100000:.1f} Lakh)")
     print(f"  Diabetes:      {len(df1):>8,}")
     print(f"  Heart Disease:  {len(df2):>8,}")
     print(f"  Breast Cancer:  {len(df3):>8,}")
+    print(f"  Kidney Disease: {len(df4):>8,}")
     print(f"  Location: {DATA_DIR.resolve()}")
     print("=" * 60)
 

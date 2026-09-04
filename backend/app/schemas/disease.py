@@ -1,7 +1,7 @@
 from typing import Literal, Optional, List
 from pydantic import BaseModel
 
-DiseaseID = Literal["diabetes", "heart", "breast_cancer"]
+DiseaseID = Literal["diabetes", "heart", "breast_cancer", "kidney"]
 
 class FeatureInfo(BaseModel):
     name: str
