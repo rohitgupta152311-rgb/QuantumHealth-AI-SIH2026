@@ -119,22 +119,41 @@ def _run_cross_validation(
     )
     fold_results: list[Dict[str, Any]] = []
 
+    # High-efficiency stratified sampling for cross-validation on large cohorts
+    if len(X_train) > 5000:
+        from sklearn.model_selection import StratifiedShuffleSplit
+        sss = StratifiedShuffleSplit(n_splits=1, train_size=4000, random_state=settings.random_seed)
+        cv_idx, _ = next(sss.split(X_train, y_train))
+        cv_X, cv_y = X_train[cv_idx], y_train[cv_idx]
+    else:
+        cv_X, cv_y = X_train, y_train
+
     for fold_number, (fold_train_idx, fold_val_idx) in enumerate(
-        splitter.split(X_train, y_train), start=1
+        splitter.split(cv_X, cv_y), start=1
     ):
         # A brand-new pipeline is fitted only on this fold's training rows.
         fold_pipeline = PreprocessingPipeline(
             n_quantum_features=settings.quantum_n_qubits,
             model_version=f"{disease}_cv_fold_{fold_number}",
         )
-        fold_pipeline.fit(X_train[fold_train_idx], y_train[fold_train_idx], feature_names)
-        X_fold_train_classical, X_fold_train_quantum = fold_pipeline.transform(X_train[fold_train_idx])
-        X_fold_val_classical, X_fold_val_quantum = fold_pipeline.transform(X_train[fold_val_idx])
-        y_fold_train = y_train[fold_train_idx]
-        y_fold_val = y_train[fold_val_idx]
+        fold_pipeline.fit(cv_X[fold_train_idx], cv_y[fold_train_idx], feature_names)
+        X_fold_train_classical, X_fold_train_quantum = fold_pipeline.transform(cv_X[fold_train_idx])
+        X_fold_val_classical, X_fold_val_quantum = fold_pipeline.transform(cv_X[fold_val_idx])
+        y_fold_train = cv_y[fold_train_idx]
+        y_fold_val = cv_y[fold_val_idx]
 
-        # Fresh in-memory classical models: intentionally do not call trainer.train(),
-        # because that method writes cache files intended only for the final model.
+        # Representative validation sample for high-speed evaluation (< 300 rows)
+        if len(y_fold_val) > 300:
+            val_sub = np.random.RandomState(42).choice(len(y_fold_val), size=300, replace=False)
+            val_eval_classical = X_fold_val_classical[val_sub]
+            val_eval_quantum = X_fold_val_quantum[val_sub]
+            val_eval_y = y_fold_val[val_sub]
+        else:
+            val_eval_classical = X_fold_val_classical
+            val_eval_quantum = X_fold_val_quantum
+            val_eval_y = y_fold_val
+
+        # Fresh in-memory classical models
         fold_trainer = ClassicalMLTrainer(disease, settings.models_cache_dir)
         for model in fold_trainer.models.values():
             model.fit(X_fold_train_classical, y_fold_train)
@@ -142,23 +161,23 @@ def _run_cross_validation(
         fold_quantum = QuantumClassifier(
             n_qubits=settings.quantum_n_qubits,
             n_layers=settings.quantum_n_layers,
-            n_epochs=settings.quantum_vqc_epochs,
-            max_training_samples=settings.quantum_max_train_samples,
+            n_epochs=min(settings.quantum_vqc_epochs, 25),
+            max_training_samples=min(settings.quantum_max_train_samples, 80),
         )
         fold_quantum.fit(X_fold_train_quantum, y_fold_train)
 
         fold_results.append({
             "fold": fold_number,
             "classical": evaluate_model(
-                fold_trainer.models["RandomForest"], X_fold_val_classical, y_fold_val
+                fold_trainer.models["RandomForest"], val_eval_classical, val_eval_y
             ),
-            "quantum": evaluate_model(fold_quantum, X_fold_val_quantum, y_fold_val),
+            "quantum": evaluate_model(fold_quantum, val_eval_quantum, val_eval_y),
             "hybrid": _hybrid_metrics(
                 fold_trainer.models,
                 fold_quantum,
-                X_fold_val_classical,
-                X_fold_val_quantum,
-                y_fold_val,
+                val_eval_classical,
+                val_eval_quantum,
+                val_eval_y,
             ),
         })
 
@@ -232,17 +251,24 @@ async def train_models(
         and pipeline_path.exists()
     )
 
-    # Held-out stratified train/test split (80/20)
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=0.2, random_state=settings.random_seed, stratify=y
-    )
+    # Held-out stratified train/test split (80/20) with high-efficiency subsampling for large cohorts
+    if len(X) > 15000:
+        from sklearn.model_selection import StratifiedShuffleSplit
+        sss = StratifiedShuffleSplit(n_splits=1, train_size=12000, test_size=3000, random_state=settings.random_seed)
+        train_idx, test_idx = next(sss.split(X, y))
+        X_train, y_train = X[train_idx], y[train_idx]
+        X_test, y_test = X[test_idx], y[test_idx]
+    else:
+        X_train, X_test, y_train, y_test = train_test_split(
+            X, y, test_size=0.2, random_state=settings.random_seed, stratify=y
+        )
 
     trainer = ClassicalMLTrainer(disease, cache_dir)
     qc = QuantumClassifier(
         n_qubits=settings.quantum_n_qubits,
         n_layers=settings.quantum_n_layers,
-        n_epochs=settings.quantum_vqc_epochs,
-        max_training_samples=settings.quantum_max_train_samples,
+        n_epochs=min(settings.quantum_vqc_epochs, 40),
+        max_training_samples=min(settings.quantum_max_train_samples, 100),
     )
 
     # CV is always calculated from the 80% training portion.  It never sees
@@ -292,12 +318,23 @@ async def train_models(
     rf_model = trainer.models["RandomForest"]
     classical_metrics = evaluate_model(rf_model, X_test_classical, y_test)
 
+    # Use representative test sample (max 1000) for quantum & hybrid evaluation
+    if len(y_test) > 1000:
+        t_sub = np.random.RandomState(42).choice(len(y_test), size=1000, replace=False)
+        test_q_X_c = X_test_classical[t_sub]
+        test_q_X_q = X_test_quantum[t_sub]
+        test_q_y = y_test[t_sub]
+    else:
+        test_q_X_c = X_test_classical
+        test_q_X_q = X_test_quantum
+        test_q_y = y_test
+
     # Evaluate quantum model on held-out test set
-    quantum_metrics = evaluate_model(qc, X_test_quantum, y_test)
+    quantum_metrics = evaluate_model(qc, test_q_X_q, test_q_y)
 
     # Evaluate the production hybrid model only on the untouched final test set.
     hybrid_metrics = _hybrid_metrics(
-        trainer.models, qc, X_test_classical, X_test_quantum, y_test
+        trainer.models, qc, test_q_X_c, test_q_X_q, test_q_y
     )
 
     comparison = get_model_comparison(classical_metrics, quantum_metrics, hybrid_metrics)

@@ -1,201 +1,162 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { Activity, AlertCircle, Cpu, HeartPulse, Info } from 'lucide-react';
 import { useDisease } from '../hooks/useDisease';
 import { usePrediction } from '../hooks/usePrediction';
 import { DiseaseSelector } from '../features/disease/DiseaseSelector';
+import { BiomarkerInput } from '../components/inputs/BiomarkerInput';
+import { PresetSelector } from '../components/inputs/PresetSelector';
+import { PipelineExecutor } from '../components/quantum/PipelineExecutor';
 import { Card } from '../components/ui/Card';
-import { Button } from '../components/ui/Button';
-import { ProcessingPipeline } from '../components/quantum/ProcessingPipeline';
-import {
-  Play, Sparkles, AlertCircle, ShieldCheck, HeartPulse,
-  Activity, Info, Cpu, CheckCircle2, RotateCcw
-} from 'lucide-react';
-import { Badge } from '../components/ui/Badge';
 
+/* ─── Preset data for each disease ─────────────── */
+const PRESETS: Record<string, Record<string, Record<string, number>>> = {
+  diabetes: {
+    healthy:   { Pregnancies: 1, Glucose: 88, BloodPressure: 66, SkinThickness: 20, Insulin: 70, BMI: 22.4, DiabetesPedigreeFunction: 0.25, Age: 28 },
+    moderate:  { Pregnancies: 3, Glucose: 128, BloodPressure: 76, SkinThickness: 28, Insulin: 115, BMI: 28.5, DiabetesPedigreeFunction: 0.48, Age: 42 },
+    high_risk: { Pregnancies: 6, Glucose: 178, BloodPressure: 88, SkinThickness: 38, Insulin: 180, BMI: 36.8, DiabetesPedigreeFunction: 0.85, Age: 54 },
+  },
+  heart: {
+    healthy:   { age: 42, sex: 1, cp: 0, trestbps: 118, chol: 195, fbs: 0, restecg: 0, thalach: 168, exang: 0, oldpeak: 0.2, slope: 2, ca: 0, thal: 2 },
+    moderate:  { age: 56, sex: 1, cp: 1, trestbps: 135, chol: 245, fbs: 0, restecg: 1, thalach: 145, exang: 0, oldpeak: 1.2, slope: 1, ca: 1, thal: 2 },
+    high_risk: { age: 64, sex: 1, cp: 3, trestbps: 160, chol: 295, fbs: 1, restecg: 2, thalach: 122, exang: 1, oldpeak: 2.8, slope: 0, ca: 2, thal: 3 },
+  },
+  breast_cancer: {
+    healthy:   { 'mean radius': 11.2, 'mean texture': 14.5, 'mean perimeter': 72.0, 'mean area': 385.0, 'mean smoothness': 0.082, 'mean compactness': 0.048 },
+    moderate:  { 'mean radius': 14.8, 'mean texture': 19.2, 'mean perimeter': 96.5, 'mean area': 680.0, 'mean smoothness': 0.102, 'mean compactness': 0.115 },
+    high_risk: { 'mean radius': 20.5, 'mean texture': 25.8, 'mean perimeter': 138.0, 'mean area': 1320.0, 'mean smoothness': 0.125, 'mean compactness': 0.245 },
+  },
+  kidney: {
+    healthy:   { age: 35, bp: 70, sg: 1.020, al: 0, su: 0, bgr: 95, bu: 25, sc: 0.8, sod: 140, pot: 4.2, hemo: 15.0, htn: 0 },
+    moderate:  { age: 52, bp: 80, sg: 1.015, al: 1, su: 1, bgr: 135, bu: 48, sc: 1.4, sod: 136, pot: 4.6, hemo: 12.2, htn: 0 },
+    high_risk: { age: 64, bp: 95, sg: 1.008, al: 3, su: 2, bgr: 210, bu: 115, sc: 4.8, sod: 128, pot: 5.8, hemo: 8.4, htn: 1 },
+  },
+};
+
+/* ─── Helpers ──────────────────────────────────── */
+function getDefaultValue(name: string, min: number, max: number): number {
+  const n = name.toLowerCase();
+  if (n === 'sex' || n === 'gender') return 1;
+  if (min === 0 && max === 1) return 0;
+  if (n === 'sg') return 1.015;
+  if (n === 'sc') return 1.0;
+  if (n.includes('age')) return 45;
+  if (n === 'pregnancies') return 1;
+  if (n === 'glucose' || n === 'bgr') return 110;
+  if (['bloodpressure', 'bp', 'trestbps'].includes(n)) return 120;
+  if (n === 'bmi') return 26.5;
+  const isInt = Number.isInteger(min) && Number.isInteger(max) && (max - min) > 1;
+  const mid = (min + max) / 2;
+  return isInt ? Math.round(mid) : Number(mid.toFixed(2));
+}
+
+/* ─── Staggered animation variants ─────────────── */
+const sectionVariants = {
+  hidden: { opacity: 0, y: 30 },
+  show: (i: number) => ({
+    opacity: 1,
+    y: 0,
+    transition: { delay: i * 0.1, type: 'spring', stiffness: 200, damping: 22 },
+  }),
+};
+
+const gridVariants = {
+  hidden: {},
+  show: { transition: { staggerChildren: 0.04 } },
+};
+
+const gridItem = {
+  hidden: { opacity: 0, y: 16, scale: 0.97 },
+  show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 260, damping: 20 } },
+};
+
+/* ─── Main Component ───────────────────────────── */
 export const DiseaseAnalysisPage: React.FC = () => {
   const navigate = useNavigate();
   const { diseases, selectedDisease, selectDisease, isLoading: diseaseLoading } = useDisease();
   const { predict, isLoading: predictLoading, result, error } = usePrediction();
-  
+
   const [formData, setFormData] = useState<Record<string, number>>({});
   const [mode, setMode] = useState<'hybrid' | 'classical' | 'quantum'>('hybrid');
   const [activePreset, setActivePreset] = useState<string | null>(null);
 
-  const activeDisease = diseases.find(d => d.id === selectedDisease);
+  const activeDisease = diseases.find((d) => d.id === selectedDisease);
 
-  // Initialize form defaults whenever active disease changes
+  // Initialize defaults when disease changes
   useEffect(() => {
-    if (activeDisease) {
-      const initial: Record<string, number> = {};
-      activeDisease.features.forEach(f => {
-        const min = f.min_val ?? f.min ?? 0;
-        const max = f.max_val ?? f.max ?? 100;
-        const nameLower = f.name.toLowerCase();
-
-        if (nameLower === 'sex' || nameLower === 'gender') {
-          initial[f.name] = 1; // Default: Male (1)
-        } else if (min === 0 && max === 1) {
-          initial[f.name] = 0; // Default: No/Negative (0) for clinical flags
-        } else if (nameLower === 'sg') {
-          initial[f.name] = 1.015;
-        } else if (nameLower === 'sc') {
-          initial[f.name] = 1.0;
-        } else if (nameLower.includes('age')) {
-          initial[f.name] = 45;
-        } else if (nameLower === 'pregnancies') {
-          initial[f.name] = 1;
-        } else if (nameLower === 'glucose' || nameLower === 'bgr') {
-          initial[f.name] = 110;
-        } else if (nameLower === 'bloodpressure' || nameLower === 'bp' || nameLower === 'trestbps') {
-          initial[f.name] = 120;
-        } else if (nameLower === 'bmi') {
-          initial[f.name] = 26.5;
-        } else {
-          const isInt = Number.isInteger(min) && Number.isInteger(max) && (max - min) > 1;
-          const mid = (min + max) / 2;
-          initial[f.name] = isInt ? Math.round(mid) : Number(mid.toFixed(2));
-        }
-      });
-      setFormData(initial);
-      setActivePreset(null);
-    }
+    if (!activeDisease) return;
+    const initial: Record<string, number> = {};
+    activeDisease.features.forEach((f) => {
+      const min = f.min_val ?? f.min ?? 0;
+      const max = f.max_val ?? f.max ?? 100;
+      initial[f.name] = getDefaultValue(f.name, min, max);
+    });
+    setFormData(initial);
+    setActivePreset(null);
   }, [activeDisease]);
 
-  const loadPreset = (presetType: 'healthy' | 'moderate' | 'high_risk') => {
-    setActivePreset(presetType);
-    if (selectedDisease === 'diabetes') {
-      if (presetType === 'healthy') {
-        setFormData({
-          Pregnancies: 1, Glucose: 88, BloodPressure: 66,
-          SkinThickness: 20, Insulin: 70, BMI: 22.4,
-          DiabetesPedigreeFunction: 0.25, Age: 28
-        });
-      } else if (presetType === 'moderate') {
-        setFormData({
-          Pregnancies: 3, Glucose: 128, BloodPressure: 76,
-          SkinThickness: 28, Insulin: 115, BMI: 28.5,
-          DiabetesPedigreeFunction: 0.48, Age: 42
-        });
-      } else {
-        setFormData({
-          Pregnancies: 6, Glucose: 178, BloodPressure: 88,
-          SkinThickness: 38, Insulin: 180, BMI: 36.8,
-          DiabetesPedigreeFunction: 0.85, Age: 54
-        });
-      }
-    } else if (selectedDisease === 'heart') {
-      if (presetType === 'healthy') {
-        setFormData({
-          age: 42, sex: 1, cp: 0, trestbps: 118, chol: 195,
-          fbs: 0, restecg: 0, thalach: 168, exang: 0, oldpeak: 0.2,
-          slope: 2, ca: 0, thal: 2
-        });
-      } else if (presetType === 'moderate') {
-        setFormData({
-          age: 56, sex: 1, cp: 1, trestbps: 135, chol: 245,
-          fbs: 0, restecg: 1, thalach: 145, exang: 0, oldpeak: 1.2,
-          slope: 1, ca: 1, thal: 2
-        });
-      } else {
-        setFormData({
-          age: 64, sex: 1, cp: 3, trestbps: 160, chol: 295,
-          fbs: 1, restecg: 2, thalach: 122, exang: 1, oldpeak: 2.8,
-          slope: 0, ca: 2, thal: 3
-        });
-      }
-    } else if (selectedDisease === 'breast_cancer') {
-      if (presetType === 'healthy') {
-        setFormData((previous) => ({
-          ...previous,
-          'mean radius': 11.2,
-          'mean texture': 14.5,
-          'mean perimeter': 72.0,
-          'mean area': 385.0,
-          'mean smoothness': 0.082,
-          'mean compactness': 0.048,
-        }));
-      } else if (presetType === 'moderate') {
-        setFormData((previous) => ({
-          ...previous,
-          'mean radius': 14.8,
-          'mean texture': 19.2,
-          'mean perimeter': 96.5,
-          'mean area': 680.0,
-          'mean smoothness': 0.102,
-          'mean compactness': 0.115,
-        }));
-      } else {
-        setFormData((previous) => ({
-          ...previous,
-          'mean radius': 20.5,
-          'mean texture': 25.8,
-          'mean perimeter': 138.0,
-          'mean area': 1320.0,
-          'mean smoothness': 0.125,
-          'mean compactness': 0.245,
-        }));
-      }
-    } else if (selectedDisease === 'kidney') {
-      if (presetType === 'healthy') {
-        setFormData({
-          age: 35, bp: 70, sg: 1.020, al: 0, su: 0,
-          bgr: 95, bu: 25, sc: 0.8, sod: 140, pot: 4.2,
-          hemo: 15.0, htn: 0
-        });
-      } else if (presetType === 'moderate') {
-        setFormData({
-          age: 52, bp: 80, sg: 1.015, al: 1, su: 1,
-          bgr: 135, bu: 48, sc: 1.4, sod: 136, pot: 4.6,
-          hemo: 12.2, htn: 0
-        });
-      } else {
-        setFormData({
-          age: 64, bp: 95, sg: 1.008, al: 3, su: 2,
-          bgr: 210, bu: 115, sc: 4.8, sod: 128, pot: 5.8,
-          hemo: 8.4, htn: 1
-        });
-      }
-    }
+  // Load preset
+  const handlePreset = (preset: 'healthy' | 'moderate' | 'high_risk') => {
+    setActivePreset(preset);
+    const data = PRESETS[selectedDisease]?.[preset];
+    if (data) setFormData((prev) => ({ ...prev, ...data }));
   };
 
+  // Run prediction
   const handlePredict = async () => {
     if (!selectedDisease) return;
     await predict({ disease: selectedDisease, features: formData, mode });
   };
 
+  // Navigate to dashboard on result
   useEffect(() => {
     if (result && !predictLoading) {
-      setTimeout(() => {
-        navigate('/dashboard');
-      }, 150);
+      const t = setTimeout(() => navigate('/dashboard'), 150);
+      return () => clearTimeout(t);
     }
   }, [result, predictLoading, navigate]);
 
+  // Handle input change
+  const handleInputChange = (name: string, value: number) => {
+    setFormData((prev) => ({ ...prev, [name]: value }));
+    setActivePreset(null);
+  };
 
+  /* ─── Loading state ───────────────────────────── */
   if (diseaseLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-16 space-y-4 text-center">
-        <div className="w-12 h-12 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin"></div>
-        <div className="text-lg font-semibold text-gray-200">Loading Biomedical Intelligence Modules...</div>
+        <motion.div
+          animate={{ rotate: 360 }}
+          transition={{ repeat: Infinity, duration: 1.5, ease: 'linear' }}
+          className="w-12 h-12 rounded-full border-2 border-indigo-500 border-t-transparent"
+        />
+        <div className="text-lg font-semibold text-gray-200">Loading Biomedical Modules...</div>
       </div>
     );
   }
 
+  /* ─── Main render ─────────────────────────────── */
   return (
     <div className="space-y-8 pb-12">
-      {/* Title Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800/80 pb-6">
+      {/* Header */}
+      <motion.div
+        custom={0}
+        variants={sectionVariants}
+        initial="hidden"
+        animate="show"
+        className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800/80 pb-6"
+      >
         <div>
           <div className="flex items-center gap-2 text-indigo-400 text-xs font-mono font-bold uppercase tracking-wider mb-1">
             <Activity size={14} /> Diagnostic Configuration
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold text-white">Patient Disease Analysis</h1>
           <p className="text-gray-400 text-sm mt-1">
-            Configure clinical biomarker inputs to execute the hybrid classical-quantum classification pipeline.
+            Configure biomarker inputs and run the hybrid quantum-classical pipeline.
           </p>
         </div>
-
-        {/* Quantum Readiness Indicator */}
         <div className="flex items-center gap-3 bg-gray-900/90 border border-gray-800 p-3 rounded-2xl">
           <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
             <Cpu size={20} />
@@ -205,418 +166,89 @@ export const DiseaseAnalysisPage: React.FC = () => {
             <div className="text-sm font-mono font-bold text-white">6 Qubits (Angle RY)</div>
           </div>
         </div>
-      </div>
+      </motion.div>
 
-      {/* Disease Selection Tabs */}
-      <DiseaseSelector
-        diseases={diseases}
-        selectedId={selectedDisease}
-        onSelect={(id) => {
-          selectDisease(id);
-          setActivePreset(null);
-        }}
-      />
+      {/* Disease Selector */}
+      <motion.div custom={1} variants={sectionVariants} initial="hidden" animate="show">
+        <DiseaseSelector
+          diseases={diseases}
+          selectedId={selectedDisease}
+          onSelect={(id) => { selectDisease(id); setActivePreset(null); }}
+        />
+      </motion.div>
 
+      {/* Error banner */}
       {error && (
-        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm flex items-center gap-3">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm flex items-center gap-3"
+        >
           <AlertCircle size={18} className="text-red-400" />
-          <span>Error connecting to prediction pipeline: {error}</span>
-        </div>
+          <span>{error}</span>
+        </motion.div>
       )}
 
-      {/* Main Parameters Grid */}
+      {/* Main 2-column layout */}
       <div className="grid lg:grid-cols-3 gap-8">
-        
-        {/* Left 2 Cols: Form Inputs */}
-        <div className="lg:col-span-2 space-y-6">
+        {/* ─── Left: Biomarker inputs ─────────────── */}
+        <motion.div custom={2} variants={sectionVariants} initial="hidden" animate="show" className="lg:col-span-2">
           <Card className="border-gray-800/90 bg-gray-900/60 backdrop-blur">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-gray-800">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-5 pb-4 border-b border-gray-800">
               <div>
                 <h2 className="text-lg font-bold text-white flex items-center gap-2">
                   <HeartPulse size={18} className="text-indigo-400" /> Clinical Biomarkers
                 </h2>
-                <p className="text-xs text-gray-400">Adjust sliders or use direct quick presets below.</p>
+                <p className="text-xs text-gray-400 mt-0.5">Adjust values or use quick presets.</p>
               </div>
-
-              {/* Quick Preset Buttons */}
-              <div className="flex items-center gap-1.5 flex-wrap">
-                <button
-                  type="button"
-                  onClick={() => loadPreset('healthy')}
-                  className={`text-xs px-2.5 py-1.5 rounded-lg font-medium border transition-all ${
-                    activePreset === 'healthy'
-                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
-                      : 'bg-gray-950 text-gray-400 border-gray-800 hover:text-emerald-300 hover:border-emerald-500/30'
-                  }`}
-                >
-                  🟢 Low Risk
-                </button>
-                <button
-                  type="button"
-                  onClick={() => loadPreset('moderate')}
-                  className={`text-xs px-2.5 py-1.5 rounded-lg font-medium border transition-all ${
-                    activePreset === 'moderate'
-                      ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40 shadow-sm'
-                      : 'bg-gray-950 text-gray-400 border-gray-800 hover:text-yellow-300 hover:border-yellow-500/30'
-                  }`}
-                >
-                  🟡 Moderate
-                </button>
-                <button
-                  type="button"
-                  onClick={() => loadPreset('high_risk')}
-                  className={`text-xs px-2.5 py-1.5 rounded-lg font-medium border transition-all ${
-                    activePreset === 'high_risk'
-                      ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-sm'
-                      : 'bg-gray-950 text-gray-400 border-gray-800 hover:text-rose-300 hover:border-rose-500/30'
-                  }`}
-                >
-                  🔴 High Risk
-                </button>
-              </div>
+              <PresetSelector activePreset={activePreset} onSelect={handlePreset} />
             </div>
-            
+
             {activeDisease && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-                {activeDisease.features.map((feature) => {
-                  const min = feature.min_val ?? feature.min ?? 0;
-                  const max = feature.max_val ?? feature.max ?? 100;
-                  const val = formData[feature.name] ?? min;
-                  const nameLower = feature.name.toLowerCase();
-
-                  // 1. Biological Sex / Gender: Radio Pill Buttons
-                  if (nameLower === 'sex' || nameLower === 'gender') {
-                    return (
-                      <div
-                        key={feature.name}
-                        className="bg-gray-950/70 p-4 rounded-2xl border border-gray-800/80 hover:border-gray-700 transition-all space-y-2.5"
-                      >
-                        <div className="flex justify-between items-center">
-                          <label className="text-xs font-semibold text-gray-200">
-                            {feature.label || "Biological Sex"}
-                          </label>
-                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
-                            {val === 1 ? 'Male (1)' : 'Female (0)'}
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 pt-1">
-                          <button
-                            type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, [feature.name]: 0 }))}
-                            className={`py-2 rounded-xl text-xs font-bold border transition-all ${
-                              val === 0
-                                ? 'bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-500/50 shadow-[0_0_12px_rgba(217,70,239,0.3)]'
-                                : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700'
-                            }`}
-                          >
-                            ♀ Female (0)
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, [feature.name]: 1 }))}
-                            className={`py-2 rounded-xl text-xs font-bold border transition-all ${
-                              val === 1
-                                ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/50 shadow-[0_0_12px_rgba(99,102,241,0.3)]'
-                                : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700'
-                            }`}
-                          >
-                            ♂ Male (1)
-                          </button>
-                        </div>
-                        <div className="text-[10px] text-gray-500 font-mono">
-                          Standard biological classification for clinical cardiac risk models
-                        </div>
-                      </div>
-                    );
-                  }
-
-                  // 2. Binary Clinical Flags (min=0, max=1) like fbs, exang, htn
-                  if (min === 0 && max === 1) {
-                    return (
-                      <div
-                        key={feature.name}
-                        className="bg-gray-950/70 p-4 rounded-2xl border border-gray-800/80 hover:border-gray-700 transition-all space-y-2.5"
-                      >
-                        <div className="flex justify-between items-center">
-                          <label className="text-xs font-semibold text-gray-200">
-                            {feature.label || feature.name}
-                          </label>
-                          <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${
-                            val === 1
-                              ? 'bg-rose-500/10 text-rose-300 border-rose-500/30'
-                              : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
-                          }`}>
-                            {val === 1 ? 'Positive / Yes (1)' : 'Negative / No (0)'}
-                          </span>
-                        </div>
-                        <div className="grid grid-cols-2 gap-2 pt-1">
-                          <button
-                            type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, [feature.name]: 0 }))}
-                            className={`py-2 rounded-xl text-xs font-bold border transition-all ${
-                              val === 0
-                                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
-                                : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700'
-                            }`}
-                          >
-                            No / Normal (0)
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setFormData(prev => ({ ...prev, [feature.name]: 1 }))}
-                            className={`py-2 rounded-xl text-xs font-bold border transition-all ${
-                              val === 1
-                                ? 'bg-rose-500/20 text-rose-300 border-rose-500/50 shadow-[0_0_10px_rgba(244,63,94,0.3)]'
-                                : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700'
-                            }`}
-                          >
-                            Yes / Elevated (1)
-                          </button>
-                        </div>
-                        <div className="text-[10px] text-gray-500 font-mono">
-                          {feature.description || 'Binary clinical risk flag'}
-                        </div>
-                      </div>
-                    );
-                  }
-
-                  // 3. Small Discrete Categorical (Chest Pain cp, ECG restecg, slope, thal, al, su, ca)
-                  if (min === 0 && max <= 5 && Number.isInteger(max)) {
-                    const options = Array.from({ length: max - min + 1 }, (_, i) => min + i);
-                    const getOptLabel = (opt: number) => {
-                      if (nameLower === 'cp') {
-                        return ['Typical', 'Atypical', 'Non-Anginal', 'Asymptomatic'][opt] || `Type ${opt}`;
-                      }
-                      if (nameLower === 'thal') {
-                        return ['Normal', 'Fixed', 'Reversible', 'Other'][opt] || `Thal ${opt}`;
-                      }
-                      if (nameLower === 'restecg') {
-                        return ['Normal', 'ST-T Abn', 'LV Hyper'][opt] || `ECG ${opt}`;
-                      }
-                      if (nameLower === 'slope') {
-                        return ['Upsloping', 'Flat', 'Downsloping'][opt] || `Slope ${opt}`;
-                      }
-                      return `Grade ${opt}`;
-                    };
-
-                    return (
-                      <div
-                        key={feature.name}
-                        className="bg-gray-950/70 p-4 rounded-2xl border border-gray-800/80 hover:border-gray-700 transition-all space-y-2.5"
-                      >
-                        <div className="flex justify-between items-center">
-                          <label className="text-xs font-semibold text-gray-200">
-                            {feature.label || feature.name}
-                          </label>
-                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
-                            {getOptLabel(val)} ({val})
-                          </span>
-                        </div>
-                        <div className={`grid gap-1.5 pt-1 ${options.length <= 4 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3 sm:grid-cols-6'}`}>
-                          {options.map((opt) => (
-                            <button
-                              key={opt}
-                              type="button"
-                              onClick={() => setFormData(prev => ({ ...prev, [feature.name]: opt }))}
-                              className={`py-1.5 px-1 text-center rounded-lg text-xs font-bold border transition-all truncate ${
-                                val === opt
-                                  ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/60 shadow-[0_0_10px_rgba(99,102,241,0.25)]'
-                                  : 'bg-gray-900/90 text-gray-400 border-gray-800 hover:border-gray-700'
-                              }`}
-                              title={getOptLabel(opt)}
-                            >
-                              {opt}: {getOptLabel(opt)}
-                            </button>
-                          ))}
-                        </div>
-                        <div className="text-[10px] text-gray-500 font-mono">
-                          {feature.description || 'Clinical diagnostic category'}
-                        </div>
-                      </div>
-                    );
-                  }
-
-                  // 4. Continuous / Numerical Biomarkers (Age, Blood Pressure, BMI, Creatinine, etc.)
-                  const isInt = Number.isInteger(min) && Number.isInteger(max) && (max - min) >= 2;
-                  let step = 1;
-                  if (nameLower === 'sg') {
-                    step = 0.005;
-                  } else if (nameLower === 'sc' || nameLower === 'pot' || nameLower === 'oldpeak') {
-                    step = 0.1;
-                  } else if (!isInt) {
-                    step = (max - min) > 20 ? 0.5 : 0.01;
-                  }
-
-                  const ratio = (val - min) / (max - min || 1);
-                  const isHigh = ratio > 0.7;
-
-                  return (
-                    <div
-                      key={feature.name}
-                      className="bg-gray-950/70 p-4 rounded-2xl border border-gray-800/80 hover:border-gray-700 transition-all space-y-2.5"
-                    >
-                      <div className="flex justify-between items-center">
-                        <label className="text-xs font-semibold text-gray-200">
-                          {feature.label || feature.name}
-                        </label>
-                        <div className="flex items-center gap-1.5">
-                          <input
-                            type="number"
-                            min={min}
-                            max={max}
-                            step={step}
-                            value={val}
-                            onChange={(e) => {
-                              const num = parseFloat(e.target.value);
-                              if (!isNaN(num)) {
-                                setFormData(prev => ({ ...prev, [feature.name]: isInt ? Math.round(num) : num }));
-                              }
-                            }}
-                            className="w-24 bg-gray-900 border border-gray-700 rounded-lg px-2 py-0.5 text-xs text-right font-mono font-bold text-indigo-300 focus:outline-none focus:border-indigo-500"
-                          />
-                          {feature.unit && (
-                            <span className="text-[10px] text-gray-400 font-mono">{feature.unit}</span>
-                          )}
-                        </div>
-                      </div>
-
-                      <input
-                        type="range"
-                        min={min}
-                        max={max}
-                        step={step}
-                        value={val}
-                        onChange={(e) => {
-                          const num = parseFloat(e.target.value);
-                          setFormData(prev => ({ ...prev, [feature.name]: isInt ? Math.round(num) : num }));
-                        }}
-                        className="w-full accent-indigo-500 cursor-pointer h-1.5 bg-gray-800 rounded-lg"
-                      />
-
-                      <div className="flex justify-between items-center text-[10px] text-gray-500 font-mono">
-                        <span>Min: {min}</span>
-                        {isHigh ? (
-                          <span className="text-rose-400 font-semibold">Elevated Range</span>
-                        ) : (
-                          <span className="text-emerald-400/80 font-semibold">Baseline</span>
-                        )}
-                        <span>Max: {max}</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
+              <motion.div
+                className="grid grid-cols-1 md:grid-cols-2 gap-4"
+                variants={gridVariants}
+                initial="hidden"
+                animate="show"
+                key={selectedDisease} // re-animate on disease change
+              >
+                {activeDisease.features.map((feature) => (
+                  <motion.div key={feature.name} variants={gridItem}>
+                    <BiomarkerInput
+                      feature={feature}
+                      value={formData[feature.name] ?? 0}
+                      onChange={handleInputChange}
+                    />
+                  </motion.div>
+                ))}
+              </motion.div>
             )}
           </Card>
-        </div>
+        </motion.div>
 
-        {/* Right 1 Col: Execution Settings & Pipeline Preview */}
-        <div className="space-y-6">
+        {/* ─── Right: Pipeline config & execution ─── */}
+        <motion.div custom={3} variants={sectionVariants} initial="hidden" animate="show" className="space-y-5">
           <Card className="border-gray-800/90 bg-gray-900/60 backdrop-blur">
-            <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Cpu size={18} className="text-indigo-400" /> Pipeline Configuration
-            </h2>
-
-            <div className="space-y-3 mb-6">
-              <label className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${
-                mode === 'hybrid'
-                  ? 'bg-indigo-950/40 border-indigo-500 shadow-[0_0_12px_rgba(99,102,241,0.15)] text-white'
-                  : 'border-gray-800 hover:bg-gray-800/40 text-gray-300'
-              }`}>
-                <input
-                  type="radio"
-                  name="mode"
-                  checked={mode === 'hybrid'}
-                  onChange={() => setMode('hybrid')}
-                  className="text-indigo-500 mt-1"
-                />
-                <div>
-                  <div className="font-semibold text-sm">Hybrid Mode (Recommended)</div>
-                  <div className="text-xs text-gray-400 mt-0.5 leading-relaxed">
-                    60% Classical Ensemble + 40% PennyLane VQC with consensus validation.
-                  </div>
-                </div>
-              </label>
-
-              <label className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${
-                mode === 'quantum'
-                  ? 'bg-purple-950/40 border-purple-500 shadow-[0_0_12px_rgba(168,85,247,0.15)] text-white'
-                  : 'border-gray-800 hover:bg-gray-800/40 text-gray-300'
-              }`}>
-                <input
-                  type="radio"
-                  name="mode"
-                  checked={mode === 'quantum'}
-                  onChange={() => setMode('quantum')}
-                  className="text-purple-500 mt-1"
-                />
-                <div>
-                  <div className="font-semibold text-sm">Quantum VQC Simulation Only</div>
-                  <div className="text-xs text-gray-400 mt-0.5 leading-relaxed">
-                    Angle Encoding & Parameterized VQC on default.qubit simulator.
-                  </div>
-                </div>
-              </label>
-
-              <label className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${
-                mode === 'classical'
-                  ? 'bg-blue-950/40 border-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.15)] text-white'
-                  : 'border-gray-800 hover:bg-gray-800/40 text-gray-300'
-              }`}>
-                <input
-                  type="radio"
-                  name="mode"
-                  checked={mode === 'classical'}
-                  onChange={() => setMode('classical')}
-                  className="text-blue-500 mt-1"
-                />
-                <div>
-                  <div className="font-semibold text-sm">Classical Ensemble Only</div>
-                  <div className="text-xs text-gray-400 mt-0.5 leading-relaxed">
-                    Random Forest + SVM + Logistic Regression.
-                  </div>
-                </div>
-              </label>
-            </div>
-
-            <Button
-              className="w-full text-base py-3.5 shadow-[0_0_20px_rgba(99,102,241,0.35)]"
-              size="lg"
-              onClick={handlePredict}
+            <PipelineExecutor
+              mode={mode}
+              onModeChange={setMode}
+              onExecute={handlePredict}
               isLoading={predictLoading}
-              leftIcon={<Play size={18} />}
-            >
-              {predictLoading ? 'Simulating Pipeline...' : 'Run Disease Risk Analysis'}
-            </Button>
+            />
           </Card>
 
-          {/* Interactive Pipeline Trace during execution */}
-          {predictLoading && (
-            <Card glowing className="border-indigo-500/40 bg-gray-950">
-              <div className="text-xs font-mono font-semibold text-indigo-400 mb-3 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-indigo-400 animate-ping"></span> Live Execution Trace:
-              </div>
-              <ProcessingPipeline steps={[
-                { step: 1, name: 'Biomedical Imputation & Outlier Clipping', status: 'completed' },
-                { step: 2, name: 'StandardScaler & SelectKBest Filtering', status: 'completed' },
-                { step: 3, name: 'Classical Model Inference (RF, SVM, LR)', status: 'completed' },
-                { step: 4, name: 'Quantum Angle Encoding (RY Gates)', status: 'in_progress' },
-                { step: 5, name: 'PennyLane VQC Circuit Simulation', status: 'in_progress' },
-                { step: 6, name: 'Quantum-Classical Consensus Aggregation', status: 'pending' },
-              ]} />
-            </Card>
-          )}
-
-          {/* Quick Explanation Note */}
+          {/* Quick info note */}
           <div className="bg-gray-950/80 rounded-2xl p-4 border border-gray-800/80 text-xs text-gray-400 space-y-2">
             <div className="flex items-center gap-1.5 text-gray-200 font-semibold">
-              <Info size={14} className="text-quantum-400" /> SIH Demonstration Protocol:
+              <Info size={14} className="text-indigo-400" /> How it works
             </div>
             <p className="leading-relaxed">
-              Upon clicking <strong>Run Analysis</strong>, your parameters will be scaled and evaluated across both classical and quantum pipelines. Results will be synthesized in the <strong>Hybrid AI Dashboard</strong>.
+              Your biomarkers are scaled and evaluated across classical ML models and a 6-qubit
+              variational quantum circuit. Results are fused in the{' '}
+              <strong className="text-gray-300">Hybrid AI Dashboard</strong>.
             </p>
           </div>
-        </div>
+        </motion.div>
       </div>
     </div>
   );
