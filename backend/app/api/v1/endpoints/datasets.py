@@ -7,7 +7,7 @@ from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends, s
 from fastapi.responses import FileResponse, HTMLResponse
 from pathlib import Path
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import select, delete, insert
 from typing import Dict, List
 import pandas as pd
 import numpy as np
@@ -145,6 +145,54 @@ async def list_uploaded_datasets(
             ]
         output.append(item)
     return output
+
+
+@router.delete("/uploads/{dataset_id}", summary="Delete an Uploaded Dataset")
+async def delete_uploaded_dataset(
+    dataset_id: int,
+    db: AsyncSession = Depends(get_db),
+):
+    """Delete an uploaded dataset and all its associated training samples from the database."""
+    stmt = select(UploadedDataset).where(UploadedDataset.id == dataset_id)
+    res = await db.execute(stmt)
+    dataset = res.scalars().first()
+    if not dataset:
+        raise HTTPException(status_code=404, detail=f"Dataset #{dataset_id} not found.")
+
+    await db.execute(delete(TrainingSample).where(TrainingSample.dataset_id == dataset_id))
+    await db.delete(dataset)
+    await db.commit()
+    return {
+        "success": True,
+        "message": f"Dataset #{dataset_id} ('{dataset.original_filename}') and its training samples were successfully deleted.",
+    }
+
+
+@router.delete("/uploads", summary="Clear All Uploaded Datasets")
+async def clear_all_uploaded_datasets(
+    disease: str = None,
+    db: AsyncSession = Depends(get_db),
+):
+    """Clear all uploaded datasets and their training samples, optionally filtered by disease."""
+    query = select(UploadedDataset)
+    if disease:
+        query = query.where(UploadedDataset.disease_id == disease)
+    res = await db.execute(query)
+    datasets = res.scalars().all()
+    if not datasets:
+        return {"message": "No uploaded datasets found to delete."}
+
+    dataset_ids = [d.id for d in datasets]
+    await db.execute(delete(TrainingSample).where(TrainingSample.dataset_id.in_(dataset_ids)))
+    for d in datasets:
+        await db.delete(d)
+    await db.commit()
+    return {
+        "success": True,
+        "deleted_datasets_count": len(datasets),
+        "message": f"Successfully deleted {len(datasets)} uploaded dataset(s) and their training samples.",
+    }
+
 
 
 @router.get("/browse/{disease}", summary="Browse Full Clinical Patient Records for Any Disease")
@@ -325,93 +373,52 @@ async def upload_dataset(
     existing_fps_res = await db.execute(existing_fps_stmt)
     db_fingerprints = set(existing_fps_res.scalars().all())
 
-    # --- Per-row validation ---
+    # --- Fast row-level validation and preparation ---
+    for col in expected_features:
+        df[col] = pd.to_numeric(df[col], errors="coerce")
+    df["label"] = pd.to_numeric(df["label"], errors="coerce")
+
+    nan_mask = df[expected_features + ["label"]].isna().any(axis=1)
+    invalid_label_mask = ~df["label"].isin([0, 1])
+    bad_rows = nan_mask | invalid_label_mask
+
     validation_errors: List[RowValidationError] = []
+    if bad_rows.any():
+        bad_indices = np.where(bad_rows)[0][:50]
+        for idx in bad_indices:
+            validation_errors.append(
+                RowValidationError(
+                    row=int(idx) + 2,
+                    column="*",
+                    error="Invalid, missing, or non-numeric biomarker/label value",
+                )
+            )
+
+    valid_df = df[~bad_rows].reset_index(drop=True)
+    rejected_count = int(bad_rows.sum())
+
+    features_dicts = valid_df[expected_features].to_dict("records")
+    labels_list = valid_df["label"].astype(int).tolist()
+
     accepted_records: List[tuple] = []
     seen_batch_fps = set()
     duplicate_rows_count = 0
 
-    for idx in range(len(df)):
-        row = df.iloc[idx]
-        row_num = idx + 2  # 1-based + header
-        row_errors = []
-
-        # Check for missing values
-        for col in expected_features + ["label"]:
-            if pd.isna(row[col]):
-                row_errors.append(
-                    RowValidationError(row=row_num, column=col, error="Missing value")
-                )
-
-        if row_errors:
-            validation_errors.extend(row_errors)
-            continue
-
-        # Check feature values are numeric
-        feature_vals = []
-        has_bad_feature = False
-        for col in expected_features:
-            try:
-                val = float(row[col])
-                if not np.isfinite(val):
-                    validation_errors.append(
-                        RowValidationError(
-                            row=row_num, column=col, error=f"Non-finite value: {row[col]}"
-                        )
-                    )
-                    has_bad_feature = True
-                else:
-                    feature_vals.append(val)
-            except (ValueError, TypeError):
-                validation_errors.append(
-                    RowValidationError(
-                        row=row_num,
-                        column=col,
-                        error=f"Non-numeric value: '{row[col]}'",
-                    )
-                )
-                has_bad_feature = True
-
-        if has_bad_feature:
-            continue
-
-        # Check label is 0 or 1
-        try:
-            label_val = int(float(row["label"]))
-            if label_val not in (0, 1):
-                validation_errors.append(
-                    RowValidationError(
-                        row=row_num,
-                        column="label",
-                        error=f"Label must be 0 or 1, got {row['label']}",
-                    )
-                )
-                continue
-        except (ValueError, TypeError):
-            validation_errors.append(
-                RowValidationError(
-                    row=row_num,
-                    column="label",
-                    error=f"Non-numeric label: '{row['label']}'",
-                )
-            )
-            continue
-
-        feat_dict = dict(zip(expected_features, feature_vals))
+    for idx, (feat_dict, label_val) in enumerate(zip(features_dicts, labels_list)):
         fp = compute_sample_fingerprint(disease, feat_dict, label_val)
-
-        # Check duplicate against database or current upload batch
         if fp in db_fingerprints or fp in seen_batch_fps:
             duplicate_rows_count += 1
-            validation_errors.append(
-                RowValidationError(
-                    row=row_num, column="*", error="Duplicate row (already exists in database or file)"
+            if len(validation_errors) < 50:
+                validation_errors.append(
+                    RowValidationError(
+                        row=idx + 2,
+                        column="*",
+                        error="Duplicate row (already exists in database or file)",
+                    )
                 )
-            )
             continue
-
         seen_batch_fps.add(fp)
-        accepted_records.append((idx, feature_vals, label_val, fp, feat_dict))
+        accepted_records.append((feat_dict, label_val, fp))
 
     # --- Store accepted rows ---
     dataset_record = UploadedDataset(
@@ -420,20 +427,26 @@ async def upload_dataset(
         file_hash=file_hash,
         schema_json=json.dumps(expected_features),
         row_count=len(accepted_records),
-        rejected_count=len(df) - len(accepted_records),
+        rejected_count=rejected_count + duplicate_rows_count,
     )
     db.add(dataset_record)
     await db.flush()  # get the ID
 
-    for _idx, _feature_vals, label_val, fp, feat_dict in accepted_records:
-        sample = TrainingSample(
-            dataset_id=dataset_record.id,
-            disease_id=disease,
-            fingerprint=fp,
-            features_json=json.dumps(feat_dict),
-            label=label_val,
-        )
-        db.add(sample)
+    # Bulk insert in batches of 5000 for maximum performance
+    batch_size = 5000
+    for i in range(0, len(accepted_records), batch_size):
+        chunk = accepted_records[i : i + batch_size]
+        chunk_dicts = [
+            {
+                "dataset_id": dataset_record.id,
+                "disease_id": disease,
+                "fingerprint": fp,
+                "features_json": json.dumps(feat_dict),
+                "label": label_val,
+            }
+            for feat_dict, label_val, fp in chunk
+        ]
+        await db.execute(insert(TrainingSample), chunk_dicts)
 
     await db.commit()
     await db.refresh(dataset_record)
