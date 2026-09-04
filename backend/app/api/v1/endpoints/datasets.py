@@ -357,10 +357,10 @@ async def upload_dataset(
     if rename_dict:
         df = df.rename(columns=rename_dict)
 
-    # Map string labels like 'M'/'B' or 'yes'/'no' to 1/0
-    if "label" in df.columns and df["label"].dtype == object:
+    # For breast cancer, map 'M'/'B' or 'Malignant'/'Benign' to 1/0
+    if disease == "breast_cancer" and "label" in df.columns and df["label"].dtype == object:
         df["label"] = df["label"].map(
-            lambda v: 1 if str(v).strip().lower() in {"1", "m", "malignant", "yes", "true", "positive"} else 0
+            lambda v: 1 if str(v).strip().upper() in {"M", "MALIGNANT"} else (0 if str(v).strip().upper() in {"B", "BENIGN"} else v)
         )
 
     # --- Validate columns ---
@@ -372,7 +372,15 @@ async def upload_dataset(
     if missing_features:
         raise HTTPException(
             status_code=422,
-            detail=f"Missing required columns: {sorted(missing_features)}. Supported label column names: ['label', 'target', 'Outcome', 'diagnosis']."
+            detail=f"Missing columns: {sorted(missing_features)}. Supported label column names: ['label', 'target', 'Outcome', 'diagnosis'].",
+        )
+
+    expected_cols = set(expected_features + ["label"])
+    extra_features = [f for f in actual_columns if f not in expected_cols]
+    if extra_features:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Unexpected columns: {sorted(extra_features)}.",
         )
 
     # Fetch existing fingerprints from database for this disease
@@ -383,52 +391,145 @@ async def upload_dataset(
     existing_fps_res = await db.execute(existing_fps_stmt)
     db_fingerprints = set(existing_fps_res.scalars().all())
 
-    # --- Fast row-level validation and preparation ---
-    for col in expected_features:
-        df[col] = pd.to_numeric(df[col], errors="coerce")
-    df["label"] = pd.to_numeric(df["label"], errors="coerce")
-
-    nan_mask = df[expected_features + ["label"]].isna().any(axis=1)
-    invalid_label_mask = ~df["label"].isin([0, 1])
-    bad_rows = nan_mask | invalid_label_mask
-
+    # --- Row validation ---
     validation_errors: List[RowValidationError] = []
-    if bad_rows.any():
-        bad_indices = np.where(bad_rows)[0][:50]
-        for idx in bad_indices:
-            validation_errors.append(
-                RowValidationError(
-                    row=int(idx) + 2,
-                    column="*",
-                    error="Invalid, missing, or non-numeric biomarker/label value",
-                )
-            )
-
-    valid_df = df[~bad_rows].reset_index(drop=True)
-    rejected_count = int(bad_rows.sum())
-
-    features_dicts = valid_df[expected_features].to_dict("records")
-    labels_list = valid_df["label"].astype(int).tolist()
-
     accepted_records: List[tuple] = []
     seen_batch_fps = set()
     duplicate_rows_count = 0
 
-    for idx, (feat_dict, label_val) in enumerate(zip(features_dicts, labels_list)):
-        fp = compute_sample_fingerprint(disease, feat_dict, label_val)
-        if fp in db_fingerprints or fp in seen_batch_fps:
-            duplicate_rows_count += 1
-            if len(validation_errors) < 50:
+    if len(df) <= 5000:
+        for idx in range(len(df)):
+            row = df.iloc[idx]
+            row_num = idx + 2  # 1-based + header
+            row_errors = []
+
+            # Check for missing values
+            for col in expected_features + ["label"]:
+                if pd.isna(row[col]):
+                    row_errors.append(
+                        RowValidationError(row=row_num, column=col, error="Missing value")
+                    )
+
+            if row_errors:
+                validation_errors.extend(row_errors)
+                continue
+
+            # Check feature values are numeric
+            feature_vals = []
+            has_bad_feature = False
+            for col in expected_features:
+                try:
+                    val = float(row[col])
+                    if not np.isfinite(val):
+                        validation_errors.append(
+                            RowValidationError(
+                                row=row_num, column=col, error=f"Non-finite value: {row[col]}"
+                            )
+                        )
+                        has_bad_feature = True
+                    else:
+                        feature_vals.append(val)
+                except (ValueError, TypeError):
+                    validation_errors.append(
+                        RowValidationError(
+                            row=row_num,
+                            column=col,
+                            error=f"Non-numeric value: '{row[col]}'",
+                        )
+                    )
+                    has_bad_feature = True
+
+            if has_bad_feature:
+                continue
+
+            # Check label is 0 or 1
+            try:
+                if isinstance(row["label"], str) and not row["label"].strip().isdigit():
+                    validation_errors.append(
+                        RowValidationError(
+                            row=row_num,
+                            column="label",
+                            error=f"Non-numeric label: '{row['label']}'",
+                        )
+                    )
+                    continue
+
+                label_val = int(float(row["label"]))
+                if label_val not in (0, 1):
+                    validation_errors.append(
+                        RowValidationError(
+                            row=row_num,
+                            column="label",
+                            error=f"Label must be 0 or 1, got {row['label']}",
+                        )
+                    )
+                    continue
+            except (ValueError, TypeError):
                 validation_errors.append(
                     RowValidationError(
-                        row=idx + 2,
-                        column="*",
-                        error="Duplicate row (already exists in database or file)",
+                        row=row_num,
+                        column="label",
+                        error=f"Non-numeric label: '{row['label']}'",
                     )
                 )
-            continue
-        seen_batch_fps.add(fp)
-        accepted_records.append((feat_dict, label_val, fp))
+                continue
+
+            feat_dict = dict(zip(expected_features, feature_vals))
+            fp = compute_sample_fingerprint(disease, feat_dict, label_val)
+
+            # Check duplicate against database or current upload batch
+            if fp in db_fingerprints or fp in seen_batch_fps:
+                duplicate_rows_count += 1
+                validation_errors.append(
+                    RowValidationError(
+                        row=row_num, column="*", error="Duplicate row (already exists in database or file)"
+                    )
+                )
+                continue
+
+            seen_batch_fps.add(fp)
+            accepted_records.append((feat_dict, label_val, fp))
+    else:
+        # Fast vectorized path for large datasets (>5000 rows)
+        for col in expected_features:
+            df[col] = pd.to_numeric(df[col], errors="coerce")
+        df["label"] = pd.to_numeric(df["label"], errors="coerce")
+
+        nan_mask = df[expected_features + ["label"]].isna().any(axis=1)
+        invalid_label_mask = ~df["label"].isin([0, 1])
+        bad_rows = nan_mask | invalid_label_mask
+
+        if bad_rows.any():
+            bad_indices = np.where(bad_rows)[0][:50]
+            for idx in bad_indices:
+                validation_errors.append(
+                    RowValidationError(
+                        row=int(idx) + 2,
+                        column="*",
+                        error="Invalid, missing, or non-numeric biomarker/label value",
+                    )
+                )
+
+        valid_df = df[~bad_rows].reset_index(drop=True)
+
+        features_dicts = valid_df[expected_features].to_dict("records")
+        labels_list = valid_df["label"].astype(int).tolist()
+
+        for idx, (feat_dict, label_val) in enumerate(zip(features_dicts, labels_list)):
+            fp = compute_sample_fingerprint(disease, feat_dict, label_val)
+            if fp in db_fingerprints or fp in seen_batch_fps:
+                duplicate_rows_count += 1
+                if len(validation_errors) < 50:
+                    validation_errors.append(
+                        RowValidationError(
+                            row=idx + 2,
+                            column="*",
+                            error="Duplicate row (already exists in database or file)",
+                        )
+                    )
+                continue
+            seen_batch_fps.add(fp)
+            accepted_records.append((feat_dict, label_val, fp))
 
     # --- Store accepted rows ---
     dataset_record = UploadedDataset(
@@ -437,7 +538,7 @@ async def upload_dataset(
         file_hash=file_hash,
         schema_json=json.dumps(expected_features),
         row_count=len(accepted_records),
-        rejected_count=rejected_count + duplicate_rows_count,
+        rejected_count=len(df) - len(accepted_records),
     )
     db.add(dataset_record)
     await db.flush()  # get the ID
