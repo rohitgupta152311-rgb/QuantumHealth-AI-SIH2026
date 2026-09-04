@@ -76,32 +76,32 @@ async def view_dataset_summary_report():
 
 
 
-@router.get("/available")
-async def get_available_datasets(
-    db: AsyncSession = Depends(get_db),
-) -> Dict:
-    """Get list of available datasets including uploaded data counts without double-counting."""
+@router.get("/available", summary="Get Total Record Counts Across All Diseases")
+async def get_available_datasets() -> Dict:
+    """Get list of available datasets with exact record counts, features, and sources without DB dependency."""
     loader = get_dataset_loader()
-
     datasets_info = {}
     for disease in loader.disease_ids:
         try:
-            X, y, feature_names, data_info = await loader.load_with_uploads(
-                disease, db
-            )
+            X, y, feature_names = loader.load(disease)
+            info = loader.get_disease_info(disease)
             datasets_info[disease] = {
-                "base_samples": data_info["base_rows"],
-                "uploaded_samples": data_info["uploaded_rows"],
-                "total_samples": data_info["total_rows"],
-                "features": X.shape[1],
-                "positive_rate": float(y.mean()) if len(y) > 0 else 0.0,
-                "feature_names": feature_names,
-                "source": data_info["source"],
+                "name": info.get("name", disease),
+                "total_samples": len(X),
+                "features_count": len(feature_names),
+                "positive_rate": round(float(y.mean()), 4) if len(y) > 0 else 0.0,
+                "source": info.get("source", "Standard clinical registry"),
             }
         except Exception as e:
             datasets_info[disease] = {"error": str(e)}
 
-    return {"datasets": datasets_info}
+    total_records = sum(d.get("total_samples", 0) for d in datasets_info.values() if "total_samples" in d)
+    return {
+        "total_records_all_diseases": total_records,
+        "diseases_count": len(datasets_info),
+        "datasets": datasets_info
+    }
+
 
 
 @router.get("/uploads", response_model=List[DatasetInfoResponse])
