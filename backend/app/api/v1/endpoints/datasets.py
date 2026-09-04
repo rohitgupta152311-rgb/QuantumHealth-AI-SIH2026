@@ -23,8 +23,8 @@ from app.schemas.dataset_schemas import (
 
 router = APIRouter()
 
-MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
-MAX_ROWS = 50_000
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
+MAX_ROWS = 350_000
 DATA_DIR = Path(__file__).resolve().parents[4] / "data"
 
 
@@ -217,18 +217,34 @@ async def upload_dataset(
             detail=f"CSV has {len(df)} rows, maximum allowed is {MAX_ROWS}.",
         )
 
+    # --- Normalize label/target column ---
+    target_candidates = ["label", "target", "Outcome", "outcome", "diagnosis", "class", "Class"]
+    found_target = None
+    for t in target_candidates:
+        if t in df.columns:
+            found_target = t
+            break
+
+    if found_target and found_target != "label":
+        df = df.rename(columns={found_target: "label"})
+
+    # Map string labels like 'M'/'B' or 'yes'/'no' to 1/0
+    if "label" in df.columns and df["label"].dtype == object:
+        df["label"] = df["label"].map(
+            lambda v: 1 if str(v).strip().lower() in {"1", "m", "malignant", "yes", "true", "positive"} else 0
+        )
+
     # --- Validate columns ---
     actual_columns = set(df.columns.tolist())
-    missing_cols = expected_columns - actual_columns
-    extra_cols = actual_columns - expected_columns
+    missing_features = [f for f in expected_features if f not in actual_columns]
+    if "label" not in actual_columns:
+        missing_features.append("label")
 
-    if missing_cols or extra_cols:
-        parts = []
-        if missing_cols:
-            parts.append(f"Missing columns: {sorted(missing_cols)}")
-        if extra_cols:
-            parts.append(f"Unexpected columns: {sorted(extra_cols)}")
-        raise HTTPException(status_code=422, detail="; ".join(parts))
+    if missing_features:
+        raise HTTPException(
+            status_code=422,
+            detail=f"Missing required columns: {sorted(missing_features)}. Supported label column names: ['label', 'target', 'Outcome', 'diagnosis']."
+        )
 
     # Fetch existing fingerprints from database for this disease
     existing_fps_stmt = select(TrainingSample.fingerprint).where(
