@@ -102,3 +102,7 @@ logs/
 .pytest_cache/
 test-results/
 coverage/
+
+# ── Nested clones / downloads ────────────────────────────────────────────────
+QuantumHealth-AI-SIH2026/
+
