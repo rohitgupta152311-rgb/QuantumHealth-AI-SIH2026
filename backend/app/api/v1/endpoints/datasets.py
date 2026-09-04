@@ -104,29 +104,86 @@ async def get_available_datasets() -> Dict:
 
 
 
-@router.get("/uploads", response_model=List[DatasetInfoResponse])
+@router.get("/uploads", summary="List Uploaded Datasets with Actual Clinical Data Rows")
 async def list_uploaded_datasets(
     disease: str = None,
+    include_rows: bool = True,
+    limit: int = 50,
     db: AsyncSession = Depends(get_db),
 ):
-    """List all uploaded datasets, optionally filtered by disease."""
+    """
+    List all uploaded datasets including their actual patient biomarker data rows.
+    Set `include_rows=true` (default) to view full data rows directly in Swagger.
+    """
     query = select(UploadedDataset)
     if disease:
         query = query.where(UploadedDataset.disease_id == disease)
     query = query.order_by(UploadedDataset.created_at.desc())
     result = await db.execute(query)
     datasets = result.scalars().all()
-    return [
-        DatasetInfoResponse(
-            id=ds.id,
-            disease_id=ds.disease_id,
-            original_filename=ds.original_filename,
-            row_count=ds.row_count,
-            rejected_count=ds.rejected_count,
-            created_at=ds.created_at,
-        )
-        for ds in datasets
-    ]
+
+    output = []
+    for ds in datasets:
+        item = {
+            "id": ds.id,
+            "disease_id": ds.disease_id,
+            "original_filename": ds.original_filename,
+            "total_rows_uploaded": ds.row_count,
+            "rejected_count": ds.rejected_count,
+            "created_at": ds.created_at,
+        }
+        if include_rows:
+            samples_stmt = select(TrainingSample).where(
+                TrainingSample.dataset_id == ds.id
+            ).limit(limit)
+            samples_res = await db.execute(samples_stmt)
+            samples = samples_res.scalars().all()
+            item["rows_preview_count"] = len(samples)
+            item["data_rows"] = [
+                {**json.loads(s.features_json), "label": s.label}
+                for s in samples
+            ]
+        output.append(item)
+    return output
+
+
+@router.get("/browse/{disease}", summary="Browse Full Clinical Patient Records for Any Disease")
+async def browse_disease_dataset(
+    disease: str,
+    limit: int = 50,
+    offset: int = 0,
+):
+    """
+    Browse the full clinical dataset (603K records) for any disease directly in Swagger.
+    Returns patient biomarker rows, feature names, and diagnostic labels.
+    """
+    loader = get_dataset_loader()
+    if disease not in loader.disease_ids:
+        raise HTTPException(status_code=404, detail=f"Disease '{disease}' not found. Available: {loader.disease_ids}")
+
+    X, y, feature_names = loader.load(disease)
+    total_rows = len(X)
+    limit = min(max(1, limit), 500)
+    end = min(offset + limit, total_rows)
+
+    rows = []
+    for i in range(offset, end):
+        row_dict = {
+            name: float(X[i][j]) if not float(X[i][j]).is_integer() else int(X[i][j])
+            for j, name in enumerate(feature_names)
+        }
+        row_dict["label"] = int(y[i])
+        rows.append(row_dict)
+
+    return {
+        "disease": disease,
+        "total_records_in_dataset": total_rows,
+        "offset": offset,
+        "limit": limit,
+        "records_returned": len(rows),
+        "columns": feature_names + ["label"],
+        "records": rows,
+    }
 
 
 @router.get("/{disease}/schema")
@@ -227,6 +284,20 @@ async def upload_dataset(
 
     if found_target and found_target != "label":
         df = df.rename(columns={found_target: "label"})
+
+    # Normalize common column aliases (e.g. 'radius error' <-> 'error radius')
+    rename_dict = {}
+    for col in df.columns:
+        if col.endswith(" error"):
+            alt = "error " + col[:-6]
+            if alt in expected_features and col not in expected_features:
+                rename_dict[col] = alt
+        elif col.startswith("error "):
+            alt = col[6:] + " error"
+            if alt in expected_features and col not in expected_features:
+                rename_dict[col] = alt
+    if rename_dict:
+        df = df.rename(columns=rename_dict)
 
     # Map string labels like 'M'/'B' or 'yes'/'no' to 1/0
     if "label" in df.columns and df["label"].dtype == object:
