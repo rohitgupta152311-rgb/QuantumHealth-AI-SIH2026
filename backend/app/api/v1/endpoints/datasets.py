@@ -108,12 +108,13 @@ async def get_available_datasets() -> Dict:
 async def list_uploaded_datasets(
     disease: str = None,
     include_rows: bool = True,
-    limit: int = 50,
+    limit: int = 10,
     db: AsyncSession = Depends(get_db),
 ):
     """
     List all uploaded datasets including their actual patient biomarker data rows.
-    Set `include_rows=true` (default) to view full data rows directly in Swagger.
+    Set `include_rows=true` (default) to view sample data rows directly in Swagger.
+    Preview is safely capped at 100 rows to prevent browser freezes when viewing large datasets (e.g. 200,000 records).
     """
     query = select(UploadedDataset)
     if disease:
@@ -121,6 +122,9 @@ async def list_uploaded_datasets(
     query = query.order_by(UploadedDataset.created_at.desc())
     result = await db.execute(query)
     datasets = result.scalars().all()
+
+    # Cap preview to 100 rows maximum so Swagger UI never freezes on 200,000 records
+    safe_limit = min(max(1, limit), 100)
 
     output = []
     for ds in datasets:
@@ -135,10 +139,16 @@ async def list_uploaded_datasets(
         if include_rows:
             samples_stmt = select(TrainingSample).where(
                 TrainingSample.dataset_id == ds.id
-            ).limit(limit)
+            ).limit(safe_limit)
             samples_res = await db.execute(samples_stmt)
             samples = samples_res.scalars().all()
             item["rows_preview_count"] = len(samples)
+            item["preview_note"] = (
+                f"Showing {len(samples)} preview rows out of {ds.row_count} total records. "
+                f"Use GET /api/v1/datasets/browse/{ds.disease_id} to page through all records."
+                if ds.row_count > len(samples)
+                else "Showing all rows."
+            )
             item["data_rows"] = [
                 {**json.loads(s.features_json), "label": s.label}
                 for s in samples

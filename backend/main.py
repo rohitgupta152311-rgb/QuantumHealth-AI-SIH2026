@@ -18,6 +18,8 @@ logging.basicConfig(
     level=logging.INFO if not settings.debug else logging.DEBUG,
     format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
 )
+logging.getLogger("aiosqlite").setLevel(logging.WARNING)
+logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
 logger = logging.getLogger("quantumhealth.main")
 
 @asynccontextmanager
