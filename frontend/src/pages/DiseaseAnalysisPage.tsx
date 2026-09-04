@@ -30,7 +30,31 @@ export const DiseaseAnalysisPage: React.FC = () => {
       activeDisease.features.forEach(f => {
         const min = f.min_val ?? f.min ?? 0;
         const max = f.max_val ?? f.max ?? 100;
-        initial[f.name] = Number(((min + max) / 2).toFixed(2));
+        const nameLower = f.name.toLowerCase();
+
+        if (nameLower === 'sex' || nameLower === 'gender') {
+          initial[f.name] = 1; // Default: Male (1)
+        } else if (min === 0 && max === 1) {
+          initial[f.name] = 0; // Default: No/Negative (0) for clinical flags
+        } else if (nameLower === 'sg') {
+          initial[f.name] = 1.015;
+        } else if (nameLower === 'sc') {
+          initial[f.name] = 1.0;
+        } else if (nameLower.includes('age')) {
+          initial[f.name] = 45;
+        } else if (nameLower === 'pregnancies') {
+          initial[f.name] = 1;
+        } else if (nameLower === 'glucose' || nameLower === 'bgr') {
+          initial[f.name] = 110;
+        } else if (nameLower === 'bloodpressure' || nameLower === 'bp' || nameLower === 'trestbps') {
+          initial[f.name] = 120;
+        } else if (nameLower === 'bmi') {
+          initial[f.name] = 26.5;
+        } else {
+          const isInt = Number.isInteger(min) && Number.isInteger(max) && (max - min) > 1;
+          const mid = (min + max) / 2;
+          initial[f.name] = isInt ? Math.round(mid) : Number(mid.toFixed(2));
+        }
       });
       setFormData(initial);
       setActivePreset(null);
@@ -257,9 +281,171 @@ export const DiseaseAnalysisPage: React.FC = () => {
                   const min = feature.min_val ?? feature.min ?? 0;
                   const max = feature.max_val ?? feature.max ?? 100;
                   const val = formData[feature.name] ?? min;
-                  const step = (max - min) > 10 ? 1 : 0.01;
-                  
-                  // Compute simple relative position for visual tint
+                  const nameLower = feature.name.toLowerCase();
+
+                  // 1. Biological Sex / Gender: Radio Pill Buttons
+                  if (nameLower === 'sex' || nameLower === 'gender') {
+                    return (
+                      <div
+                        key={feature.name}
+                        className="bg-gray-950/70 p-4 rounded-2xl border border-gray-800/80 hover:border-gray-700 transition-all space-y-2.5"
+                      >
+                        <div className="flex justify-between items-center">
+                          <label className="text-xs font-semibold text-gray-200">
+                            {feature.label || "Biological Sex"}
+                          </label>
+                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                            {val === 1 ? 'Male (1)' : 'Female (0)'}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, [feature.name]: 0 }))}
+                            className={`py-2 rounded-xl text-xs font-bold border transition-all ${
+                              val === 0
+                                ? 'bg-fuchsia-500/20 text-fuchsia-300 border-fuchsia-500/50 shadow-[0_0_12px_rgba(217,70,239,0.3)]'
+                                : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700'
+                            }`}
+                          >
+                            ♀ Female (0)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, [feature.name]: 1 }))}
+                            className={`py-2 rounded-xl text-xs font-bold border transition-all ${
+                              val === 1
+                                ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/50 shadow-[0_0_12px_rgba(99,102,241,0.3)]'
+                                : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700'
+                            }`}
+                          >
+                            ♂ Male (1)
+                          </button>
+                        </div>
+                        <div className="text-[10px] text-gray-500 font-mono">
+                          Standard biological classification for clinical cardiac risk models
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // 2. Binary Clinical Flags (min=0, max=1) like fbs, exang, htn
+                  if (min === 0 && max === 1) {
+                    return (
+                      <div
+                        key={feature.name}
+                        className="bg-gray-950/70 p-4 rounded-2xl border border-gray-800/80 hover:border-gray-700 transition-all space-y-2.5"
+                      >
+                        <div className="flex justify-between items-center">
+                          <label className="text-xs font-semibold text-gray-200">
+                            {feature.label || feature.name}
+                          </label>
+                          <span className={`text-[10px] font-mono font-bold px-2 py-0.5 rounded border ${
+                            val === 1
+                              ? 'bg-rose-500/10 text-rose-300 border-rose-500/30'
+                              : 'bg-emerald-500/10 text-emerald-300 border-emerald-500/30'
+                          }`}>
+                            {val === 1 ? 'Positive / Yes (1)' : 'Negative / No (0)'}
+                          </span>
+                        </div>
+                        <div className="grid grid-cols-2 gap-2 pt-1">
+                          <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, [feature.name]: 0 }))}
+                            className={`py-2 rounded-xl text-xs font-bold border transition-all ${
+                              val === 0
+                                ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/50 shadow-[0_0_10px_rgba(16,185,129,0.2)]'
+                                : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700'
+                            }`}
+                          >
+                            No / Normal (0)
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => setFormData(prev => ({ ...prev, [feature.name]: 1 }))}
+                            className={`py-2 rounded-xl text-xs font-bold border transition-all ${
+                              val === 1
+                                ? 'bg-rose-500/20 text-rose-300 border-rose-500/50 shadow-[0_0_10px_rgba(244,63,94,0.3)]'
+                                : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700'
+                            }`}
+                          >
+                            Yes / Elevated (1)
+                          </button>
+                        </div>
+                        <div className="text-[10px] text-gray-500 font-mono">
+                          {feature.description || 'Binary clinical risk flag'}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // 3. Small Discrete Categorical (Chest Pain cp, ECG restecg, slope, thal, al, su, ca)
+                  if (min === 0 && max <= 5 && Number.isInteger(max)) {
+                    const options = Array.from({ length: max - min + 1 }, (_, i) => min + i);
+                    const getOptLabel = (opt: number) => {
+                      if (nameLower === 'cp') {
+                        return ['Typical', 'Atypical', 'Non-Anginal', 'Asymptomatic'][opt] || `Type ${opt}`;
+                      }
+                      if (nameLower === 'thal') {
+                        return ['Normal', 'Fixed', 'Reversible', 'Other'][opt] || `Thal ${opt}`;
+                      }
+                      if (nameLower === 'restecg') {
+                        return ['Normal', 'ST-T Abn', 'LV Hyper'][opt] || `ECG ${opt}`;
+                      }
+                      if (nameLower === 'slope') {
+                        return ['Upsloping', 'Flat', 'Downsloping'][opt] || `Slope ${opt}`;
+                      }
+                      return `Grade ${opt}`;
+                    };
+
+                    return (
+                      <div
+                        key={feature.name}
+                        className="bg-gray-950/70 p-4 rounded-2xl border border-gray-800/80 hover:border-gray-700 transition-all space-y-2.5"
+                      >
+                        <div className="flex justify-between items-center">
+                          <label className="text-xs font-semibold text-gray-200">
+                            {feature.label || feature.name}
+                          </label>
+                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-300 border border-indigo-500/20">
+                            {getOptLabel(val)} ({val})
+                          </span>
+                        </div>
+                        <div className={`grid gap-1.5 pt-1 ${options.length <= 4 ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-3 sm:grid-cols-6'}`}>
+                          {options.map((opt) => (
+                            <button
+                              key={opt}
+                              type="button"
+                              onClick={() => setFormData(prev => ({ ...prev, [feature.name]: opt }))}
+                              className={`py-1.5 px-1 text-center rounded-lg text-xs font-bold border transition-all truncate ${
+                                val === opt
+                                  ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/60 shadow-[0_0_10px_rgba(99,102,241,0.25)]'
+                                  : 'bg-gray-900/90 text-gray-400 border-gray-800 hover:border-gray-700'
+                              }`}
+                              title={getOptLabel(opt)}
+                            >
+                              {opt}: {getOptLabel(opt)}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="text-[10px] text-gray-500 font-mono">
+                          {feature.description || 'Clinical diagnostic category'}
+                        </div>
+                      </div>
+                    );
+                  }
+
+                  // 4. Continuous / Numerical Biomarkers (Age, Blood Pressure, BMI, Creatinine, etc.)
+                  const isInt = Number.isInteger(min) && Number.isInteger(max) && (max - min) >= 2;
+                  let step = 1;
+                  if (nameLower === 'sg') {
+                    step = 0.005;
+                  } else if (nameLower === 'sc' || nameLower === 'pot' || nameLower === 'oldpeak') {
+                    step = 0.1;
+                  } else if (!isInt) {
+                    step = (max - min) > 20 ? 0.5 : 0.01;
+                  }
+
                   const ratio = (val - min) / (max - min || 1);
                   const isHigh = ratio > 0.7;
 
@@ -282,10 +468,10 @@ export const DiseaseAnalysisPage: React.FC = () => {
                             onChange={(e) => {
                               const num = parseFloat(e.target.value);
                               if (!isNaN(num)) {
-                                setFormData(prev => ({ ...prev, [feature.name]: num }));
+                                setFormData(prev => ({ ...prev, [feature.name]: isInt ? Math.round(num) : num }));
                               }
                             }}
-                            className="w-20 bg-gray-900 border border-gray-700 rounded-lg px-2 py-0.5 text-xs text-right font-mono font-bold text-quantum-300 focus:outline-none focus:border-quantum-500"
+                            className="w-24 bg-gray-900 border border-gray-700 rounded-lg px-2 py-0.5 text-xs text-right font-mono font-bold text-indigo-300 focus:outline-none focus:border-indigo-500"
                           />
                           {feature.unit && (
                             <span className="text-[10px] text-gray-400 font-mono">{feature.unit}</span>
@@ -299,8 +485,11 @@ export const DiseaseAnalysisPage: React.FC = () => {
                         max={max}
                         step={step}
                         value={val}
-                        onChange={(e) => setFormData(prev => ({ ...prev, [feature.name]: parseFloat(e.target.value) }))}
-                        className="w-full accent-quantum-500 cursor-pointer h-1.5 bg-gray-800 rounded-lg"
+                        onChange={(e) => {
+                          const num = parseFloat(e.target.value);
+                          setFormData(prev => ({ ...prev, [feature.name]: isInt ? Math.round(num) : num }));
+                        }}
+                        className="w-full accent-indigo-500 cursor-pointer h-1.5 bg-gray-800 rounded-lg"
                       />
 
                       <div className="flex justify-between items-center text-[10px] text-gray-500 font-mono">
