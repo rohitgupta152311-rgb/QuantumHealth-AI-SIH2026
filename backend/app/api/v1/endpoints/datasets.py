@@ -4,6 +4,8 @@ import json
 import hashlib
 from datetime import datetime
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends, status
+from fastapi.responses import FileResponse, HTMLResponse
+from pathlib import Path
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
 from typing import Dict, List
@@ -23,6 +25,55 @@ router = APIRouter()
 
 MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
 MAX_ROWS = 50_000
+DATA_DIR = Path(__file__).resolve().parents[4] / "data"
+
+
+@router.get("/download/all", summary="Download All 603K Clinical Datasets (ZIP)")
+async def download_all_datasets():
+    """Download the complete ZIP package containing all 4 clean clinical datasets, catalog, and documentation."""
+    zip_path = DATA_DIR / "QuantumHealth_AI_Datasets_603K.zip"
+    if not zip_path.exists():
+        raise HTTPException(status_code=404, detail="Dataset archive not found.")
+    return FileResponse(
+        path=zip_path,
+        filename="QuantumHealth_AI_Datasets_603K.zip",
+        media_type="application/zip"
+    )
+
+
+@router.get("/download/{disease_id}", summary="Download Single Disease Dataset CSV")
+async def download_single_dataset(disease_id: str):
+    """Download an individual disease dataset CSV file."""
+    mapping = {
+        "kidney": "kidney_disease_apollo_cdc.csv",
+        "diabetes": "diabetes_cdc_brfss.csv",
+        "heart": "heart_disease_uci_cdc.csv",
+        "breast_cancer": "breast_cancer_wisconsin_augmented.csv",
+    }
+    if disease_id not in mapping:
+        raise HTTPException(status_code=404, detail=f"Dataset for '{disease_id}' not found.")
+    
+    file_path = DATA_DIR / mapping[disease_id]
+    if not file_path.exists():
+        raise HTTPException(status_code=404, detail=f"File {mapping[disease_id]} not found.")
+    
+    return FileResponse(
+        path=file_path,
+        filename=mapping[disease_id],
+        media_type="text/csv"
+    )
+
+
+@router.get("/report/summary", summary="View Clinical Data Catalog & Dictionary (HTML)")
+async def view_dataset_summary_report():
+    """View the interactive HTML clinical dataset catalog and biomarker dictionary."""
+    html_path = DATA_DIR / "DATASET_SUMMARY.html"
+    if not html_path.exists():
+        raise HTTPException(status_code=404, detail="Summary report not found.")
+    with open(html_path, "r", encoding="utf-8") as f:
+        content = f.read()
+    return HTMLResponse(content=content)
+
 
 
 @router.get("/available")

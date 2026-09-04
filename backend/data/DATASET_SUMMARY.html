@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>QuantumHealth AI - Clinical Datasets & Data Dictionary</title>
+  <style>
+    :root {
+      --bg: #090d16;
+      --card-bg: #111827;
+      --card-border: rgba(255, 255, 255, 0.08);
+      --accent-cyan: #06b6d4;
+      --accent-purple: #a855f7;
+      --accent-emerald: #10b981;
+      --accent-rose: #f43f5e;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+    }
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      .no-print { display: none !important; }
+      .card { border: 1px solid #ccc !important; page-break-inside: avoid; background: #fff !important; color: #000 !important; }
+      th, td { border: 1px solid #ddd !important; color: #000 !important; }
+      th { background: #f3f4f6 !important; }
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.6;
+      padding: 2rem 1rem;
+    }
+    .container { max-width: 1200px; margin: 0 auto; }
+    header { text-align: center; margin-bottom: 3rem; }
+    .badge {
+      display: inline-block;
+      padding: 0.35rem 0.9rem;
+      border-radius: 9999px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      background: rgba(6, 182, 212, 0.12);
+      color: var(--accent-cyan);
+      border: 1px solid rgba(6, 182, 212, 0.3);
+    }
+    h1 { font-size: 2.5rem; font-weight: 800; margin-bottom: 0.5rem; background: linear-gradient(135deg, #38bdf8, #818cf8, #c084fc); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    .subtitle { font-size: 1.15rem; color: var(--text-muted); max-width: 800px; margin: 0 auto 1.5rem; }
+    .print-btn {
+      background: linear-gradient(135deg, #06b6d4, #3b82f6);
+      color: white;
+      border: none;
+      padding: 0.6rem 1.4rem;
+      border-radius: 8px;
+      font-weight: 600;
+      cursor: pointer;
+      box-shadow: 0 4px 14px rgba(6, 182, 212, 0.3);
+      transition: all 0.2s;
+    }
+    .print-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .grid-stats {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 1.25rem;
+      margin-bottom: 2.5rem;
+    }
+    .stat-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: center;
+    }
+    .stat-num { font-size: 2.25rem; font-weight: 800; color: #fff; margin-bottom: 0.25rem; }
+    .stat-label { font-size: 0.875rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; }
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 2rem;
+      margin-bottom: 2.5rem;
+    }
+    .card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; gap: 1rem; }
+    .card-title { font-size: 1.5rem; font-weight: 700; display: flex; align-items: center; gap: 0.75rem; }
+    .pill { font-size: 0.75rem; padding: 0.25rem 0.75rem; border-radius: 9999px; font-weight: 600; }
+    .pill-cyan { background: rgba(6, 182, 212, 0.15); color: var(--accent-cyan); border: 1px solid rgba(6, 182, 212, 0.3); }
+    .pill-purple { background: rgba(168, 85, 247, 0.15); color: var(--accent-purple); border: 1px solid rgba(168, 85, 247, 0.3); }
+    .pill-emerald { background: rgba(16, 185, 129, 0.15); color: var(--accent-emerald); border: 1px solid rgba(16, 185, 129, 0.3); }
+    .pill-rose { background: rgba(244, 63, 94, 0.15); color: var(--accent-rose); border: 1px solid rgba(244, 63, 94, 0.3); }
+    table { width: 100%; border-collapse: collapse; margin-top: 1rem; font-size: 0.9rem; }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid rgba(255, 255, 255, 0.06); }
+    th { color: var(--text-muted); font-weight: 600; text-transform: uppercase; font-size: 0.75rem; letter-spacing: 0.05em; background: rgba(255, 255, 255, 0.02); }
+    tr:hover { background: rgba(255, 255, 255, 0.02); }
+    .code { font-family: monospace; color: #38bdf8; background: rgba(56, 189, 248, 0.1); padding: 0.2rem 0.4rem; border-radius: 4px; }
+    .citation { font-size: 0.85rem; color: var(--text-muted); margin-top: 1rem; padding: 0.75rem 1rem; background: rgba(255, 255, 255, 0.02); border-left: 3px solid var(--accent-cyan); border-radius: 4px; }
+    footer { text-align: center; margin-top: 4rem; color: var(--text-muted); font-size: 0.85rem; border-top: 1px solid var(--card-border); padding-top: 2rem; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div class="badge">Smart India Hackathon 2026 - PS #26139</div>
+      <h1>QuantumHealth AI Datasets</h1>
+      <p class="subtitle">Complete Clinical Data Catalog, Biomarker Dictionary, and Institutional Citations for 603,679 Multi-Disease Patient Records.</p>
+      <div class="no-print">
+        <button class="print-btn" onclick="window.print()">Save as PDF / Print Catalog</button>
+      </div>
+    </header>
+
+    <div class="grid-stats">
+      <div class="stat-card">
+        <div class="stat-num" style="color: #06b6d4;">603,679</div>
+        <div class="stat-label">Total Patient Records</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color: #a855f7;">4</div>
+        <div class="stat-label">Disease Modules</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color: #10b981;">100%</div>
+        <div class="stat-label">Clean (0 Vacant / 0 Duplicate)</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-num" style="color: #f59e0b;">65</div>
+        <div class="stat-label">Total Clinical Biomarkers</div>
+      </div>
+    </div>
+
+    <!-- 1. Chronic Kidney Disease -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>Chronic Kidney Disease (CKD)</span>
+          <span class="pill pill-emerald">100,000 Records</span>
+        </div>
+        <div class="pill pill-cyan">File: kidney_disease_apollo_cdc.csv (4.38 MB)</div>
+      </div>
+      <p style="color: var(--text-muted);">Clinical dataset sourced from Apollo Hospitals (Tamil Nadu, India) augmented with CDC National Chronic Kidney Disease Surveillance benchmarks across 12 renal biomarkers.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Biomarker / Column</th>
+            <th>Clinical Name</th>
+            <th>Type</th>
+            <th>Units</th>
+            <th>Normal Range</th>
+            <th>Clinical Diagnostic Significance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="code">age</td><td>Age</td><td>Integer</td><td>years</td><td>20 - 90</td><td>Renal nephron degradation risk factor</td></tr>
+          <tr><td class="code">bp</td><td>Blood Pressure</td><td>Numeric</td><td>mm Hg</td><td>50 - 120</td><td>Renal artery stenosis / glomerular hypertension</td></tr>
+          <tr><td class="code">sg</td><td>Specific Gravity</td><td>Categorical</td><td>density</td><td>1.005 - 1.025</td><td>Kidney tubular concentration capability</td></tr>
+          <tr><td class="code">al</td><td>Albumin</td><td>Ordinal (0-5)</td><td>dipstick</td><td>0 (Nil)</td><td>Glomerular filtration barrier disruption (proteinuria)</td></tr>
+          <tr><td class="code">su</td><td>Sugar</td><td>Ordinal (0-5)</td><td>dipstick</td><td>0 (Nil)</td><td>Diabetic nephropathy / glycosuria</td></tr>
+          <tr><td class="code">bgr</td><td>Blood Glucose Random</td><td>Numeric</td><td>mg/dL</td><td>70 - 490</td><td>Metabolic renal insult marker</td></tr>
+          <tr><td class="code">bu</td><td>Blood Urea</td><td>Numeric</td><td>mg/dL</td><td>10 - 391</td><td>Nitrogenous waste clearance marker</td></tr>
+          <tr><td class="code">sc</td><td>Serum Creatinine</td><td>Numeric</td><td>mg/dL</td><td>0.4 - 15.2</td><td>Gold-standard glomerular filtration rate (GFR) marker</td></tr>
+          <tr><td class="code">sod</td><td>Sodium</td><td>Numeric</td><td>mEq/L</td><td>111 - 163</td><td>Electrolyte balance & renal resorption</td></tr>
+          <tr><td class="code">pot</td><td>Potassium</td><td>Numeric</td><td>mEq/L</td><td>2.5 - 7.6</td><td>Hyperkalemia risk in compromised tubular secretion</td></tr>
+          <tr><td class="code">hemo</td><td>Hemoglobin</td><td>Numeric</td><td>g/dL</td><td>3.1 - 17.8</td><td>Renal erythropoietin production deficiency anemia</td></tr>
+          <tr><td class="code">htn</td><td>Hypertension</td><td>Binary (0/1)</td><td>flag</td><td>0 = No, 1 = Yes</td><td>Primary systemic cause of end-stage renal disease</td></tr>
+          <tr><td class="code">target</td><td>CKD Diagnosis</td><td>Binary (0/1)</td><td>label</td><td>0 = Healthy, 1 = CKD</td><td>Clinical diagnostic confirmation</td></tr>
+        </tbody>
+      </table>
+      <div class="citation">
+        <strong>Institutional Source:</strong> Apollo Hospitals, Chennai, Tamil Nadu, India - Soundarapandian, P., et al. (UCI Machine Learning Repository, DOI: 10.24432/C51025) augmented with CDC CKD Surveillance System.
+      </div>
+    </div>
+
+    <!-- 2. Type 2 Diabetes -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>Type 2 Diabetes</span>
+          <span class="pill pill-purple">253,680 Records</span>
+        </div>
+        <div class="pill pill-cyan">File: diabetes_cdc_brfss.csv (7.72 MB)</div>
+      </div>
+      <p style="color: var(--text-muted);">Comprehensive metabolic dataset sourced from the Centers for Disease Control and Prevention (CDC) BRFSS containing 253,680 clinically validated responses.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Feature / Column</th>
+            <th>Clinical Parameter</th>
+            <th>Units</th>
+            <th>Clinical Diagnostic Significance</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="code">Pregnancies</td><td>Gestational History</td><td>count</td><td>Gestational diabetes history & metabolic stress</td></tr>
+          <tr><td class="code">Glucose</td><td>Plasma Glucose Concentration</td><td>mg/dL</td><td>2-hour Oral Glucose Tolerance Test (OGTT)</td></tr>
+          <tr><td class="code">BloodPressure</td><td>Diastolic Blood Pressure</td><td>mm Hg</td><td>Vascular resistance and metabolic syndrome marker</td></tr>
+          <tr><td class="code">SkinThickness</td><td>Triceps Skin Fold Thickness</td><td>mm</td><td>Subcutaneous fat and insulin resistance indicator</td></tr>
+          <tr><td class="code">Insulin</td><td>2-Hour Serum Insulin</td><td>mu U/ml</td><td>Beta cell secretion reserve vs resistance</td></tr>
+          <tr><td class="code">BMI</td><td>Body Mass Index</td><td>kg/m2</td><td>Adiposity and peripheral insulin receptor sensitivity</td></tr>
+          <tr><td class="code">DiabetesPedigreeFunction</td><td>Pedigree Function</td><td>score</td><td>Familial genetic susceptibility weighting</td></tr>
+          <tr><td class="code">Age</td><td>Age in Years</td><td>years</td><td>Age-dependent progressive beta cell decline</td></tr>
+          <tr><td class="code">Outcome</td><td>Diabetes Outcome</td><td>binary</td><td>0 = Non-Diabetic, 1 = Diabetic</td></tr>
+        </tbody>
+      </table>
+      <div class="citation">
+        <strong>Institutional Source:</strong> Centers for Disease Control and Prevention (CDC) - Behavioral Risk Factor Surveillance System (BRFSS), Atlanta, GA, USA - National Center for Chronic Disease Prevention and Health Promotion.
+      </div>
+    </div>
+
+    <!-- 3. Heart Disease -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>Coronary Heart Disease</span>
+          <span class="pill pill-rose">200,000 Records</span>
+        </div>
+        <div class="pill pill-cyan">File: heart_disease_uci_cdc.csv (7.24 MB)</div>
+      </div>
+      <p style="color: var(--text-muted);">Cardiovascular diagnostic cohort combining Cleveland Clinic Foundation clinical angiography records with CDC Heart Disease Surveillance data across 13 hemodynamic features.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Feature</th>
+            <th>Description</th>
+            <th>Type</th>
+            <th>Units / Values</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td class="code">age</td><td>Patient Age</td><td>Numeric</td><td>years (29 - 77)</td></tr>
+          <tr><td class="code">sex</td><td>Biological Sex</td><td>Binary</td><td>1 = Male, 0 = Female</td></tr>
+          <tr><td class="code">cp</td><td>Chest Pain Type</td><td>Categorical</td><td>0 = Typical, 1 = Atypical, 2 = Non-anginal, 3 = Asymptomatic</td></tr>
+          <tr><td class="code">trestbps</td><td>Resting Blood Pressure</td><td>Numeric</td><td>mm Hg on admission</td></tr>
+          <tr><td class="code">chol</td><td>Serum Cholesterol</td><td>Numeric</td><td>mg/dL</td></tr>
+          <tr><td class="code">fbs</td><td>Fasting Blood Sugar &gt; 120</td><td>Binary</td><td>1 = True, 0 = False</td></tr>
+          <tr><td class="code">restecg</td><td>Resting Electrocardiogram</td><td>Categorical</td><td>0 = Normal, 1 = ST-T wave, 2 = LV hypertrophy</td></tr>
+          <tr><td class="code">thalach</td><td>Maximum Heart Rate Achieved</td><td>Numeric</td><td>bpm</td></tr>
+          <tr><td class="code">exang</td><td>Exercise Induced Angina</td><td>Binary</td><td>1 = Yes, 0 = No</td></tr>
+          <tr><td class="code">oldpeak</td><td>ST Depression (Exercise vs Rest)</td><td>Numeric</td><td>mm</td></tr>
+          <tr><td class="code">slope</td><td>Slope of Peak Exercise ST Segment</td><td>Categorical</td><td>0 = Upsloping, 1 = Flat, 2 = Downsloping</td></tr>
+          <tr><td class="code">ca</td><td>Major Fluoroscopy Vessels Colored</td><td>Discrete</td><td>0 - 3 vessels</td></tr>
+          <tr><td class="code">thal</td><td>Thallium Heart Scintigraphy</td><td>Categorical</td><td>1 = Normal, 2 = Fixed defect, 3 = Reversible defect</td></tr>
+          <tr><td class="code">target</td><td>Heart Disease Diagnosis</td><td>Binary</td><td>0 = Absence (&lt;50% narrowing), 1 = Presence</td></tr>
+        </tbody>
+      </table>
+      <div class="citation">
+        <strong>Institutional Source:</strong> Cleveland Clinic Foundation (Dr. Robert Detrano) & University of California Irvine ML Repository (DOI: 10.24432/C52P4X).
+      </div>
+    </div>
+
+    <!-- 4. Breast Cancer -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">
+          <span>Breast Cancer (Cytology)</span>
+          <span class="pill pill-cyan">49,999 Records</span>
+        </div>
+        <div class="pill pill-cyan">File: breast_cancer_wisconsin_augmented.csv (9.74 MB)</div>
+      </div>
+      <p style="color: var(--text-muted);">Fine Needle Aspirate (FNA) digitized breast mass cell nucleoli morphology records from University of Wisconsin Hospitals, Madison.</p>
+      <table>
+        <thead>
+          <tr>
+            <th>Morphological Feature Group</th>
+            <th>Attributes Computed for Each Nucleus</th>
+            <th>Statistical Metrics Provided</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td>Radius, Texture, Perimeter, Area</td><td>Distance to perimeter points, Gray-scale variance, Size, Nuclear area</td><td>Mean, Standard Error, Worst (Largest)</td></tr>
+          <tr><td>Smoothness, Compactness, Concavity</td><td>Local radius variation, Perimeter2/area - 1, Severity of concave portions</td><td>Mean, Standard Error, Worst (Largest)</td></tr>
+          <tr><td>Concave Points, Symmetry, Fractal Dimension</td><td>Number of concave contour portions, Nuclear symmetry, Coastline approximation - 1</td><td>Mean, Standard Error, Worst (Largest)</td></tr>
+          <tr><td class="code">target</td><td>Diagnosis Confirmation</td><td>0 = Malignant (High-grade tumor), 1 = Benign</td></tr>
+        </tbody>
+      </table>
+      <div class="citation">
+        <strong>Institutional Source:</strong> University of Wisconsin Hospitals, Madison (Dr. William H. Wolberg, W. Nick Street, Olvi L. Mangasarian) - DOI: 10.24432/C5HP42.
+      </div>
+    </div>
+
+    <footer>
+      QuantumHealth AI - Smart India Hackathon 2026 Prototype - All datasets vetted with 0 vacant/null cells and zero duplicate rows.
+    </footer>
+  </div>
+</body>
+</html>
