@@ -8,7 +8,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+  variant?: 'primary' | 'secondary' | 'ghost' | 'danger' | 'outline';
   size?: 'sm' | 'md' | 'lg';
   isLoading?: boolean;
   leftIcon?: React.ReactNode;
@@ -22,12 +22,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={cn(
-          'inline-flex items-center justify-center rounded-xl font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-950 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]',
+          'inline-flex items-center justify-center rounded-xl font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-slate-950 disabled:opacity-50 disabled:pointer-events-none cursor-pointer',
           {
-            'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-500 hover:to-purple-500 shadow-sm focus:ring-indigo-600': variant === 'primary',
-            'bg-gray-800 text-gray-100 hover:bg-gray-700 focus:ring-gray-700 border border-gray-700/60': variant === 'secondary',
-            'bg-transparent text-gray-300 hover:bg-gray-800/80 hover:text-gray-100': variant === 'ghost',
-            'bg-red-600 text-white hover:bg-red-500 focus:ring-red-600': variant === 'danger',
+            'bg-teal-600 text-white hover:bg-teal-500 active:bg-teal-700 shadow-sm focus:ring-teal-500': variant === 'primary',
+            'bg-slate-800 text-slate-100 hover:bg-slate-700 focus:ring-slate-600 border border-slate-700/70': variant === 'secondary',
+            'bg-transparent text-slate-300 hover:bg-slate-800/80 hover:text-white focus:ring-slate-600': variant === 'ghost',
+            'bg-rose-600 text-white hover:bg-rose-500 focus:ring-rose-600 shadow-sm': variant === 'danger',
+            'bg-transparent text-teal-300 hover:bg-teal-950/50 border border-teal-500/40 focus:ring-teal-500': variant === 'outline',
             'h-8 px-3 text-xs': size === 'sm',
             'h-10 px-4 text-sm': size === 'md',
             'h-12 px-6 text-base font-semibold': size === 'lg',

@@ -1,23 +1,27 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
-export const RiskGauge: React.FC<{ percentage: number; riskLevel: string }> = ({ percentage, riskLevel }) => {
-  const data = [
-    { name: 'Risk', value: percentage },
-    { name: 'Safe', value: 100 - percentage }
-  ];
+interface RiskGaugeProps {
+  percentage: number;
+  riskLevel: string;
+}
 
-  const getColor = (level: string) => {
-    switch (level.toLowerCase()) {
-      case 'low': return '#10b981';
-      case 'moderate': return '#f59e0b';
-      case 'high': return '#f97316';
-      case 'very_high': return '#ef4444';
-      default: return '#6366f1';
-    }
+export const RiskGauge: React.FC<RiskGaugeProps> = ({ percentage, riskLevel }) => {
+  const clampedPercent = Math.min(Math.max(percentage, 0), 100);
+
+  const getRiskColor = (level: string, pct: number) => {
+    if (pct < 25) return '#10b981'; // emerald-500
+    if (pct < 50) return '#f59e0b'; // amber-500
+    if (pct < 75) return '#f97316'; // orange-500
+    return '#ef4444'; // rose-500
   };
 
-  const color = getColor(riskLevel);
+  const color = getRiskColor(riskLevel, clampedPercent);
+
+  const data = [
+    { name: 'Risk Score', value: clampedPercent },
+    { name: 'Residual', value: 100 - clampedPercent }
+  ];
 
   return (
     <div className="relative h-48 w-48 flex items-center justify-center">
@@ -26,23 +30,36 @@ export const RiskGauge: React.FC<{ percentage: number; riskLevel: string }> = ({
           <Pie
             data={data}
             cx="50%"
-            cy="50%"
-            startAngle={180}
-            endAngle={0}
-            innerRadius={60}
-            outerRadius={80}
-            paddingAngle={0}
+            cy="55%"
+            startAngle={195}
+            endAngle={-15}
+            innerRadius={62}
+            outerRadius={82}
+            paddingAngle={2}
             dataKey="value"
-            stroke="none"
+            stroke="#0f172a"
+            strokeWidth={2}
           >
             <Cell fill={color} />
-            <Cell fill="#374151" />
+            <Cell fill="#1e293b" />
           </Pie>
         </PieChart>
       </ResponsiveContainer>
-      <div className="absolute flex flex-col items-center justify-center text-center pb-8">
-        <span className="text-3xl font-bold font-mono" style={{ color }}>{Math.round(percentage)}%</span>
-        <span className="text-xs uppercase tracking-wider text-gray-400 mt-1">{riskLevel.replace('_', ' ')}</span>
+
+      <div className="absolute flex flex-col items-center justify-center text-center mt-2">
+        <span className="text-3xl font-bold font-mono tracking-tight text-white">
+          {Math.round(clampedPercent)}%
+        </span>
+        <span
+          className="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-full mt-1 border"
+          style={{
+            color: color,
+            borderColor: `${color}40`,
+            backgroundColor: `${color}15`,
+          }}
+        >
+          {riskLevel.replace('_', ' ')}
+        </span>
       </div>
     </div>
   );

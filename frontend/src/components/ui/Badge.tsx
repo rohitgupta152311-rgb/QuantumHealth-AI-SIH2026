@@ -7,7 +7,7 @@ function cn(...inputs: ClassValue[]) {
 }
 
 interface BadgeProps extends React.HTMLAttributes<HTMLSpanElement> {
-  variant?: 'low' | 'moderate' | 'high' | 'very_high' | 'classical' | 'quantum' | 'hybrid' | 'default';
+  variant?: 'low' | 'moderate' | 'high' | 'very_high' | 'classical' | 'quantum' | 'hybrid' | 'default' | 'success' | 'warning' | 'danger' | 'info';
 }
 
 export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
@@ -16,16 +16,16 @@ export const Badge = React.forwardRef<HTMLSpanElement, BadgeProps>(
       <span
         ref={ref}
         className={cn(
-          'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold',
+          'inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-semibold tracking-wide border',
           {
-            'bg-green-500/10 text-green-400': variant === 'low',
-            'bg-yellow-500/10 text-yellow-400': variant === 'moderate',
-            'bg-orange-500/10 text-orange-400': variant === 'high',
-            'bg-red-500/10 text-red-400': variant === 'very_high',
-            'bg-blue-500/10 text-blue-400': variant === 'classical',
-            'bg-purple-500/10 text-purple-400': variant === 'quantum',
-            'bg-indigo-500/10 text-indigo-400': variant === 'hybrid',
-            'bg-gray-800 text-gray-300': variant === 'default',
+            'bg-emerald-500/15 text-emerald-300 border-emerald-500/30': variant === 'low' || variant === 'success',
+            'bg-amber-500/15 text-amber-300 border-amber-500/30': variant === 'moderate' || variant === 'warning',
+            'bg-orange-500/15 text-orange-300 border-orange-500/30': variant === 'high',
+            'bg-rose-500/15 text-rose-300 border-rose-500/30': variant === 'very_high' || variant === 'danger',
+            'bg-sky-500/15 text-sky-300 border-sky-500/30': variant === 'classical' || variant === 'info',
+            'bg-teal-500/15 text-teal-300 border-teal-500/30': variant === 'quantum',
+            'bg-cyan-500/15 text-cyan-300 border-cyan-500/30': variant === 'hybrid',
+            'bg-slate-800/90 text-slate-200 border-slate-700': variant === 'default',
           },
           className
         )}
