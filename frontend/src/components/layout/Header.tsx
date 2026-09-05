@@ -32,8 +32,8 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar, isMobileS
   }, []);
 
   return (
-    <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/95 backdrop-blur-sm">
-      <div className="flex h-16 items-center justify-between px-4 sm:px-6 max-w-7xl mx-auto">
+    <header className="sticky top-0 z-50 w-full border-b border-slate-800 bg-slate-950/95 backdrop-blur-sm flex-shrink-0">
+      <div className="flex h-16 items-center justify-between px-4 sm:px-6 w-full">
         <div className="flex items-center gap-3">
           {onToggleMobileSidebar && (
             <button
@@ -85,7 +85,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar, isMobileS
             className="flex items-center gap-2 px-3.5 py-2 rounded-lg text-xs font-semibold bg-teal-600 hover:bg-teal-500 text-white shadow-sm transition-colors focus:outline-none focus:ring-2 focus:ring-teal-400"
           >
             <Activity size={14} />
-            <span className="hidden xs:inline">New Diagnosis</span>
+            <span className="hidden xs:inline">New Analysis</span>
           </Link>
         </div>
       </div>

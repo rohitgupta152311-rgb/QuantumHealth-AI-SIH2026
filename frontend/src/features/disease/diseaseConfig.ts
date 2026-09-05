@@ -11,6 +11,12 @@ export interface DemoPreset {
   values: Record<string, number>;
 }
 
+export interface CategoricalOptionConfig {
+  label: string;
+  value: number;
+  description?: string;
+}
+
 export interface DiseaseConfig {
   id: string;
   name: string;
@@ -21,6 +27,9 @@ export interface DiseaseConfig {
   clinicalFocus: string;
   featureGroups: FeatureGroupConfig[];
   presets: DemoPreset[];
+  medians: Record<string, number>;
+  continuousKeys: string[];
+  categoricalOptions?: Record<string, CategoricalOptionConfig[]>;
 }
 
 export const diseaseConfigs: Record<string, DiseaseConfig> = {
@@ -32,21 +41,79 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
     datasetName: 'Cleveland Clinic Heart Disease Cohort',
     description: 'Coronary artery disease risk estimation using clinical vitals, resting ECG, and exercise stress hemodynamics.',
     clinicalFocus: 'Detection of ischemic heart disease patterns across 13 clinical biomarkers mapped to a 6-qubit register.',
+    medians: {
+      age: 55,
+      sex: 1,
+      cp: 1,
+      trestbps: 130,
+      chol: 240,
+      fbs: 0,
+      restecg: 1,
+      thalach: 153,
+      exang: 0,
+      oldpeak: 0.8,
+      slope: 1,
+      ca: 0,
+      thal: 2,
+    },
+    continuousKeys: ['age', 'trestbps', 'chol', 'thalach', 'oldpeak'],
+    categoricalOptions: {
+      sex: [
+        { label: 'Female', value: 0 },
+        { label: 'Male', value: 1 },
+      ],
+      cp: [
+        { label: 'Typical angina', value: 0 },
+        { label: 'Atypical angina', value: 1 },
+        { label: 'Non-anginal pain', value: 2 },
+        { label: 'Asymptomatic', value: 3 },
+      ],
+      fbs: [
+        { label: 'No (≤ 120 mg/dL)', value: 0 },
+        { label: 'Yes (> 120 mg/dL)', value: 1 },
+      ],
+      restecg: [
+        { label: 'Normal', value: 0 },
+        { label: 'ST-T abnormality', value: 1 },
+        { label: 'Left ventricular hypertrophy', value: 2 },
+      ],
+      exang: [
+        { label: 'No', value: 0 },
+        { label: 'Yes', value: 1 },
+      ],
+      slope: [
+        { label: 'Upsloping', value: 0 },
+        { label: 'Flat', value: 1 },
+        { label: 'Downsloping', value: 2 },
+      ],
+      ca: [
+        { label: '0 vessels', value: 0 },
+        { label: '1 vessel', value: 1 },
+        { label: '2 vessels', value: 2 },
+        { label: '3 vessels', value: 3 },
+        { label: '4 vessels', value: 4 },
+      ],
+      thal: [
+        { label: 'Normal', value: 0 },
+        { label: 'Fixed defect', value: 1 },
+        { label: 'Reversible defect', value: 2 },
+      ],
+    },
     featureGroups: [
       {
-        groupName: 'Demographics & Baseline Vitals',
-        description: 'Age, biological sex, resting systolic blood pressure, and serum cholesterol.',
-        featureKeys: ['age', 'sex', 'trestbps', 'chol'],
+        groupName: 'Patient Profile',
+        description: 'Demographics and biological characteristics.',
+        featureKeys: ['age', 'sex'],
       },
       {
-        groupName: 'Symptoms & Electrocardiogram',
-        description: 'Reported chest pain classification, fasting glycemic indicator, and resting ECG presentation.',
-        featureKeys: ['cp', 'fbs', 'restecg'],
+        groupName: 'Vitals and Laboratory Values',
+        description: 'Resting hemodynamic measurements, lipid panel, glycemic indicator, and baseline electrocardiogram.',
+        featureKeys: ['trestbps', 'chol', 'fbs', 'restecg'],
       },
       {
-        groupName: 'Exercise Stress Hemodynamics & Fluoroscopy',
-        description: 'Peak heart rate, exercise-induced angina, ST depression (oldpeak), ST slope, fluoroscopy vessels, and thallium defect status.',
-        featureKeys: ['thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal'],
+        groupName: 'Cardiac / Clinical Assessment',
+        description: 'Reported symptoms, stress hemodynamics, fluoroscopy vessel score, and thallium perfusion findings.',
+        featureKeys: ['cp', 'thalach', 'exang', 'oldpeak', 'slope', 'ca', 'thal'],
       },
     ],
     presets: [
@@ -57,7 +124,7 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
         values: {
           age: 42, sex: 1, cp: 0, trestbps: 118, chol: 195,
           fbs: 0, restecg: 0, thalach: 168, exang: 0, oldpeak: 0.2,
-          slope: 2, ca: 0, thal: 2
+          slope: 2, ca: 0, thal: 2,
         },
       },
       {
@@ -67,7 +134,7 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
         values: {
           age: 56, sex: 1, cp: 1, trestbps: 135, chol: 245,
           fbs: 0, restecg: 1, thalach: 145, exang: 0, oldpeak: 1.2,
-          slope: 1, ca: 1, thal: 2
+          slope: 1, ca: 1, thal: 2,
         },
       },
       {
@@ -77,7 +144,7 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
         values: {
           age: 64, sex: 1, cp: 3, trestbps: 160, chol: 295,
           fbs: 1, restecg: 2, thalach: 122, exang: 1, oldpeak: 2.8,
-          slope: 0, ca: 2, thal: 3
+          slope: 0, ca: 2, thal: 2,
         },
       },
     ],
@@ -91,6 +158,22 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
     datasetName: 'Wisconsin Diagnostic Breast Cancer (WDBC)',
     description: 'Fine Needle Aspirate (FNA) digitized cytological features describing cell nuclear characteristics.',
     clinicalFocus: 'Morphometric evaluation of cell nucleus boundary regularity, area, and texture variability.',
+    medians: {
+      'mean radius': 13.37,
+      'mean texture': 18.84,
+      'mean perimeter': 86.24,
+      'mean area': 551.1,
+      'mean smoothness': 0.096,
+      'mean compactness': 0.092,
+    },
+    continuousKeys: [
+      'mean radius',
+      'mean texture',
+      'mean perimeter',
+      'mean area',
+      'mean smoothness',
+      'mean compactness',
+    ],
     featureGroups: [
       {
         groupName: 'Nuclear Morphometry & Dimensionality',
@@ -99,7 +182,7 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
       },
       {
         groupName: 'Membrane Regularity & Cytological Texture',
-        description: 'Gray-scale variations, nuclear membrane smoothness, and compactness (perimeter² / area - 1.0).',
+        description: 'Gray-scale variations, nuclear membrane smoothness, and compactness.',
         featureKeys: ['mean texture', 'mean smoothness', 'mean compactness'],
       },
     ],
@@ -154,6 +237,26 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
     datasetName: 'Pima Indians Diabetes Database (PIDD)',
     description: 'Metabolic markers and demographic factors predicting onset of Type 2 Diabetes Mellitus.',
     clinicalFocus: 'Evaluation of glycemic control, pancreatic beta-cell response, and body composition indices.',
+    medians: {
+      Pregnancies: 3,
+      Glucose: 117,
+      BloodPressure: 72,
+      SkinThickness: 23,
+      Insulin: 30.5,
+      BMI: 32.0,
+      DiabetesPedigreeFunction: 0.37,
+      Age: 29,
+    },
+    continuousKeys: [
+      'Pregnancies',
+      'Glucose',
+      'BloodPressure',
+      'SkinThickness',
+      'Insulin',
+      'BMI',
+      'DiabetesPedigreeFunction',
+      'Age',
+    ],
     featureGroups: [
       {
         groupName: 'Glycemic & Metabolic Biomarkers',
@@ -174,7 +277,7 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
         values: {
           Pregnancies: 1, Glucose: 88, BloodPressure: 66,
           SkinThickness: 20, Insulin: 70, BMI: 22.4,
-          DiabetesPedigreeFunction: 0.25, Age: 28
+          DiabetesPedigreeFunction: 0.25, Age: 28,
         },
       },
       {
@@ -184,7 +287,7 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
         values: {
           Pregnancies: 3, Glucose: 128, BloodPressure: 76,
           SkinThickness: 28, Insulin: 115, BMI: 28.5,
-          DiabetesPedigreeFunction: 0.48, Age: 42
+          DiabetesPedigreeFunction: 0.48, Age: 42,
         },
       },
       {
@@ -194,7 +297,7 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
         values: {
           Pregnancies: 6, Glucose: 178, BloodPressure: 88,
           SkinThickness: 38, Insulin: 180, BMI: 36.8,
-          DiabetesPedigreeFunction: 0.85, Age: 54
+          DiabetesPedigreeFunction: 0.85, Age: 54,
         },
       },
     ],
