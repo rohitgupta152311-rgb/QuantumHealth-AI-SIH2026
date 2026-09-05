@@ -1,7 +1,7 @@
 import React from 'react';
-import { motion } from 'framer-motion';
-import { Activity, HeartPulse, ShieldAlert } from 'lucide-react';
+import { Activity, HeartPulse, ShieldAlert, CheckCircle2 } from 'lucide-react';
 import type { DiseaseInfo } from '../../types';
+import { diseaseConfigs } from './diseaseConfig';
 
 interface DiseaseSelectorProps {
   diseases: DiseaseInfo[];
@@ -9,40 +9,80 @@ interface DiseaseSelectorProps {
   onSelect: (id: string) => void;
 }
 
-export const DiseaseSelector: React.FC<DiseaseSelectorProps> = ({ diseases, selectedId, onSelect }) => {
-  const icons: Record<string, React.ReactNode> = {
-    diabetes: <Activity size={24} />,
-    heart: <HeartPulse size={24} />,
-    heart_disease: <HeartPulse size={24} />,
-    breast_cancer: <ShieldAlert size={24} />,
-  };
+const icons: Record<string, React.ReactNode> = {
+  heart: <HeartPulse size={20} className="text-rose-400" />,
+  breast_cancer: <ShieldAlert size={20} className="text-amber-400" />,
+  diabetes: <Activity size={20} className="text-teal-400" />,
+};
 
+export const DiseaseSelector: React.FC<DiseaseSelectorProps> = ({ diseases, selectedId, onSelect }) => {
   return (
-    <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-      {diseases.map((disease) => {
-        const isSelected = disease.id === selectedId;
-        return (
-          <motion.div
-            key={disease.id}
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={() => onSelect(disease.id)}
-            className={`cursor-pointer rounded-xl p-5 border transition-all ${
-              isSelected
-                ? 'bg-quantum-900/40 border-quantum-500 shadow-[0_0_15px_rgba(99,102,241,0.2)]'
-                : 'bg-gray-900 border-gray-800 hover:border-gray-700'
-            }`}
-          >
-            <div className={`flex items-center gap-3 mb-2 ${isSelected ? 'text-quantum-400' : 'text-gray-400'}`}>
-              {icons[disease.id] || <Activity size={24} />}
-              <h3 className={`font-semibold text-lg ${isSelected ? 'text-white' : 'text-gray-200'}`}>
-                {disease.name}
-              </h3>
-            </div>
-            <p className="text-sm text-gray-500 line-clamp-2">{disease.description}</p>
-          </motion.div>
-        );
-      })}
+    <div className="space-y-2">
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-semibold text-slate-400 uppercase tracking-wider">
+          Select Clinical Diagnostic Module
+        </span>
+        <span className="text-xs text-slate-500 font-mono">
+          {diseases.length} Supported Models
+        </span>
+      </div>
+
+      <div
+        className="grid grid-cols-1 md:grid-cols-3 gap-4"
+        role="tablist"
+        aria-label="Disease prediction modules"
+      >
+        {diseases.map((disease) => {
+          const isSelected = disease.id === selectedId;
+          const config = diseaseConfigs[disease.id];
+          const icon = icons[disease.id] || <Activity size={20} className="text-teal-400" />;
+
+          return (
+            <button
+              key={disease.id}
+              role="tab"
+              aria-selected={isSelected}
+              type="button"
+              onClick={() => onSelect(disease.id)}
+              className={`text-left rounded-xl p-4 border transition-all cursor-pointer relative ${
+                isSelected
+                  ? 'bg-slate-900 border-teal-500 shadow-sm ring-1 ring-teal-500/50'
+                  : 'bg-slate-900/60 border-slate-800 hover:border-slate-700 hover:bg-slate-900'
+              }`}
+            >
+              <div className="flex items-start justify-between mb-2">
+                <div className="flex items-center gap-2.5">
+                  <div className={`p-2 rounded-lg ${isSelected ? 'bg-slate-800' : 'bg-slate-950 border border-slate-800'}`}>
+                    {icon}
+                  </div>
+                  <div>
+                    <h3 className={`font-bold text-sm ${isSelected ? 'text-white' : 'text-slate-200'}`}>
+                      {config?.name || disease.name}
+                    </h3>
+                    <span className="text-[11px] text-teal-400 font-medium block">
+                      {config?.specialty || 'Biomedical Diagnostic'}
+                    </span>
+                  </div>
+                </div>
+                {isSelected && (
+                  <span className="text-teal-400 flex items-center gap-1 text-[11px] font-semibold bg-teal-500/10 px-2 py-0.5 rounded border border-teal-500/30">
+                    <CheckCircle2 size={12} /> Active
+                  </span>
+                )}
+              </div>
+
+              <p className="text-xs text-slate-400 line-clamp-2 mt-2 leading-relaxed">
+                {config?.clinicalFocus || disease.description}
+              </p>
+
+              <div className="mt-3 pt-3 border-t border-slate-800/80 flex items-center justify-between text-[11px] font-mono text-slate-400">
+                <span>Cohort: {config?.cohort || `${disease.dataset_size || 500}+ Patients`}</span>
+                <span className="text-slate-300 font-semibold">6-Qubit VQC</span>
+              </div>
+            </button>
+          );
+        })}
+      </div>
     </div>
   );
 };

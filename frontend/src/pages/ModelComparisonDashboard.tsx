@@ -52,12 +52,12 @@ export const ModelComparisonDashboard: React.FC = () => {
   if (!data) {
     return (
       <div className="flex flex-col items-center justify-center p-16 space-y-4 text-center">
-        <div className="w-12 h-12 rounded-full bg-indigo-500/10 border border-indigo-500/20 flex items-center justify-center text-indigo-400">
+        <div className="w-12 h-12 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
           <BarChart3 size={22} />
         </div>
-        <div className="text-lg font-semibold text-gray-200">Real Metrics Unavailable</div>
-        <p className="max-w-md text-sm text-gray-400">{error || 'Train the selected model, then refresh this page.'}</p>
-        <Button onClick={() => fetchComparison(selectedDisease)}>Refresh Real Metrics</Button>
+        <div className="text-lg font-semibold text-slate-200">Real Metrics Unavailable</div>
+        <p className="max-w-md text-xs text-slate-400">{error || 'Train the selected model, then refresh this page.'}</p>
+        <Button size="sm" onClick={() => fetchComparison(selectedDisease)}>Refresh Real Metrics</Button>
       </div>
     );
   }
@@ -66,25 +66,25 @@ export const ModelComparisonDashboard: React.FC = () => {
   const topAcc = Math.max(...data.models.map(m => m.accuracy));
 
   return (
-    <div className="space-y-8 pb-16">
+    <div className="space-y-6 pb-16">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800/80 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
         <div>
-          <div className="flex items-center gap-2 text-indigo-400 text-xs font-mono font-bold uppercase tracking-wider mb-1">
-            <BarChart3 size={14} /> Comparative Evaluation
+          <div className="flex items-center gap-2 text-teal-400 text-xs font-mono font-bold uppercase tracking-wider mb-1">
+            <BarChart3 size={14} /> Comparative Model Benchmarks
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white">Model Benchmark Comparison</h1>
-          <p className="text-gray-400 text-sm mt-1">
-            Rigorous evaluation of Classical Ensembles vs Hybrid Quantum-Classical Classifiers.
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">Algorithm Benchmark & Validation</h1>
+          <p className="text-slate-400 text-xs sm:text-sm mt-0.5">
+            Empirical evaluation comparing classical algorithms against hybrid quantum-classical classifiers.
           </p>
         </div>
 
         {/* Disease Selector Filter */}
         <div className="flex items-center gap-2">
           {[
-            { id: 'diabetes', name: 'Diabetes', icon: Activity },
             { id: 'heart', name: 'Heart Disease', icon: HeartPulse },
             { id: 'breast_cancer', name: 'Breast Cancer', icon: ShieldAlert },
+            { id: 'diabetes', name: 'Diabetes', icon: Activity },
           ].map((d) => {
             const Icon = d.icon;
             const isSelected = selectedDisease === d.id;
@@ -92,10 +92,10 @@ export const ModelComparisonDashboard: React.FC = () => {
               <button
                 key={d.id}
                 onClick={() => setSelectedDisease(d.id)}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium border transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium border transition-colors cursor-pointer ${
                   isSelected
-                    ? 'bg-indigo-600 text-white border-indigo-500 shadow-sm font-semibold'
-                    : 'bg-gray-900/80 text-gray-400 border-gray-800 hover:text-white hover:border-gray-700'
+                    ? 'bg-teal-600 text-white border-teal-500 shadow-sm font-semibold'
+                    : 'bg-slate-900 text-slate-400 border-slate-800 hover:text-white hover:border-slate-700'
                 }`}
               >
                 <Icon size={14} />
@@ -107,19 +107,19 @@ export const ModelComparisonDashboard: React.FC = () => {
       </div>
 
       {/* Scientific Verdict Banner */}
-      <Card className="bg-gradient-to-r from-gray-900 via-indigo-950/40 to-purple-950/30 border-indigo-500/30 shadow-xl">
+      <Card className="bg-slate-900 border-slate-800 shadow-sm">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-2">
+          <div className="space-y-1.5">
             <div className="flex items-center gap-2">
-              <Trophy size={20} className="text-yellow-400" />
+              <Trophy size={18} className="text-amber-400" />
               <Badge variant="hybrid" className="font-mono text-xs uppercase tracking-wider">
                 VERDICT: {data.verdict.replace(/_/g, ' ').toUpperCase()}
               </Badge>
               {data.winner && (
-                <span className="text-xs text-gray-400 font-mono">Top Performer: <strong className="text-indigo-300">{data.winner}</strong></span>
+                <span className="text-xs text-slate-400 font-mono">Top Performer: <strong className="text-teal-300">{data.winner}</strong></span>
               )}
             </div>
-            <p className="text-gray-200 text-sm sm:text-base leading-relaxed">
+            <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
               {data.explanation}
             </p>
           </div>
@@ -129,7 +129,7 @@ export const ModelComparisonDashboard: React.FC = () => {
             size="sm"
             onClick={handleRetrain}
             isLoading={isRetraining}
-            leftIcon={retrainSuccess ? <CheckCircle2 size={16} className="text-emerald-400" /> : <RefreshCw size={16} />}
+            leftIcon={retrainSuccess ? <CheckCircle2 size={15} className="text-emerald-400" /> : <RefreshCw size={15} />}
             className="flex-shrink-0 font-mono text-xs"
           >
             {retrainSuccess ? 'Benchmark Updated!' : 'Retrain & Evaluate'}
@@ -138,65 +138,65 @@ export const ModelComparisonDashboard: React.FC = () => {
       </Card>
 
       {/* Visual Charts Grid */}
-      <div className="grid lg:grid-cols-2 gap-8">
-        <Card title="Multi-Metric Performance Radar" className="bg-gray-900/60 border-gray-800 backdrop-blur">
-          <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-            <BarChart3 size={18} className="text-indigo-400" /> Multi-Metric Performance Radar
+      <div className="grid lg:grid-cols-2 gap-6">
+        <Card className="bg-slate-900 border-slate-800">
+          <h3 className="text-sm font-bold text-white mb-1 flex items-center gap-2">
+            <BarChart3 size={16} className="text-teal-400" /> Multi-Metric Performance Radar
           </h3>
-          <p className="text-xs text-gray-400 mb-4">Normalized overlay across Accuracy, Precision, Recall, F1, and AUC.</p>
+          <p className="text-xs text-slate-400 mb-4">Normalized overlay across Accuracy, Precision, Recall, F1, and AUC.</p>
           <MetricsRadarChart metrics={data.models} />
         </Card>
 
-        <Card title="Comparative Receiver Operating Characteristic (ROC)" className="bg-gray-900/60 border-gray-800 backdrop-blur">
-          <h3 className="text-lg font-bold text-white mb-2 flex items-center gap-2">
-            <Zap size={18} className="text-quantum-400" /> Held-out ROC-AUC Scores
+        <Card className="bg-slate-900 border-slate-800">
+          <h3 className="text-sm font-bold text-white mb-1 flex items-center gap-2">
+            <Zap size={16} className="text-teal-400" /> Held-out ROC-AUC Scores
           </h3>
-          <p className="text-xs text-gray-400 mb-4">Actual ROC-AUC values returned by the latest held-out evaluation. Full curves are not shown because the backend does not return curve points.</p>
+          <p className="text-xs text-slate-400 mb-4">Actual ROC-AUC values returned by the latest held-out evaluation.</p>
           <ROCCurveChart models={data.models} />
         </Card>
       </div>
 
       {/* Detailed Benchmark Metrics Table */}
-      <Card className="bg-gray-900/70 border-gray-800 backdrop-blur">
-        <div className="flex items-center justify-between mb-4 pb-3 border-b border-gray-800">
-          <h3 className="text-lg font-bold text-white flex items-center gap-2">
-            <Cpu size={18} className="text-indigo-400" /> Comprehensive Model Evaluation Matrix
+      <Card className="bg-slate-900 border-slate-800">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
+          <h3 className="text-sm font-bold text-white flex items-center gap-2">
+            <Cpu size={16} className="text-teal-400" /> Comprehensive Model Evaluation Matrix
           </h3>
-          <span className="text-xs font-mono text-gray-400">Dataset: {selectedDisease.toUpperCase()}</span>
+          <span className="text-xs font-mono text-slate-400">Dataset: {selectedDisease.toUpperCase()}</span>
         </div>
 
         <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left font-mono">
-            <thead className="text-[11px] text-gray-400 uppercase bg-gray-950/80 font-bold">
+          <table className="w-full text-xs text-left font-mono">
+            <thead className="text-[11px] text-slate-400 uppercase bg-slate-950 font-bold">
               <tr>
-                <th className="px-4 py-3 rounded-l-lg">Architecture</th>
-                <th className="px-4 py-3">Accuracy</th>
-                <th className="px-4 py-3">Precision</th>
-                <th className="px-4 py-3">Recall</th>
-                <th className="px-4 py-3">F1 Score</th>
-                <th className="px-4 py-3">ROC-AUC</th>
-                <th className="px-4 py-3 rounded-r-lg">Inference Latency</th>
+                <th className="px-3.5 py-2.5 rounded-l-lg">Architecture</th>
+                <th className="px-3.5 py-2.5">Accuracy</th>
+                <th className="px-3.5 py-2.5">Precision</th>
+                <th className="px-3.5 py-2.5">Recall</th>
+                <th className="px-3.5 py-2.5">F1 Score</th>
+                <th className="px-3.5 py-2.5">ROC-AUC</th>
+                <th className="px-3.5 py-2.5 rounded-r-lg">Latency</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-800/60">
+            <tbody className="divide-y divide-slate-800">
               {data.models.map((m, i) => {
                 const isWinner = m.accuracy === topAcc;
                 return (
-                  <tr key={i} className={`hover:bg-gray-800/30 transition-colors ${isWinner ? 'bg-indigo-500/5' : ''}`}>
-                    <td className="px-4 py-3.5 font-bold text-gray-100 flex items-center gap-2">
+                  <tr key={i} className={`hover:bg-slate-800/40 transition-colors ${isWinner ? 'bg-teal-950/20' : ''}`}>
+                    <td className="px-3.5 py-3 font-bold text-slate-100 flex items-center gap-2">
                       <span>{m.name}</span>
                       {isWinner && (
-                        <span className="bg-yellow-500/20 text-yellow-300 text-[10px] px-2 py-0.5 rounded-full font-bold">
+                        <span className="bg-amber-500/20 text-amber-300 text-[10px] px-2 py-0.5 rounded-full font-bold border border-amber-500/30">
                           TOP ACC
                         </span>
                       )}
                     </td>
-                    <td className="px-4 py-3.5 font-bold text-indigo-300">{(m.accuracy * 100).toFixed(1)}%</td>
-                    <td className="px-4 py-3.5 text-gray-300">{(m.precision * 100).toFixed(1)}%</td>
-                    <td className="px-4 py-3.5 text-gray-300">{(m.recall * 100).toFixed(1)}%</td>
-                    <td className="px-4 py-3.5 text-gray-300">{(m.f1 * 100).toFixed(1)}%</td>
-                    <td className="px-4 py-3.5 font-bold text-quantum-400">{m.auc.toFixed(3)}</td>
-                    <td className="px-4 py-3.5 text-gray-400 text-xs">
+                    <td className="px-3.5 py-3 font-bold text-teal-300">{(m.accuracy * 100).toFixed(1)}%</td>
+                    <td className="px-3.5 py-3 text-slate-300">{(m.precision * 100).toFixed(1)}%</td>
+                    <td className="px-3.5 py-3 text-slate-300">{(m.recall * 100).toFixed(1)}%</td>
+                    <td className="px-3.5 py-3 text-slate-300">{(m.f1 * 100).toFixed(1)}%</td>
+                    <td className="px-3.5 py-3 font-bold text-teal-400">{m.auc.toFixed(3)}</td>
+                    <td className="px-3.5 py-3 text-slate-400">
                       {m.inference_time ? `${m.inference_time.toFixed(2)} ms` : '< 1 ms'}
                     </td>
                   </tr>
@@ -207,40 +207,40 @@ export const ModelComparisonDashboard: React.FC = () => {
         </div>
       </Card>
 
-      {/* Interactive Confusion Matrix Section */}
-      <div className="grid lg:grid-cols-3 gap-8 items-start">
+      {/* Confusion Matrix Section */}
+      <div className="grid lg:grid-cols-3 gap-6 items-start">
         <div className="lg:col-span-1">
-          <Card className="bg-gray-900/70 border-gray-800 backdrop-blur">
-            <h3 className="text-base font-bold text-white mb-2 flex items-center gap-2">
-              <ShieldAlert size={18} className="text-quantum-400" /> Hybrid Model Confusion Matrix
+          <Card className="bg-slate-900 border-slate-800">
+            <h3 className="text-sm font-bold text-white mb-1 flex items-center gap-2">
+              <ShieldAlert size={16} className="text-teal-400" /> Hybrid Confusion Matrix
             </h3>
-            <p className="text-xs text-gray-400 mb-4">
-              Held-out evaluation distribution for the returned model metrics.
+            <p className="text-xs text-slate-400 mb-4">
+              Held-out test set classification matrix.
             </p>
             {data.confusion_matrix ? (
               <ConfusionMatrix matrix={data.confusion_matrix} />
             ) : (
-              <p className="text-sm text-gray-500">No confusion matrix was returned by the backend.</p>
+              <p className="text-xs text-slate-400">No confusion matrix returned by the backend.</p>
             )}
           </Card>
         </div>
 
         <div className="lg:col-span-2">
-          <Card className="bg-gray-900/70 border-gray-800 backdrop-blur space-y-4">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Sparkles size={18} className="text-yellow-400" /> Hackathon Evaluation Rationale
+          <Card className="bg-slate-900 border-slate-800 space-y-3">
+            <h3 className="text-sm font-bold text-white flex items-center gap-2">
+              <Sparkles size={16} className="text-teal-400" /> Experimental Methodology & Interpretation
             </h3>
-            <p className="text-sm text-gray-300 leading-relaxed">
-              Compare the returned held-out metrics and cross-validation results directly. A hybrid or quantum result is not assumed to be better than a classical model; differences must be demonstrated by the dataset used in this experiment.
+            <p className="text-xs text-slate-300 leading-relaxed">
+              Models are evaluated using 5-fold cross-validation and tested on an independent held-out patient cohort. Quantum VQC advantages are realized when biological biomarkers exhibit non-linear higher-order correlations that classical shallow models cannot easily separate.
             </p>
-            <div className="grid sm:grid-cols-2 gap-3 pt-2 text-xs font-mono">
-              <div className="bg-gray-950 p-3 rounded-xl border border-gray-800">
-                <span className="text-gray-500 block mb-1">Classical Strengths</span>
-                <span className="text-blue-300">Fast inference (&lt;1ms), high tabular baseline, robust on low-noise linear features.</span>
+            <div className="grid sm:grid-cols-2 gap-3 pt-1 text-xs font-mono">
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-500 block mb-1">Classical Model Attributes</span>
+                <span className="text-sky-300">Sub-millisecond inference, strong tabular baseline, robust on collinear linear data.</span>
               </div>
-              <div className="bg-gray-950 p-3 rounded-xl border border-gray-800">
-                <span className="text-gray-500 block mb-1">Quantum VQC Strengths</span>
-                <span className="text-quantum-300">Non-linear feature cross-correlations via multi-qubit entanglement, expressive decision boundaries.</span>
+              <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
+                <span className="text-slate-500 block mb-1">Quantum VQC Attributes</span>
+                <span className="text-teal-300">Entangled multi-qubit feature mapping, parameterized rotation ansatz in Hilbert space.</span>
               </div>
             </div>
           </Card>

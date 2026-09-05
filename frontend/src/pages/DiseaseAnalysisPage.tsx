@@ -1,30 +1,48 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { useState, useEffect, useMemo } from 'react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useDisease } from '../hooks/useDisease';
 import { usePrediction } from '../hooks/usePrediction';
 import { DiseaseSelector } from '../features/disease/DiseaseSelector';
+import { diseaseConfigs, getDiseaseConfig } from '../features/disease/diseaseConfig';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
+import { BiomarkerField } from '../components/forms/BiomarkerField';
 import { ProcessingPipeline } from '../components/quantum/ProcessingPipeline';
 import {
-  Play, Sparkles, AlertCircle, ShieldCheck, HeartPulse,
-  Activity, Info, Cpu, CheckCircle2, RotateCcw
+  Play, AlertCircle, Cpu, Stethoscope, RotateCcw,
+  Sparkles, CheckCircle2, Info
 } from 'lucide-react';
 import { Badge } from '../components/ui/Badge';
 
 export const DiseaseAnalysisPage: React.FC = () => {
   const navigate = useNavigate();
+  const [searchParams, setSearchParams] = useSearchParams();
   const { diseases, selectedDisease, selectDisease, isLoading: diseaseLoading } = useDisease();
   const { predict, isLoading: predictLoading, result, error } = usePrediction();
-  
+
   const [formData, setFormData] = useState<Record<string, number>>({});
   const [mode, setMode] = useState<'hybrid' | 'classical' | 'quantum'>('hybrid');
-  const [activePreset, setActivePreset] = useState<string | null>(null);
+  const [activePresetId, setActivePresetId] = useState<string | null>(null);
+
+  // Sync disease selection with URL search param "?disease=..."
+  useEffect(() => {
+    const diseaseParam = searchParams.get('disease');
+    if (diseaseParam && diseases.some(d => d.id === diseaseParam) && diseaseParam !== selectedDisease) {
+      selectDisease(diseaseParam);
+    }
+  }, [searchParams, diseases, selectedDisease, selectDisease]);
 
   const activeDisease = diseases.find(d => d.id === selectedDisease);
+  const activeConfig = getDiseaseConfig(selectedDisease);
 
-  // Initialize form defaults whenever active disease changes
-  useEffect(() => {
+  const handleDiseaseChange = (id: string) => {
+    selectDisease(id);
+    setSearchParams({ disease: id });
+    setActivePresetId(null);
+  };
+
+  // Reset to dataset median/midpoint
+  const resetToMedian = () => {
     if (activeDisease) {
       const initial: Record<string, number> = {};
       activeDisease.features.forEach(f => {
@@ -33,84 +51,24 @@ export const DiseaseAnalysisPage: React.FC = () => {
         initial[f.name] = Number(((min + max) / 2).toFixed(2));
       });
       setFormData(initial);
-      setActivePreset(null);
+      setActivePresetId(null);
     }
+  };
+
+  // Initialize form defaults whenever active disease changes
+  useEffect(() => {
+    resetToMedian();
   }, [activeDisease]);
 
-  const loadPreset = (presetType: 'healthy' | 'moderate' | 'high_risk') => {
-    setActivePreset(presetType);
-    if (selectedDisease === 'diabetes') {
-      if (presetType === 'healthy') {
-        setFormData({
-          Pregnancies: 1, Glucose: 88, BloodPressure: 66,
-          SkinThickness: 20, Insulin: 70, BMI: 22.4,
-          DiabetesPedigreeFunction: 0.25, Age: 28
-        });
-      } else if (presetType === 'moderate') {
-        setFormData({
-          Pregnancies: 3, Glucose: 128, BloodPressure: 76,
-          SkinThickness: 28, Insulin: 115, BMI: 28.5,
-          DiabetesPedigreeFunction: 0.48, Age: 42
-        });
-      } else {
-        setFormData({
-          Pregnancies: 6, Glucose: 178, BloodPressure: 88,
-          SkinThickness: 38, Insulin: 180, BMI: 36.8,
-          DiabetesPedigreeFunction: 0.85, Age: 54
-        });
-      }
-    } else if (selectedDisease === 'heart') {
-      if (presetType === 'healthy') {
-        setFormData({
-          age: 42, sex: 1, cp: 0, trestbps: 118, chol: 195,
-          fbs: 0, restecg: 0, thalach: 168, exang: 0, oldpeak: 0.2,
-          slope: 2, ca: 0, thal: 2
-        });
-      } else if (presetType === 'moderate') {
-        setFormData({
-          age: 56, sex: 1, cp: 1, trestbps: 135, chol: 245,
-          fbs: 0, restecg: 1, thalach: 145, exang: 0, oldpeak: 1.2,
-          slope: 1, ca: 1, thal: 2
-        });
-      } else {
-        setFormData({
-          age: 64, sex: 1, cp: 3, trestbps: 160, chol: 295,
-          fbs: 1, restecg: 2, thalach: 122, exang: 1, oldpeak: 2.8,
-          slope: 0, ca: 2, thal: 3
-        });
-      }
-    } else if (selectedDisease === 'breast_cancer') {
-      if (presetType === 'healthy') {
-        setFormData((previous) => ({
-          ...previous,
-          'mean radius': 11.2,
-          'mean texture': 14.5,
-          'mean perimeter': 72.0,
-          'mean area': 385.0,
-          'mean smoothness': 0.082,
-          'mean compactness': 0.048,
-        }));
-      } else if (presetType === 'moderate') {
-        setFormData((previous) => ({
-          ...previous,
-          'mean radius': 14.8,
-          'mean texture': 19.2,
-          'mean perimeter': 96.5,
-          'mean area': 680.0,
-          'mean smoothness': 0.102,
-          'mean compactness': 0.115,
-        }));
-      } else {
-        setFormData((previous) => ({
-          ...previous,
-          'mean radius': 20.5,
-          'mean texture': 25.8,
-          'mean perimeter': 138.0,
-          'mean area': 1320.0,
-          'mean smoothness': 0.125,
-          'mean compactness': 0.245,
-        }));
-      }
+  const handleApplyPreset = (presetId: 'lower' | 'intermediate' | 'higher') => {
+    if (!activeConfig) return;
+    const preset = activeConfig.presets.find(p => p.id === presetId);
+    if (preset) {
+      setActivePresetId(presetId);
+      setFormData(prev => ({
+        ...prev,
+        ...preset.values,
+      }));
     }
   };
 
@@ -123,41 +81,85 @@ export const DiseaseAnalysisPage: React.FC = () => {
     if (result && !predictLoading) {
       setTimeout(() => {
         navigate('/dashboard');
-      }, 1000);
+      }, 700);
     }
   }, [result, predictLoading, navigate]);
+
+  // Data-driven feature groups from diseaseConfig
+  const featureGroups = useMemo(() => {
+    if (!activeDisease) return [];
+
+    if (activeConfig && activeConfig.featureGroups.length > 0) {
+      const assignedFeatureNames = new Set<string>();
+
+      const groups = activeConfig.featureGroups.map(group => {
+        const matchingFeatures = activeDisease.features.filter(f =>
+          group.featureKeys.includes(f.name)
+        );
+        matchingFeatures.forEach(f => assignedFeatureNames.add(f.name));
+        return {
+          groupName: group.groupName,
+          description: group.description,
+          features: matchingFeatures,
+        };
+      }).filter(g => g.features.length > 0);
+
+      // Collect any features not explicitly categorized
+      const remainingFeatures = activeDisease.features.filter(f => !assignedFeatureNames.has(f.name));
+      if (remainingFeatures.length > 0) {
+        groups.push({
+          groupName: 'Additional Clinical Biomarkers',
+          description: 'Complementary clinical parameters and laboratory measurements.',
+          features: remainingFeatures,
+        });
+      }
+
+      return groups;
+    }
+
+    // Fallback if no specific config exists
+    return [
+      {
+        groupName: 'Clinical Parameters',
+        description: 'Dataset input features.',
+        features: activeDisease.features,
+      },
+    ];
+  }, [activeDisease, activeConfig]);
 
   if (diseaseLoading) {
     return (
       <div className="flex flex-col items-center justify-center p-16 space-y-4 text-center">
-        <div className="w-12 h-12 rounded-full border-2 border-indigo-500 border-t-transparent animate-spin"></div>
-        <div className="text-lg font-semibold text-gray-200">Loading Biomedical Intelligence Modules...</div>
+        <div className="w-10 h-10 rounded-full border-2 border-teal-500 border-t-transparent animate-spin"></div>
+        <div className="text-base font-semibold text-slate-200">Loading Clinical Models...</div>
       </div>
     );
   }
 
   return (
-    <div className="space-y-8 pb-12">
+    <div className="space-y-6 pb-12">
       {/* Title Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-gray-800/80 pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-5">
         <div>
-          <div className="flex items-center gap-2 text-indigo-400 text-xs font-mono font-bold uppercase tracking-wider mb-1">
-            <Activity size={14} /> Diagnostic Configuration
+          <div className="flex items-center gap-2 text-teal-400 text-xs font-mono font-bold uppercase tracking-wider mb-1">
+            <Stethoscope size={14} /> Diagnostic Clinical Intake
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold text-white">Patient Disease Analysis</h1>
-          <p className="text-gray-400 text-sm mt-1">
-            Configure clinical biomarker inputs to execute the hybrid classical-quantum classification pipeline.
+          <h1 className="text-2xl sm:text-3xl font-bold text-white">
+            {activeConfig?.name || activeDisease?.name || 'Disease Risk Assessment'}
+          </h1>
+          <p className="text-slate-400 text-xs sm:text-sm mt-1">
+            Configure clinical biomarkers to execute the hybrid classical-quantum classification pipeline.
           </p>
         </div>
 
-        {/* Quantum Readiness Indicator */}
-        <div className="flex items-center gap-3 bg-gray-900/90 border border-gray-800 p-3 rounded-2xl">
-          <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">
-            <Cpu size={20} />
+        {/* Quantum Hardware Specs Indicator */}
+        <div className="flex items-center gap-3 bg-slate-900 border border-slate-800 px-4 py-2.5 rounded-xl self-start md:self-auto">
+          <div className="p-2 rounded-lg bg-teal-500/10 text-teal-400 border border-teal-500/20">
+            <Cpu size={18} />
           </div>
           <div>
-            <div className="text-xs text-gray-400">Quantum Register</div>
-            <div className="text-sm font-mono font-bold text-white">6 Qubits (Angle RY)</div>
+            <div className="text-[11px] text-slate-400 font-medium">Quantum Simulator Register</div>
+            <div className="text-xs font-mono font-bold text-slate-200">6 Qubits (Angle Encoding RY)</div>
           </div>
         </div>
       </div>
@@ -166,225 +168,214 @@ export const DiseaseAnalysisPage: React.FC = () => {
       <DiseaseSelector
         diseases={diseases}
         selectedId={selectedDisease}
-        onSelect={(id) => {
-          selectDisease(id);
-          setActivePreset(null);
-        }}
+        onSelect={handleDiseaseChange}
       />
 
       {error && (
-        <div className="p-4 rounded-xl bg-red-500/10 border border-red-500/30 text-red-300 text-sm flex items-center gap-3">
-          <AlertCircle size={18} className="text-red-400" />
-          <span>Error connecting to prediction pipeline: {error}</span>
+        <div className="p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-sm flex items-center justify-between gap-3">
+          <div className="flex items-center gap-2.5">
+            <AlertCircle size={18} className="text-rose-400 flex-shrink-0" />
+            <span>Pipeline error: {error}</span>
+          </div>
+          <button
+            type="button"
+            onClick={handlePredict}
+            className="text-xs px-3 py-1 bg-rose-500/20 hover:bg-rose-500/30 rounded-lg text-rose-200 font-semibold border border-rose-500/30"
+          >
+            Retry
+          </button>
         </div>
       )}
 
       {/* Main Parameters Grid */}
-      <div className="grid lg:grid-cols-3 gap-8">
+      <div className="grid lg:grid-cols-3 gap-6">
         
-        {/* Left 2 Cols: Form Inputs */}
+        {/* Left 2 Cols: Data-Driven Form Inputs */}
         <div className="lg:col-span-2 space-y-6">
-          <Card className="border-gray-800/90 bg-gray-900/60 backdrop-blur">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-gray-800">
+          <Card className="border-slate-800 bg-slate-900/90">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-800">
               <div>
-                <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                  <HeartPulse size={18} className="text-indigo-400" /> Clinical Biomarkers
+                <h2 className="text-base font-bold text-white flex items-center gap-2">
+                  <Stethoscope size={18} className="text-teal-400" /> Patient Biomarker Profiler
                 </h2>
-                <p className="text-xs text-gray-400">Adjust sliders or use direct quick presets below.</p>
+                <p className="text-xs text-slate-400 mt-0.5">
+                  Adjust patient values or load demonstrative synthetic test profiles.
+                </p>
               </div>
 
-              {/* Quick Preset Buttons */}
+              {/* Demo Case Presets (Properly labeled as demo cases) */}
               <div className="flex items-center gap-1.5 flex-wrap">
                 <button
                   type="button"
-                  onClick={() => loadPreset('healthy')}
-                  className={`text-xs px-2.5 py-1.5 rounded-lg font-medium border transition-all ${
-                    activePreset === 'healthy'
-                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 shadow-sm'
-                      : 'bg-gray-950 text-gray-400 border-gray-800 hover:text-emerald-300 hover:border-emerald-500/30'
+                  onClick={() => handleApplyPreset('lower')}
+                  className={`text-xs px-2.5 py-1.5 rounded-lg font-medium border transition-colors cursor-pointer ${
+                    activePresetId === 'lower'
+                      ? 'bg-emerald-500/20 text-emerald-300 border-emerald-500/40 font-semibold'
+                      : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-emerald-300 hover:border-emerald-500/30'
                   }`}
+                  title="Demo profile with values in lower-risk ranges"
                 >
-                  🟢 Low Risk
+                  Demo — Lower Risk Profile
                 </button>
                 <button
                   type="button"
-                  onClick={() => loadPreset('moderate')}
-                  className={`text-xs px-2.5 py-1.5 rounded-lg font-medium border transition-all ${
-                    activePreset === 'moderate'
-                      ? 'bg-yellow-500/20 text-yellow-300 border-yellow-500/40 shadow-sm'
-                      : 'bg-gray-950 text-gray-400 border-gray-800 hover:text-yellow-300 hover:border-yellow-500/30'
+                  onClick={() => handleApplyPreset('intermediate')}
+                  className={`text-xs px-2.5 py-1.5 rounded-lg font-medium border transition-colors cursor-pointer ${
+                    activePresetId === 'intermediate'
+                      ? 'bg-amber-500/20 text-amber-300 border-amber-500/40 font-semibold'
+                      : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-amber-300 hover:border-amber-500/30'
                   }`}
+                  title="Demo profile with values in borderline ranges"
                 >
-                  🟡 Moderate
+                  Demo — Intermediate Profile
                 </button>
                 <button
                   type="button"
-                  onClick={() => loadPreset('high_risk')}
-                  className={`text-xs px-2.5 py-1.5 rounded-lg font-medium border transition-all ${
-                    activePreset === 'high_risk'
-                      ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 shadow-sm'
-                      : 'bg-gray-950 text-gray-400 border-gray-800 hover:text-rose-300 hover:border-rose-500/30'
+                  onClick={() => handleApplyPreset('higher')}
+                  className={`text-xs px-2.5 py-1.5 rounded-lg font-medium border transition-colors cursor-pointer ${
+                    activePresetId === 'higher'
+                      ? 'bg-rose-500/20 text-rose-300 border-rose-500/40 font-semibold'
+                      : 'bg-slate-950 text-slate-400 border-slate-800 hover:text-rose-300 hover:border-rose-500/30'
                   }`}
+                  title="Demo profile with values in elevated ranges"
                 >
-                  🔴 High Risk
+                  Demo — Higher Risk Profile
+                </button>
+                <button
+                  type="button"
+                  onClick={resetToMedian}
+                  className="text-xs px-2.5 py-1.5 rounded-lg font-medium bg-slate-950 text-slate-400 border border-slate-800 hover:text-white transition-colors cursor-pointer flex items-center gap-1"
+                  title="Reset all inputs to dataset median"
+                >
+                  <RotateCcw size={12} /> Reset to Median
                 </button>
               </div>
             </div>
-            
-            {activeDisease && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-5">
-                {activeDisease.features.map((feature) => {
-                  const min = feature.min_val ?? feature.min ?? 0;
-                  const max = feature.max_val ?? feature.max ?? 100;
-                  const val = formData[feature.name] ?? min;
-                  const step = (max - min) > 10 ? 1 : 0.01;
-                  
-                  // Compute simple relative position for visual tint
-                  const ratio = (val - min) / (max - min || 1);
-                  const isHigh = ratio > 0.7;
 
-                  return (
-                    <div
-                      key={feature.name}
-                      className="bg-gray-950/70 p-4 rounded-2xl border border-gray-800/80 hover:border-gray-700 transition-all space-y-2.5"
-                    >
-                      <div className="flex justify-between items-center">
-                        <label className="text-xs font-semibold text-gray-200">
-                          {feature.label || feature.name}
-                        </label>
-                        <div className="flex items-center gap-1.5">
-                          <input
-                            type="number"
-                            min={min}
-                            max={max}
-                            step={step}
-                            value={val}
-                            onChange={(e) => {
-                              const num = parseFloat(e.target.value);
-                              if (!isNaN(num)) {
-                                setFormData(prev => ({ ...prev, [feature.name]: num }));
-                              }
-                            }}
-                            className="w-20 bg-gray-900 border border-gray-700 rounded-lg px-2 py-0.5 text-xs text-right font-mono font-bold text-quantum-300 focus:outline-none focus:border-quantum-500"
-                          />
-                          {feature.unit && (
-                            <span className="text-[10px] text-gray-400 font-mono">{feature.unit}</span>
-                          )}
-                        </div>
-                      </div>
+            {/* Categorized Clinical Biomarker Fields */}
+            <div className="space-y-6">
+              {featureGroups.map((group, gIdx) => (
+                <div key={gIdx} className="space-y-3">
+                  <div className="border-b border-slate-800/80 pb-2">
+                    <h3 className="text-xs font-bold text-slate-300 uppercase tracking-wide">
+                      {group.groupName}
+                    </h3>
+                    <p className="text-[11px] text-slate-500">{group.description}</p>
+                  </div>
 
-                      <input
-                        type="range"
-                        min={min}
-                        max={max}
-                        step={step}
-                        value={val}
-                        onChange={(e) => setFormData(prev => ({ ...prev, [feature.name]: parseFloat(e.target.value) }))}
-                        className="w-full accent-quantum-500 cursor-pointer h-1.5 bg-gray-800 rounded-lg"
-                      />
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">
+                    {group.features.map((feature) => {
+                      const min = feature.min_val ?? feature.min ?? 0;
+                      const max = feature.max_val ?? feature.max ?? 100;
+                      const val = formData[feature.name] ?? min;
 
-                      <div className="flex justify-between items-center text-[10px] text-gray-500 font-mono">
-                        <span>Min: {min}</span>
-                        {isHigh ? (
-                          <span className="text-rose-400 font-semibold">Elevated Range</span>
-                        ) : (
-                          <span className="text-emerald-400/80 font-semibold">Baseline</span>
-                        )}
-                        <span>Max: {max}</span>
-                      </div>
-                    </div>
-                  );
-                })}
-              </div>
-            )}
+                      return (
+                        <BiomarkerField
+                          key={feature.name}
+                          name={feature.name}
+                          label={feature.label || feature.name}
+                          value={val}
+                          min={min}
+                          max={max}
+                          unit={feature.unit}
+                          description={feature.description}
+                          onChange={(newVal) => setFormData(prev => ({ ...prev, [feature.name]: newVal }))}
+                        />
+                      );
+                    })}
+                  </div>
+                </div>
+              ))}
+            </div>
           </Card>
         </div>
 
         {/* Right 1 Col: Execution Settings & Pipeline Preview */}
-        <div className="space-y-6">
-          <Card className="border-gray-800/90 bg-gray-900/60 backdrop-blur">
-            <h2 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-              <Cpu size={18} className="text-indigo-400" /> Pipeline Configuration
+        <div className="space-y-5">
+          <Card className="border-slate-800 bg-slate-900/90">
+            <h2 className="text-sm font-bold text-white mb-3 flex items-center gap-2">
+              <Cpu size={16} className="text-teal-400" /> Pipeline Execution Mode
             </h2>
 
-            <div className="space-y-3 mb-6">
-              <label className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${
+            <div className="space-y-2.5 mb-5" role="radiogroup" aria-label="Pipeline Mode">
+              <label className={`flex items-start gap-3 p-3 rounded-xl border transition-colors cursor-pointer ${
                 mode === 'hybrid'
-                  ? 'bg-indigo-950/40 border-indigo-500 shadow-[0_0_12px_rgba(99,102,241,0.15)] text-white'
-                  : 'border-gray-800 hover:bg-gray-800/40 text-gray-300'
+                  ? 'bg-teal-950/40 border-teal-500 text-white'
+                  : 'border-slate-800 hover:bg-slate-800/50 text-slate-300'
               }`}>
                 <input
                   type="radio"
                   name="mode"
                   checked={mode === 'hybrid'}
                   onChange={() => setMode('hybrid')}
-                  className="text-indigo-500 mt-1"
+                  className="text-teal-500 mt-1 accent-teal-500"
                 />
                 <div>
-                  <div className="font-semibold text-sm">Hybrid Mode (Recommended)</div>
-                  <div className="text-xs text-gray-400 mt-0.5 leading-relaxed">
-                    60% Classical Ensemble + 40% PennyLane VQC with consensus validation.
+                  <div className="font-semibold text-xs text-white">Hybrid Ensemble + VQC (Recommended)</div>
+                  <div className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
+                    60% Classical Ensemble + 40% PennyLane VQC expectation with consensus validation.
                   </div>
                 </div>
               </label>
 
-              <label className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${
+              <label className={`flex items-start gap-3 p-3 rounded-xl border transition-colors cursor-pointer ${
                 mode === 'quantum'
-                  ? 'bg-purple-950/40 border-purple-500 shadow-[0_0_12px_rgba(168,85,247,0.15)] text-white'
-                  : 'border-gray-800 hover:bg-gray-800/40 text-gray-300'
+                  ? 'bg-teal-950/40 border-teal-500 text-white'
+                  : 'border-slate-800 hover:bg-slate-800/50 text-slate-300'
               }`}>
                 <input
                   type="radio"
                   name="mode"
                   checked={mode === 'quantum'}
                   onChange={() => setMode('quantum')}
-                  className="text-purple-500 mt-1"
+                  className="text-teal-500 mt-1 accent-teal-500"
                 />
                 <div>
-                  <div className="font-semibold text-sm">Quantum VQC Simulation Only</div>
-                  <div className="text-xs text-gray-400 mt-0.5 leading-relaxed">
+                  <div className="font-semibold text-xs text-white">Quantum VQC Simulation Only</div>
+                  <div className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
                     Angle Encoding & Parameterized VQC on default.qubit simulator.
                   </div>
                 </div>
               </label>
 
-              <label className={`flex items-start gap-3 p-3.5 rounded-xl border transition-all cursor-pointer ${
+              <label className={`flex items-start gap-3 p-3 rounded-xl border transition-colors cursor-pointer ${
                 mode === 'classical'
-                  ? 'bg-blue-950/40 border-blue-500 shadow-[0_0_12px_rgba(59,130,246,0.15)] text-white'
-                  : 'border-gray-800 hover:bg-gray-800/40 text-gray-300'
+                  ? 'bg-teal-950/40 border-teal-500 text-white'
+                  : 'border-slate-800 hover:bg-slate-800/50 text-slate-300'
               }`}>
                 <input
                   type="radio"
                   name="mode"
                   checked={mode === 'classical'}
                   onChange={() => setMode('classical')}
-                  className="text-blue-500 mt-1"
+                  className="text-teal-500 mt-1 accent-teal-500"
                 />
                 <div>
-                  <div className="font-semibold text-sm">Classical Ensemble Only</div>
-                  <div className="text-xs text-gray-400 mt-0.5 leading-relaxed">
-                    Random Forest + SVM + Logistic Regression.
+                  <div className="font-semibold text-xs text-white">Classical ML Ensemble Only</div>
+                  <div className="text-[11px] text-slate-400 mt-0.5 leading-relaxed">
+                    Random Forest + Support Vector Machine + Logistic Regression.
                   </div>
                 </div>
               </label>
             </div>
 
             <Button
-              className="w-full text-base py-3.5 shadow-[0_0_20px_rgba(99,102,241,0.35)]"
+              className="w-full text-sm py-3 font-semibold shadow-sm"
               size="lg"
               onClick={handlePredict}
               isLoading={predictLoading}
-              leftIcon={<Play size={18} />}
+              leftIcon={<Play size={16} />}
             >
-              {predictLoading ? 'Simulating Pipeline...' : 'Run Disease Risk Analysis'}
+              {predictLoading ? 'Simulating Pipeline...' : 'Generate Prediction'}
             </Button>
           </Card>
 
           {/* Interactive Pipeline Trace during execution */}
           {predictLoading && (
-            <Card glowing className="border-indigo-500/40 bg-gray-950">
-              <div className="text-xs font-mono font-semibold text-indigo-400 mb-3 flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-indigo-400 animate-ping"></span> Live Execution Trace:
+            <Card highlighted className="border-teal-500/40 bg-slate-950">
+              <div className="text-xs font-mono font-semibold text-teal-300 mb-3 flex items-center gap-2">
+                <span className="w-2 h-2 rounded-full bg-teal-400 animate-ping"></span>
+                <span>Live Execution Pipeline:</span>
               </div>
               <ProcessingPipeline steps={[
                 { step: 1, name: 'Biomedical Imputation & Outlier Clipping', status: 'completed' },
@@ -397,13 +388,13 @@ export const DiseaseAnalysisPage: React.FC = () => {
             </Card>
           )}
 
-          {/* Quick Explanation Note */}
-          <div className="bg-gray-950/80 rounded-2xl p-4 border border-gray-800/80 text-xs text-gray-400 space-y-2">
-            <div className="flex items-center gap-1.5 text-gray-200 font-semibold">
-              <Info size={14} className="text-quantum-400" /> SIH Demonstration Protocol:
+          {/* Clinical Protocol Information Box */}
+          <div className="bg-slate-900/70 rounded-xl p-3.5 border border-slate-800 text-xs text-slate-400 space-y-2">
+            <div className="flex items-center gap-1.5 text-slate-200 font-semibold">
+              <Info size={14} className="text-teal-400" /> Decision-Support Protocol:
             </div>
-            <p className="leading-relaxed">
-              Upon clicking <strong>Run Analysis</strong>, your parameters will be scaled and evaluated across both classical and quantum pipelines. Results will be synthesized in the <strong>Hybrid AI Dashboard</strong>.
+            <p className="leading-relaxed text-[11px]">
+              Upon clicking <strong>Generate Prediction</strong>, your parameters will be scaled and evaluated. Results and suggested review priority will render in the <strong>Clinical AI Dashboard</strong>.
             </p>
           </div>
         </div>

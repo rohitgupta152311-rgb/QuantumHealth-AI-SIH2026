@@ -5,7 +5,7 @@ import hashlib
 from datetime import datetime
 from fastapi import APIRouter, HTTPException, UploadFile, File, Form, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from sqlalchemy import select
+from sqlalchemy import insert, select
 from typing import Dict, List
 import pandas as pd
 import numpy as np
@@ -21,8 +21,9 @@ from app.schemas.dataset_schemas import (
 
 router = APIRouter()
 
-MAX_FILE_SIZE = 10 * 1024 * 1024  # 10 MB
-MAX_ROWS = 50_000
+MAX_FILE_SIZE = 50 * 1024 * 1024  # 50 MB
+MAX_ROWS = 250_000
+INSERT_BATCH_SIZE = 5_000
 
 
 @router.get("/available")
@@ -287,15 +288,21 @@ async def upload_dataset(
     db.add(dataset_record)
     await db.flush()  # get the ID
 
-    for _idx, _feature_vals, label_val, fp, feat_dict in accepted_records:
-        sample = TrainingSample(
-            dataset_id=dataset_record.id,
-            disease_id=disease,
-            fingerprint=fp,
-            features_json=json.dumps(feat_dict),
-            label=label_val,
-        )
-        db.add(sample)
+    # Use SQLAlchemy bulk inserts in batches. Keeping an ORM object for every
+    # accepted row is needlessly memory-intensive for a 200k-row CSV.
+    for start in range(0, len(accepted_records), INSERT_BATCH_SIZE):
+        batch = [
+            {
+                "dataset_id": dataset_record.id,
+                "disease_id": disease,
+                "fingerprint": fp,
+                "features_json": json.dumps(feat_dict),
+                "label": label_val,
+            }
+            for _idx, _feature_vals, label_val, fp, feat_dict
+            in accepted_records[start : start + INSERT_BATCH_SIZE]
+        ]
+        await db.execute(insert(TrainingSample), batch)
 
     await db.commit()
     await db.refresh(dataset_record)

@@ -11,23 +11,31 @@ interface ProgressBarProps {
 export const ProgressBar: React.FC<ProgressBarProps> = ({
   value,
   label,
-  color = 'bg-quantum-500',
+  color = 'bg-teal-500',
   showPercentage = true,
 }) => {
+  const safeVal = Math.min(Math.max(value, 0), 100);
   return (
     <div className="w-full">
       {(label || showPercentage) && (
-        <div className="mb-1 flex justify-between items-center text-sm">
-          {label && <span className="text-gray-300">{label}</span>}
-          {showPercentage && <span className="text-gray-400">{Math.round(value)}%</span>}
+        <div className="mb-1 flex justify-between items-center text-xs font-medium">
+          {label && <span className="text-slate-300">{label}</span>}
+          {showPercentage && <span className="text-slate-400 font-mono">{Math.round(safeVal)}%</span>}
         </div>
       )}
-      <div className="h-2 w-full overflow-hidden rounded-full bg-gray-800">
+      <div
+        className="h-2 w-full overflow-hidden rounded-full bg-slate-800"
+        role="progressbar"
+        aria-valuenow={Math.round(safeVal)}
+        aria-valuemin={0}
+        aria-valuemax={100}
+        aria-label={label || 'Progress'}
+      >
         <motion.div
-          className={`h-full ${color}`}
+          className={`h-full rounded-full ${color}`}
           initial={{ width: 0 }}
-          animate={{ width: `${value}%` }}
-          transition={{ duration: 1, ease: 'easeOut' }}
+          animate={{ width: `${safeVal}%` }}
+          transition={{ duration: 0.5, ease: 'easeOut' }}
         />
       </div>
     </div>

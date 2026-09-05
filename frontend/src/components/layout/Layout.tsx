@@ -10,7 +10,7 @@ export const Layout: React.FC = () => {
 
   if (isLandingPage) {
     return (
-      <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col selection:bg-indigo-500/30 selection:text-indigo-200">
+      <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-teal-500/20 selection:text-teal-200">
         <Header />
         <main className="flex-1">
           <Outlet />
@@ -20,7 +20,7 @@ export const Layout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-950 text-gray-100 flex flex-col selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="min-h-screen bg-slate-950 text-slate-100 flex flex-col selection:bg-teal-500/20 selection:text-teal-200">
       <Header
         onToggleMobileSidebar={() => setIsMobileSidebarOpen(prev => !prev)}
         isMobileSidebarOpen={isMobileSidebarOpen}
@@ -33,12 +33,13 @@ export const Layout: React.FC = () => {
 
         {/* Mobile Slide-over Sidebar Drawer */}
         {isMobileSidebarOpen && (
-          <div className="lg:hidden fixed inset-0 z-40 flex">
+          <div className="lg:hidden fixed inset-0 z-40 flex" role="dialog" aria-modal="true" aria-label="Navigation Drawer">
             <div
-              className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
+              className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm transition-opacity"
               onClick={() => setIsMobileSidebarOpen(false)}
+              aria-hidden="true"
             />
-            <div className="relative flex-1 flex flex-col max-w-xs w-full bg-gray-950 shadow-2xl z-50">
+            <div className="relative flex-1 flex flex-col max-w-xs w-full bg-slate-950 border-r border-slate-800 shadow-2xl z-50">
               <Sidebar onCloseMobile={() => setIsMobileSidebarOpen(false)} />
             </div>
           </div>
