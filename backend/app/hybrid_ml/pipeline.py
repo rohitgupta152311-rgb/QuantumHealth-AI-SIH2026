@@ -1,4 +1,4 @@
-﻿"""
+"""
 Full Hybrid Quantum-Classical Pipeline for QuantumHealth AI.
 Team Member 3 - Hybrid ML Layer.
 
@@ -205,14 +205,15 @@ class HybridPipeline:
         prediction  = "high_risk" if hybrid_prob >= 0.5 else "low_risk"
         risk_level  = risk_level_from_probability(hybrid_prob)
 
-        # Confidence: distance from the 0.5 decision boundary, scaled to [0, 1]
-        confidence = abs(hybrid_prob - 0.5) * 2.0
+        # Disagreement spread across classical and quantum models (not patient certainty)
+        all_candidate_probs = list(classical_probs) + [float(quantum_prob)]
+        disagreement = ConsensusEngine.compute_disagreement_range(all_candidate_probs)
 
         return {
             "risk_probability":  round(hybrid_prob, 6),
             "risk_percentage":   round(hybrid_prob * 100, 1),
             "prediction":        prediction,
-            "confidence":        round(confidence, 4),
+            "disagreement_range": disagreement,
             "risk_level":        risk_level,
             "classical_avg":     round(classical_avg, 6),
             "quantum_prob":      round(float(quantum_prob), 6),

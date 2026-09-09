@@ -62,7 +62,7 @@ async def test_duplicate_row_across_uploads_rejected(client: AsyncClient):
     """A row that was already uploaded in a previous file must be detected as duplicate."""
     # First upload: 1 row
     cols = DIABETES_FEATURES + ["label"]
-    row_common = [100, 80, 25, 45, 100, 30, 2, 0.5, 1]
+    row_common = [45, 1, 24.0, 120, 80, 95.0, 4.5, 1.2, 22.0, 75.0, 0, 1]
     csv1 = make_csv_bytes(cols, [row_common])
 
     resp1 = await client.post(
@@ -74,7 +74,7 @@ async def test_duplicate_row_across_uploads_rejected(client: AsyncClient):
     assert resp1.json()["accepted_rows"] == 1
 
     # Second upload: row_common (duplicate) + new row
-    row_new = [120, 85, 28, 50, 150, 32, 3, 0.6, 0]
+    row_new = [52, 2, 26.5, 130, 85, 105.0, 5.0, 1.8, 30.0, 80.0, 1, 0]
     csv2 = make_csv_bytes(cols, [row_common, row_new])
 
     resp2 = await client.post(
@@ -125,9 +125,9 @@ async def test_invalid_label_value(client: AsyncClient):
     """Labels other than 0/1 should be rejected per-row."""
     cols = DIABETES_FEATURES + ["label"]
     rows = [
-        [100, 80, 25, 45, 100, 30, 2, 0.5, 0],   # good
-        [100, 80, 25, 45, 100, 30, 2, 0.5, 2],   # bad label=2
-        [100, 81, 25, 45, 100, 30, 2, 0.5, -1],  # bad label=-1
+        [45, 1, 24.0, 120, 80, 95.0, 4.5, 1.2, 22.0, 75.0, 0, 0],   # good
+        [45, 1, 24.0, 120, 80, 95.0, 4.5, 1.2, 22.0, 75.0, 0, 2],   # bad label=2
+        [45, 1, 24.0, 120, 80, 95.0, 4.5, 1.2, 22.0, 75.0, 0, -1],  # bad label=-1
     ]
     csv_buf = make_csv_bytes(cols, rows)
     resp = await client.post(
@@ -146,7 +146,7 @@ async def test_invalid_label_value(client: AsyncClient):
 async def test_non_numeric_label(client: AsyncClient):
     """A text label like 'yes' should be rejected."""
     cols = DIABETES_FEATURES + ["label"]
-    rows = [[100, 80, 25, 45, 100, 30, 2, 0.5, "yes"]]
+    rows = [[45, 1, 24.0, 120, 80, 95.0, 4.5, 1.2, 22.0, 75.0, 0, "yes"]]
     csv_buf = make_csv_bytes(cols, rows)
     resp = await client.post(
         UPLOAD_URL,
@@ -165,8 +165,8 @@ async def test_missing_values_rejected(client: AsyncClient):
     """Rows with NaN / blank cells should be rejected."""
     cols = DIABETES_FEATURES + ["label"]
     rows = [
-        [100, 80, 25, 45, 100, 30, 2, 0.5, 1],         # good
-        [100, None, 25, 45, 100, 30, 2, 0.5, 0],        # missing value
+        [45, 1, 24.0, 120, 80, 95.0, 4.5, 1.2, 22.0, 75.0, 0, 1],         # good
+        [45, None, 24.0, 120, 80, 95.0, 4.5, 1.2, 22.0, 75.0, 0, 0],      # missing value
     ]
     csv_buf = make_csv_bytes(cols, rows)
     resp = await client.post(
@@ -187,7 +187,7 @@ async def test_missing_values_rejected(client: AsyncClient):
 async def test_duplicate_rows_rejected(client: AsyncClient):
     """Identical rows within the same file should be deduplicated (keep first, reject rest)."""
     cols = DIABETES_FEATURES + ["label"]
-    row = [100, 80, 25, 45, 100, 30, 2, 0.5, 1]
+    row = [45, 1, 24.0, 120, 80, 95.0, 4.5, 1.2, 22.0, 75.0, 0, 1]
     rows = [row, row, row]  # 3 identical
     csv_buf = make_csv_bytes(cols, rows)
     resp = await client.post(

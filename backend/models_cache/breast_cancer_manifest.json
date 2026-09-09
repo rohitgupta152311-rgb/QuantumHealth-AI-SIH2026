@@ -1,0 +1,649 @@
+{
+  "disease_id": "breast_cancer",
+  "created_at": "2026-09-08T08:33:04.263157+00:00",
+  "split_protocol": "Stratified 60/20/20 split (seed=42)",
+  "split_sizes": {
+    "train_samples": 341,
+    "validation_samples": 114,
+    "test_samples": 114
+  },
+  "split_hashes": {
+    "train_sha256": "1be3fd1db097bfc19311465c8403fd932f432c8a91a1771e78b5cb742b5c0545",
+    "val_sha256": "26d34cbbfbddda54a6ae32e72e3e92059543e71bbfa4bdea8acc52e629862238",
+    "test_sha256": "0ac1e66c633ce6a3eedc56a200f978eaaedd5c46b141d69b1fa56179d8e466eb"
+  },
+  "preprocessing_artifact_sha256": "561a80a7e6df60799e71cceb299401485f9a76814ac1be29e815f5a9aa6efca1",
+  "quantum_configuration": {
+    "n_qubits": 6,
+    "n_layers": 2,
+    "circuit_depth": 17,
+    "backend": "numpy:statevector (exact simulator)",
+    "pennylane_qnode_available": true,
+    "encoding": "Angle Encoding RY(pi * x_i)",
+    "measurement": "PauliZ expectation <Z_0>",
+    "calibration_transform": "born_probability"
+  },
+  "hybrid_ensemble_configuration": {
+    "tuned_alpha": 0.0,
+    "alpha_selection_protocol": "3-fold inner cross-validation on training split",
+    "calibration_method": "Platt Scaling on unaugmented validation split",
+    "abstention_disagreement_threshold": 0.4814
+  },
+  "calibration": {
+    "method": "Platt Scaling (Sigmoid fitted on unaugmented validation split)",
+    "calibrated_models": [
+      "RandomForest",
+      "SVM",
+      "LogisticRegression",
+      "GradientBoosting",
+      "XGBoost",
+      "QuantumVQC"
+    ]
+  },
+  "models": [
+    "RandomForest",
+    "SVM",
+    "LogisticRegression",
+    "GradientBoosting",
+    "XGBoost",
+    "QuantumVQC",
+    "HybridEnsemble"
+  ],
+  "dataset_metadata": {
+    "disease_id": "breast_cancer",
+    "display_name": "Breast Tumor Cytopathology Risk",
+    "is_synthetic_demonstration": false,
+    "source_citation": "Street et al., 1993. UCI Wisconsin Diagnostic Breast Cancer (WDBC).",
+    "source_url": "https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic)",
+    "dataset_license": "CC BY 4.0",
+    "source_rows": 569,
+    "training_rows_unaugmented": 341,
+    "validation_rows_unaugmented": 114,
+    "test_rows_unaugmented": 114,
+    "augmentation_method": "SMOTE applied solely to training folds for class balancing",
+    "augmentation_applied_to": "training folds only",
+    "class_balance_source": "62.7% benign (1) / 37.3% malignant (0)",
+    "evaluation_protocol": "Stratified 60/20/20 split (seed=42). Preprocessing fit strictly on training split. SMOTE used only on training folds. Platt probability calibration fit on unaugmented validation split. Final reported metrics computed once on locked, unaugmented test split.",
+    "split_seed": 42,
+    "features": [
+      {
+        "name": "mean radius",
+        "label": "Mean Radius",
+        "unit": "\u03bcm",
+        "min_val": 6.0,
+        "max_val": 30.0,
+        "missing_sentinels": [],
+        "required": true,
+        "description": "Mean of distances from center to perimeter (Mean)"
+      },
+      {
+        "name": "mean texture",
+        "label": "Mean Texture",
+        "unit": "gray-level SD",
+        "min_val": 9.0,
+        "max_val": 40.0,
+        "missing_sentinels": [],
+        "required": true,
+        "description": "Standard deviation of gray-scale values (Mean)"
+      },
+      {
+        "name": "mean perimeter",
+        "label": "Mean Perimeter",
+        "unit": "\u03bcm",
+        "min_val": 40.0,
+        "max_val": 190.0,
+        "missing_sentinels": [],
+        "required": true,
+        "description": "Perimeter of the cell nucleus contour (Mean)"
+      },
+      {
+        "name": "mean area",
+        "label": "Mean Area",
+        "unit": "\u03bcm\u00b2",
+        "min_val": 140.0,
+        "max_val": 2550.0,
+        "missing_sentinels": [],
+        "required": true,
+        "description": "Area enclosed by the cell nucleus contour (Mean)"
+      },
+      {
+        "name": "mean smoothness",
+        "label": "Mean Smoothness",
+        "unit": "score",
+        "min_val": 0.05,
+        "max_val": 0.17,
+        "missing_sentinels": [],
+        "required": true,
+        "description": "Local variation in contour radius lengths (Mean)"
+      },
+      {
+        "name": "mean compactness",
+        "label": "Mean Compactness",
+        "unit": "score",
+        "min_val": 0.01,
+        "max_val": 0.35,
+        "missing_sentinels": [],
+        "required": true,
+        "description": "Perimeter^2 / Area - 1.0 (Mean)"
+      },
+      {
+        "name": "mean concavity",
+        "label": "Mean Concavity",
+        "unit": "score",
+        "min_val": 0.0,
+        "max_val": 0.45,
+        "missing_sentinels": [],
+        "required": true,
+        "description": "Severity of concave portions of the contour (Mean)"
+      },
+      {
+        "name": "mean concave points",
+        "label": "Mean Concave Points",
+        "unit": "count",
+        "min_val": 0.0,
+        "max_val": 0.21,
+        "missing_sentinels": [],
+        "required": true,
+        "description": "Number of concave portions of the contour (Mean)"
+      },
+      {
+        "name": "mean symmetry",
+        "label": "Mean Symmetry",
+        "unit": "score",
+        "min_val": 0.1,
+        "max_val": 0.31,
+        "missing_sentinels": [],
+        "required": true,
+        "description": "Bilateral symmetry metric of the cell nucleus (Mean)"
+      },
+      {
+        "name": "mean fractal dimension",
+        "label": "Mean Fractal Dimension",
+        "unit": "dim",
+        "min_val": 0.04,
+        "max_val": 0.1,
+        "missing_sentinels": [],
+        "required": true,
+        "description": "Coastline approximation fractal metric - 1.0 (Mean)"
+      },
+      {
+        "name": "radius error",
+        "label": "Radius SE",
+        "unit": "\u03bcm",
+        "min_val": 0.06,
+        "max_val": 4.5,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Mean of distances from center to perimeter (SE)"
+      },
+      {
+        "name": "texture error",
+        "label": "Texture SE",
+        "unit": "gray-level SD",
+        "min_val": 0.09,
+        "max_val": 6.0,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Standard deviation of gray-scale values (SE)"
+      },
+      {
+        "name": "perimeter error",
+        "label": "Perimeter SE",
+        "unit": "\u03bcm",
+        "min_val": 0.4,
+        "max_val": 28.5,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Perimeter of the cell nucleus contour (SE)"
+      },
+      {
+        "name": "area error",
+        "label": "Area SE",
+        "unit": "\u03bcm\u00b2",
+        "min_val": 1.4,
+        "max_val": 382.5,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Area enclosed by the cell nucleus contour (SE)"
+      },
+      {
+        "name": "smoothness error",
+        "label": "Smoothness SE",
+        "unit": "score",
+        "min_val": 0.0005,
+        "max_val": 0.0255,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Local variation in contour radius lengths (SE)"
+      },
+      {
+        "name": "compactness error",
+        "label": "Compactness SE",
+        "unit": "score",
+        "min_val": 0.0001,
+        "max_val": 0.0525,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Perimeter^2 / Area - 1.0 (SE)"
+      },
+      {
+        "name": "concavity error",
+        "label": "Concavity SE",
+        "unit": "score",
+        "min_val": 0.0,
+        "max_val": 0.0675,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Severity of concave portions of the contour (SE)"
+      },
+      {
+        "name": "concave points error",
+        "label": "Concave Points SE",
+        "unit": "count",
+        "min_val": 0.0,
+        "max_val": 0.0315,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Number of concave portions of the contour (SE)"
+      },
+      {
+        "name": "symmetry error",
+        "label": "Symmetry SE",
+        "unit": "score",
+        "min_val": 0.001,
+        "max_val": 0.0465,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Bilateral symmetry metric of the cell nucleus (SE)"
+      },
+      {
+        "name": "fractal dimension error",
+        "label": "Fractal Dimension SE",
+        "unit": "dim",
+        "min_val": 0.0004,
+        "max_val": 0.015,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Coastline approximation fractal metric - 1.0 (SE)"
+      },
+      {
+        "name": "worst radius",
+        "label": "Worst Radius",
+        "unit": "\u03bcm",
+        "min_val": 6.6,
+        "max_val": 42.0,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Mean of distances from center to perimeter (Worst)"
+      },
+      {
+        "name": "worst texture",
+        "label": "Worst Texture",
+        "unit": "gray-level SD",
+        "min_val": 9.9,
+        "max_val": 56.0,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Standard deviation of gray-scale values (Worst)"
+      },
+      {
+        "name": "worst perimeter",
+        "label": "Worst Perimeter",
+        "unit": "\u03bcm",
+        "min_val": 44.0,
+        "max_val": 266.0,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Perimeter of the cell nucleus contour (Worst)"
+      },
+      {
+        "name": "worst area",
+        "label": "Worst Area",
+        "unit": "\u03bcm\u00b2",
+        "min_val": 154.0,
+        "max_val": 3570.0,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Area enclosed by the cell nucleus contour (Worst)"
+      },
+      {
+        "name": "worst smoothness",
+        "label": "Worst Smoothness",
+        "unit": "score",
+        "min_val": 0.06,
+        "max_val": 0.24,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Local variation in contour radius lengths (Worst)"
+      },
+      {
+        "name": "worst compactness",
+        "label": "Worst Compactness",
+        "unit": "score",
+        "min_val": 0.01,
+        "max_val": 0.49,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Perimeter^2 / Area - 1.0 (Worst)"
+      },
+      {
+        "name": "worst concavity",
+        "label": "Worst Concavity",
+        "unit": "score",
+        "min_val": 0.0,
+        "max_val": 0.63,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Severity of concave portions of the contour (Worst)"
+      },
+      {
+        "name": "worst concave points",
+        "label": "Worst Concave Points",
+        "unit": "count",
+        "min_val": 0.0,
+        "max_val": 0.29,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Number of concave portions of the contour (Worst)"
+      },
+      {
+        "name": "worst symmetry",
+        "label": "Worst Symmetry",
+        "unit": "score",
+        "min_val": 0.11,
+        "max_val": 0.43,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Bilateral symmetry metric of the cell nucleus (Worst)"
+      },
+      {
+        "name": "worst fractal dimension",
+        "label": "Worst Fractal Dimension",
+        "unit": "dim",
+        "min_val": 0.04,
+        "max_val": 0.14,
+        "missing_sentinels": [],
+        "required": false,
+        "description": "Coastline approximation fractal metric - 1.0 (Worst)"
+      }
+    ],
+    "presets": {
+      "healthy": {
+        "is_synthetic": true,
+        "demo_label": "Typical Benign Cytology Profile",
+        "description": "Small nuclear radius, low concavity, smooth regular contours.",
+        "data": {
+          "mean radius": 11.2,
+          "mean texture": 14.5,
+          "mean perimeter": 72.0,
+          "mean area": 385.0,
+          "mean smoothness": 0.082,
+          "mean compactness": 0.048,
+          "mean concavity": 0.015,
+          "mean concave points": 0.012,
+          "mean symmetry": 0.165,
+          "mean fractal dimension": 0.058
+        }
+      },
+      "moderate": {
+        "is_synthetic": true,
+        "demo_label": "Atypical Cytology / Borderline Risk",
+        "description": "Moderate pleomorphism, increased nuclear area and surface texture variation.",
+        "data": {
+          "mean radius": 14.8,
+          "mean texture": 19.2,
+          "mean perimeter": 96.5,
+          "mean area": 680.0,
+          "mean smoothness": 0.102,
+          "mean compactness": 0.115,
+          "mean concavity": 0.065,
+          "mean concave points": 0.048,
+          "mean symmetry": 0.188,
+          "mean fractal dimension": 0.063
+        }
+      },
+      "high_risk": {
+        "is_synthetic": true,
+        "demo_label": "High-Grade Malignant Cytology Profile",
+        "description": "Prominent nucleoli, high concavity, irregular perimeters, high nuclear area.",
+        "data": {
+          "mean radius": 20.5,
+          "mean texture": 25.8,
+          "mean perimeter": 138.0,
+          "mean area": 1320.0,
+          "mean smoothness": 0.125,
+          "mean compactness": 0.245,
+          "mean concavity": 0.285,
+          "mean concave points": 0.155,
+          "mean symmetry": 0.242,
+          "mean fractal dimension": 0.075
+        }
+      }
+    },
+    "id": "breast_cancer",
+    "name": "Breast Tumor Cytopathology Risk",
+    "description": "Breast tumor malignancy risk prediction using 30 digitized fine needle aspirate (FNA) nuclear morphology biomarkers from the UCI Wisconsin Diagnostic Breast Cancer (WDBC) study.",
+    "dataset_size": 569,
+    "status": "ready"
+  },
+  "test_metrics_summary": [
+    {
+      "model": "RandomForest",
+      "type": "classical",
+      "accuracy": 0.9386,
+      "roc_auc": 0.9937,
+      "pr_auc": 0.9963,
+      "brier_score": 0.0365,
+      "sensitivity": 0.9444,
+      "specificity": 0.9286,
+      "f1_score": 0.951,
+      "is_calibrated": true,
+      "confidence_intervals": {
+        "valid_bootstrap_samples": 200,
+        "f1_95_ci": [
+          0.9104,
+          0.9799
+        ],
+        "roc_auc_95_ci": [
+          0.9833,
+          1.0
+        ],
+        "brier_95_ci": [
+          0.0145,
+          0.0612
+        ],
+        "accuracy_95_ci": [
+          0.8947,
+          0.9737
+        ]
+      }
+    },
+    {
+      "model": "SVM",
+      "type": "classical",
+      "accuracy": 0.9737,
+      "roc_auc": 0.9947,
+      "pr_auc": 0.9968,
+      "brier_score": 0.0287,
+      "sensitivity": 0.9722,
+      "specificity": 0.9762,
+      "f1_score": 0.979,
+      "is_calibrated": true,
+      "confidence_intervals": {
+        "valid_bootstrap_samples": 200,
+        "f1_95_ci": [
+          0.9517,
+          1.0
+        ],
+        "roc_auc_95_ci": [
+          0.9821,
+          1.0
+        ],
+        "brier_95_ci": [
+          0.0149,
+          0.0495
+        ],
+        "accuracy_95_ci": [
+          0.9386,
+          1.0
+        ]
+      }
+    },
+    {
+      "model": "LogisticRegression",
+      "type": "classical",
+      "accuracy": 0.9825,
+      "roc_auc": 0.9931,
+      "pr_auc": 0.9956,
+      "brier_score": 0.0273,
+      "sensitivity": 1.0,
+      "specificity": 0.9524,
+      "f1_score": 0.9863,
+      "is_calibrated": true,
+      "confidence_intervals": {
+        "valid_bootstrap_samples": 200,
+        "f1_95_ci": [
+          0.9673,
+          1.0
+        ],
+        "roc_auc_95_ci": [
+          0.9787,
+          1.0
+        ],
+        "brier_95_ci": [
+          0.0145,
+          0.0437
+        ],
+        "accuracy_95_ci": [
+          0.9561,
+          1.0
+        ]
+      }
+    },
+    {
+      "model": "GradientBoosting",
+      "type": "classical",
+      "accuracy": 0.9474,
+      "roc_auc": 0.9911,
+      "pr_auc": 0.9944,
+      "brier_score": 0.0342,
+      "sensitivity": 0.9583,
+      "specificity": 0.9286,
+      "f1_score": 0.9583,
+      "is_calibrated": true,
+      "confidence_intervals": {
+        "valid_bootstrap_samples": 200,
+        "f1_95_ci": [
+          0.924,
+          0.9859
+        ],
+        "roc_auc_95_ci": [
+          0.9722,
+          1.0
+        ],
+        "brier_95_ci": [
+          0.0177,
+          0.058
+        ],
+        "accuracy_95_ci": [
+          0.9035,
+          0.9825
+        ]
+      }
+    },
+    {
+      "model": "XGBoost",
+      "type": "classical",
+      "accuracy": 0.9474,
+      "roc_auc": 0.9937,
+      "pr_auc": 0.9963,
+      "brier_score": 0.0335,
+      "sensitivity": 0.9583,
+      "specificity": 0.9286,
+      "f1_score": 0.9583,
+      "is_calibrated": true,
+      "confidence_intervals": {
+        "valid_bootstrap_samples": 200,
+        "f1_95_ci": [
+          0.918,
+          0.9861
+        ],
+        "roc_auc_95_ci": [
+          0.9814,
+          1.0
+        ],
+        "brier_95_ci": [
+          0.0154,
+          0.0595
+        ],
+        "accuracy_95_ci": [
+          0.9033,
+          0.9825
+        ]
+      }
+    },
+    {
+      "model": "QuantumVQC",
+      "type": "quantum",
+      "accuracy": 0.8684,
+      "roc_auc": 0.9901,
+      "pr_auc": 0.994,
+      "brier_score": 0.1411,
+      "sensitivity": 1.0,
+      "specificity": 0.6429,
+      "f1_score": 0.9057,
+      "is_calibrated": true,
+      "confidence_intervals": {
+        "valid_bootstrap_samples": 200,
+        "f1_95_ci": [
+          0.8549,
+          0.9455
+        ],
+        "roc_auc_95_ci": [
+          0.9753,
+          0.9993
+        ],
+        "brier_95_ci": [
+          0.1281,
+          0.1558
+        ],
+        "accuracy_95_ci": [
+          0.8068,
+          0.9211
+        ]
+      }
+    },
+    {
+      "model": "HybridEnsemble",
+      "type": "hybrid",
+      "accuracy": 0.9561,
+      "roc_auc": 0.995,
+      "pr_auc": 0.9971,
+      "brier_score": 0.035,
+      "sensitivity": 0.9722,
+      "specificity": 0.9286,
+      "f1_score": 0.9655,
+      "is_calibrated": true,
+      "confidence_intervals": {
+        "valid_bootstrap_samples": 200,
+        "f1_95_ci": [
+          0.9272,
+          0.9875
+        ],
+        "roc_auc_95_ci": [
+          0.9853,
+          1.0
+        ],
+        "brier_95_ci": [
+          0.0217,
+          0.056
+        ],
+        "accuracy_95_ci": [
+          0.9123,
+          0.9825
+        ]
+      }
+    }
+  ],
+  "manifest_sha256": "f426597d9872cf939cb5c7585845d2d49136c486cc6c1dc1528225dbd3f236b4"
+}

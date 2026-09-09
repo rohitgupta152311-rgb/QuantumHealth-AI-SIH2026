@@ -13,7 +13,7 @@ export const Layout: React.FC = () => {
 
   if (isLandingPage) {
     return (
-      <div className="min-h-screen bg-[#030712] text-gray-100 flex flex-col selection:bg-indigo-500/30 selection:text-indigo-200">
+      <div className="min-h-screen bg-transparent text-gray-100 flex flex-col selection:bg-indigo-500/30 selection:text-indigo-200">
         <ParticleBackground />
         <Header />
         <main className="flex-1 relative z-10">
@@ -28,7 +28,7 @@ export const Layout: React.FC = () => {
   }
 
   return (
-    <div className="min-h-screen bg-[#030712] text-gray-100 flex flex-col selection:bg-indigo-500/30 selection:text-indigo-200">
+    <div className="min-h-screen bg-transparent text-gray-100 flex flex-col selection:bg-indigo-500/30 selection:text-indigo-200">
       <ParticleBackground />
       <Header
         onToggleMobileSidebar={() => setIsMobileSidebarOpen(prev => !prev)}
@@ -47,7 +47,7 @@ export const Layout: React.FC = () => {
               className="fixed inset-0 bg-black/70 backdrop-blur-sm transition-opacity"
               onClick={() => setIsMobileSidebarOpen(false)}
             />
-            <div className="relative flex-1 flex flex-col max-w-xs w-full bg-gray-950 shadow-2xl z-50">
+            <div className="relative flex-1 flex flex-col max-w-xs w-full bg-black shadow-2xl z-50">
               <Sidebar onCloseMobile={() => setIsMobileSidebarOpen(false)} />
             </div>
           </div>

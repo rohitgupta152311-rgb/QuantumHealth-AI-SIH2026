@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Atom, Activity, Sparkles, Menu, X, Cpu, BarChart3, Brain } from 'lucide-react';
+import { Atom, Activity, Sparkles, Menu, X, Cpu, BarChart3, Brain, Award } from 'lucide-react';
 import { healthCheck } from '../../services/api';
 
 interface HeaderProps {
@@ -35,6 +35,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar, isMobileS
   }, []);
 
   const navLinks = [
+    { to: '/about', icon: Award, label: 'Overview' },
     { to: '/analyze', icon: Activity, label: 'Analyze' },
     { to: '/quantum-lab', icon: Cpu, label: 'Quantum Lab' },
     { to: '/comparison', icon: BarChart3, label: 'Compare' },
@@ -48,7 +49,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar, isMobileS
       transition={{ duration: 0.6, ease: [0.25, 0.46, 0.45, 0.94] }}
       className={`sticky top-0 z-50 w-full transition-all duration-500 ${
         scrolled
-          ? 'bg-[#030712]/90 backdrop-blur-2xl border-b border-white/[0.06] shadow-[0_8px_32px_rgba(0,0,0,0.6)]'
+          ? 'bg-black/80 backdrop-blur-2xl border-b border-white/[0.04] shadow-[0_4px_24px_rgba(0,0,0,0.5)]'
           : 'bg-transparent border-b border-transparent'
       }`}
     >
@@ -56,7 +57,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar, isMobileS
         <div className="flex items-center gap-3">
           {onToggleMobileSidebar && (
             <button onClick={onToggleMobileSidebar}
-              className="lg:hidden p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors"
+              className="lg:hidden p-2 rounded-lg text-white/40 hover:text-white hover:bg-white/[0.05] transition-colors"
             >
               {isMobileSidebarOpen ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -64,21 +65,21 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar, isMobileS
 
           <Link to="/" className="flex items-center gap-2.5 font-extrabold text-xl tracking-tight group">
             <motion.div
-              whileHover={{ scale: 1.15, rotate: 360 }}
+              whileHover={{ scale: 1.1, rotate: 360 }}
               transition={{ duration: 0.8, ease: 'easeInOut' }}
-              className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-[0_0_25px_rgba(129,140,248,0.5)] group-hover:shadow-[0_0_40px_rgba(129,140,248,0.7)] transition-shadow"
+              className="relative flex items-center justify-center w-9 h-9 rounded-xl bg-gradient-to-br from-indigo-500 via-purple-500 to-pink-500 text-white shadow-[0_0_20px_rgba(99,102,241,0.3)] group-hover:shadow-[0_0_30px_rgba(99,102,241,0.5)] transition-shadow"
             >
-              <Atom size={22} className="animate-spin-slow" />
+              <Atom size={20} className="animate-spin-slow" />
             </motion.div>
-            <span className="text-white font-black">
+            <span className="text-white/90 font-bold tracking-tight">
               Quantum<span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400">Health</span>
             </span>
           </Link>
 
           <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.4 }}
-            className="hidden sm:flex items-center gap-1.5 ml-2 rounded-full bg-white/[0.04] px-3 py-1 text-[11px] font-bold text-indigo-300 border border-white/[0.08]"
+            className="hidden sm:flex items-center gap-1.5 ml-2 rounded-full bg-white/[0.03] px-3 py-1 text-[10px] font-semibold text-indigo-300/70 border border-white/[0.06]"
           >
-            <Sparkles size={11} className="text-amber-400" />
+            <Sparkles size={10} className="text-amber-400/70" />
             SIH 2026
           </motion.div>
         </div>
@@ -90,15 +91,15 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar, isMobileS
             const isActive = location.pathname === link.to;
             return (
               <Link key={link.to} to={link.to}
-                className={`relative flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-300 ${
-                  isActive ? 'text-white bg-white/[0.08]' : 'text-gray-400 hover:text-white hover:bg-white/[0.04]'
+                className={`relative flex items-center gap-1.5 px-3.5 py-2 rounded-lg text-xs font-medium transition-all duration-200 ${
+                  isActive ? 'text-white bg-white/[0.06]' : 'text-white/35 hover:text-white/70 hover:bg-white/[0.03]'
                 }`}
               >
                 <Icon size={14} />
                 {link.label}
                 {isActive && (
                   <motion.div layoutId="nav-pill"
-                    className="absolute inset-0 rounded-lg bg-gradient-to-r from-indigo-500/10 to-purple-500/10 border border-indigo-500/20"
+                    className="absolute inset-0 rounded-lg bg-white/[0.04] border border-white/[0.08]"
                     transition={{ type: 'spring', stiffness: 400, damping: 30 }}
                   />
                 )}
@@ -109,7 +110,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar, isMobileS
 
         {/* Right */}
         <div className="flex items-center gap-3">
-          <div className="hidden md:flex items-center gap-2 rounded-full bg-white/[0.03] px-3.5 py-1.5 text-[11px] font-mono text-gray-400 border border-white/[0.06]">
+          <div className="hidden md:flex items-center gap-2 rounded-full bg-white/[0.02] px-3.5 py-1.5 text-[10px] font-mono text-white/30 border border-white/[0.04]">
             <div className="relative flex h-1.5 w-1.5">
               <span className={`animate-ping absolute inline-flex h-full w-full rounded-full opacity-75 ${
                 backendStatus === 'connected' ? 'bg-emerald-400' : 'bg-indigo-400'
@@ -118,12 +119,12 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar, isMobileS
                 backendStatus === 'connected' ? 'bg-emerald-400' : 'bg-indigo-400'
               }`} />
             </div>
-            <span className="text-gray-500">{backendInfo}</span>
+            <span className="text-white/25">{backendInfo}</span>
           </div>
 
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.93 }}>
+          <motion.div whileHover={{ scale: 1.03 }} whileTap={{ scale: 0.97 }}>
             <Link to="/analyze"
-              className="btn-glow flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-[0_0_20px_rgba(129,140,248,0.4)] hover:shadow-[0_0_35px_rgba(129,140,248,0.6)] transition-all"
+              className="btn-glow flex items-center gap-2 px-5 py-2 rounded-xl text-xs font-semibold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-[0_0_15px_rgba(99,102,241,0.25)] hover:shadow-[0_0_25px_rgba(99,102,241,0.4)] transition-all"
             >
               <Activity size={14} />
               <span className="hidden sm:inline">Run Prediction</span>

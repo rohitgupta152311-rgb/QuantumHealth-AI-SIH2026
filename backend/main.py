@@ -1,5 +1,6 @@
 import sys
 import time
+import asyncio
 import logging
 from pathlib import Path
 
@@ -34,18 +35,18 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.warning(f"Database initialization note: {e}")
 
-    # Pre-warm all 4 disease models and quantum circuits in RAM for sub-150ms instant predictions
-    try:
-        from app.api.routes.predict import get_prediction_service
-        pred_service = get_prediction_service()
-        for disease in ["diabetes", "heart", "kidney", "breast_cancer"]:
-            await pred_service.get_or_train_models(disease)
-            d_info = pred_service._dataset_loader.get_disease_info(disease)
-            dummy_feats = {f["name"]: 0.0 for f in d_info["features"]}
-            await pred_service.predict(disease, dummy_feats)
-        logger.info("All 4 disease models and quantum circuits pre-warmed in memory for instant inference.")
-    except Exception as e:
-        logger.warning(f"Model warm-up note: {e}")
+    # Non-blocking background pre-warm of disease models and circuits
+    async def _prewarm_models():
+        try:
+            from app.api.routes.predict import get_prediction_service
+            pred_service = get_prediction_service()
+            for disease in ["diabetes", "heart", "kidney", "breast_cancer"]:
+                await pred_service.get_or_train_models(disease)
+            logger.info("All 4 disease models and quantum circuits ready. Models: RF(300/8), SVM, LR, HistGradientBoosting, XGBoost.")
+        except Exception as e:
+            logger.warning(f"Model background warm-up note: {e}")
+
+    asyncio.create_task(_prewarm_models())
 
     yield
 
@@ -62,9 +63,9 @@ app = FastAPI(
         "**Smart India Hackathon (SIH) 2026** — Problem Statement **#26139**\n\n"
         "- **Organization:** Egreen Quanta\n"
         "- **Category:** Software / MedTech / BioTech / HealthTech\n"
-        "- **Architecture:** Classical Ensemble (RF, SVM, LR) + PennyLane Variational Quantum Circuit (VQC)\n"
+        "- **Architecture:** Classical Ensemble (RF, SVM, LR, XGBoost, HistGradientBoosting) + PennyLane VQC with Data Re-uploading\n"
         "- **Simulator:** `pennylane:default.qubit` (Angle Encoding with Ring CNOT Entanglement)\n\n"
-        "*(Note: All quantum computations run in Quantum Simulation Mode.)*"
+        "*(Note: All quantum computations run in Quantum Simulation Mode. Models: RF(300/8), SVM, LR, HistGradientBoosting, XGBoost)*"
     ),
     openapi_tags=[
         {"name": "health", "description": "System health and quantum simulator backend verification."},
@@ -87,13 +88,17 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+import uuid
+
 # Process timing middleware
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
+    request_id = str(uuid.uuid4())
     start_time = time.time()
     response = await call_next(request)
     process_time = (time.time() - start_time) * 1000
     response.headers["X-Process-Time-Ms"] = f"{process_time:.2f}"
+    response.headers["X-Request-ID"] = request_id
     return response
 
 app.include_router(api_router, prefix="/api/v1")

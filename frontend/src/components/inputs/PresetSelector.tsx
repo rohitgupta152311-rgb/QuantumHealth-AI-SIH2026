@@ -66,7 +66,7 @@ export const PresetSelector: React.FC<PresetSelectorProps> = ({ activePreset, on
             className={`relative flex flex-col items-center gap-2 p-4 rounded-2xl border-2 transition-all duration-300 cursor-pointer overflow-hidden ${
               isActive
                 ? `${p.border} ${p.bg} ${p.glow}`
-                : 'border-gray-800 bg-gray-950/60 hover:border-gray-700'
+                : 'border-white/[0.06] bg-gray-950/60 hover:border-gray-700'
             }`}
           >
             {/* Active glow orb background */}
@@ -85,7 +85,7 @@ export const PresetSelector: React.FC<PresetSelectorProps> = ({ activePreset, on
             <motion.div
               animate={isActive ? { rotate: [0, -8, 8, 0] } : {}}
               transition={{ duration: 0.5, ease: 'easeInOut' }}
-              className={`relative z-10 p-2 rounded-xl ${isActive ? p.bg : 'bg-gray-900'}`}
+              className={`relative z-10 p-2 rounded-xl ${isActive ? p.bg : 'bg-white/[0.03]'}`}
             >
               <Icon size={20} className={isActive ? p.text : 'text-gray-500'} />
             </motion.div>

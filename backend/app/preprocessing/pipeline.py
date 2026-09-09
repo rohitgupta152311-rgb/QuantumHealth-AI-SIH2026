@@ -14,13 +14,19 @@ class PreprocessingPipeline:
     1. Classical Branch: DataCleaner -> StandardScaler (for RF, SVM, LR)
     2. Quantum Branch: DataCleaner -> MinMaxScaler[0, 1] -> SelectKBest (for VQC)
 
-    Both scalers and feature selector are fitted strictly on training data.
+    Both scalers, imputer, and feature selector are fitted strictly on training data.
     """
 
-    def __init__(self, n_quantum_features: int = 6, model_version: str = "v1.0"):
+    def __init__(
+        self,
+        n_quantum_features: int = 6,
+        model_version: str = "v1.0",
+        missing_sentinels: dict[int, list[float]] | None = None
+    ):
         self.n_quantum_features = n_quantum_features
         self.model_version = model_version
-        self.cleaner = DataCleaner()
+        self.missing_sentinels = missing_sentinels or {}
+        self.cleaner = DataCleaner(missing_sentinels=self.missing_sentinels)
         self.normalizer_classical = FeatureNormalizer(method="standard")
         self.normalizer_quantum = FeatureNormalizer(method="minmax")
         self.selector = FeatureSelector(n_features=n_quantum_features)
@@ -36,7 +42,7 @@ class PreprocessingPipeline:
         """Fit all preprocessing components strictly on training data."""
         self.feature_names = list(feature_names)
 
-        # 1. Clean data (impute & compute outlier bounds)
+        # 1. Clean data (impute with sentinels masked & compute outlier bounds)
         X_clean = self.cleaner.fit_transform(X)
 
         # 2. Fit classical scaler (StandardScaler)
@@ -85,6 +91,7 @@ class PreprocessingPipeline:
             "n_quantum_features": self.n_quantum_features,
             "quantum_scaling": "MinMaxScaler(0, 1)",
             "classical_scaling": "StandardScaler()",
+            "missing_sentinels_configured": bool(self.missing_sentinels),
         }
 
     def transform_single(self, features_dict: dict, feature_names: list[str]) -> tuple[np.ndarray, np.ndarray]:
@@ -99,6 +106,7 @@ class PreprocessingPipeline:
         state = {
             "n_quantum_features": self.n_quantum_features,
             "model_version": self.model_version,
+            "missing_sentinels": self.missing_sentinels,
             "cleaner": self.cleaner,
             "normalizer_classical": self.normalizer_classical,
             "normalizer_quantum": self.normalizer_quantum,
@@ -113,6 +121,7 @@ class PreprocessingPipeline:
         state = joblib.load(str(path))
         self.n_quantum_features = state["n_quantum_features"]
         self.model_version = state.get("model_version", "v1.0")
+        self.missing_sentinels = state.get("missing_sentinels", {})
         self.cleaner = state["cleaner"]
         self.normalizer_classical = state["normalizer_classical"]
         self.normalizer_quantum = state["normalizer_quantum"]

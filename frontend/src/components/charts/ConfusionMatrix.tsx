@@ -26,7 +26,7 @@ export const ConfusionMatrix: React.FC<ConfusionMatrixProps> = ({
     ],
     [
       { label: 'False Negative (FN)', count: fn, color: 'bg-rose-950/40 border-rose-500/30 text-rose-300' },
-      { label: 'True Positive (TP)', count: tp, color: 'bg-indigo-950/70 border-indigo-500/40 text-indigo-300' }
+      { label: 'True Positive (TP)', count: tp, color: 'bg-emerald-950/70 border-emerald-500/40 text-emerald-300' }
     ]
   ];
 
@@ -44,7 +44,7 @@ export const ConfusionMatrix: React.FC<ConfusionMatrixProps> = ({
             Actual Class
           </div>
 
-          <div className="grid grid-cols-2 gap-2.5 bg-gray-950 p-3 rounded-2xl border border-gray-800">
+          <div className="grid grid-cols-2 gap-2.5 bg-black p-3 rounded-2xl border border-white/[0.06]">
             {cellDetails.map((row, i) =>
               row.map((cell, j) => (
                 <div
@@ -63,15 +63,15 @@ export const ConfusionMatrix: React.FC<ConfusionMatrixProps> = ({
 
       {/* Calculated held-out evaluation metrics */}
       <div className="grid grid-cols-3 gap-2 pt-2 text-center text-xs font-mono">
-        <div className="bg-gray-950 p-2.5 rounded-xl border border-gray-800">
+        <div className="bg-black p-2.5 rounded-xl border border-white/[0.06]">
           <span className="text-gray-500 text-[10px] block">Accuracy</span>
           <span className="text-indigo-300 font-bold">{accuracy.toFixed(1)}%</span>
         </div>
-        <div className="bg-gray-950 p-2.5 rounded-xl border border-gray-800">
+        <div className="bg-black p-2.5 rounded-xl border border-white/[0.06]">
           <span className="text-gray-500 text-[10px] block">Sensitivity (Recall)</span>
           <span className="text-emerald-400 font-bold">{sensitivity.toFixed(1)}%</span>
         </div>
-        <div className="bg-gray-950 p-2.5 rounded-xl border border-gray-800">
+        <div className="bg-black p-2.5 rounded-xl border border-white/[0.06]">
           <span className="text-gray-500 text-[10px] block">Specificity</span>
           <span className="text-purple-300 font-bold">{specificity.toFixed(1)}%</span>
         </div>

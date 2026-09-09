@@ -17,8 +17,8 @@ class Settings(BaseSettings):
     quantum_backend: str = "pennylane:default.qubit"
     quantum_n_layers: int = 2
     quantum_n_qubits: int = 6
-    quantum_max_train_samples: int = 200
-    quantum_vqc_epochs: int = 150
+    quantum_max_train_samples: int = 300
+    quantum_vqc_epochs: int = 200
     random_seed: int = 42
     cors_origins: list[str] = [
         "http://localhost:5173",

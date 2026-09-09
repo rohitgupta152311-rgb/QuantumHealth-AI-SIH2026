@@ -21,31 +21,39 @@ const catLabel = (name: string, opt: number): string => {
 
 /* ─── Sub-components ───────────────────────────── */
 
-const SexToggle: React.FC<BiomarkerInputProps> = ({ feature, value, onChange }) => (
-  <Wrapper label={feature.label || 'Biological Sex'} badge={value === 1 ? 'Male' : 'Female'} badgeColor="indigo">
-    <div className="grid grid-cols-2 gap-2">
-      {[{ v: 0, icon: '♀', label: 'Female', color: 'fuchsia' }, { v: 1, icon: '♂', label: 'Male', color: 'indigo' }].map(
-        (opt) => (
+const SexToggle: React.FC<BiomarkerInputProps> = ({ feature, value, onChange }) => {
+  const femaleVal = (feature.min_val === 1 && feature.max_val === 2) ? 2 : 0;
+  const maleVal = 1;
+  const isFemale = value === femaleVal;
+  const isMale = value === maleVal;
+
+  return (
+    <Wrapper label={feature.label || 'Biological Sex'} badge={isMale ? 'Male' : isFemale ? 'Female' : 'Selected'} badgeColor="indigo">
+      <div className="grid grid-cols-2 gap-2">
+        {[
+          { v: femaleVal, icon: '♀', label: 'Female', color: 'fuchsia', active: isFemale },
+          { v: maleVal, icon: '♂', label: 'Male', color: 'indigo', active: isMale },
+        ].map((opt) => (
           <motion.button
-            key={opt.v}
+            key={opt.label}
             type="button"
             whileHover={{ scale: 1.03 }}
             whileTap={{ scale: 0.97 }}
             onClick={() => onChange(feature.name, opt.v)}
             className={`py-2.5 rounded-xl text-xs font-bold border transition-all duration-300 ${
-              value === opt.v
+              opt.active
                 ? `bg-${opt.color}-500/20 text-${opt.color}-300 border-${opt.color}-500/50 shadow-[0_0_14px_rgba(var(--glow),0.3)]`
-                : 'bg-gray-900 text-gray-400 border-gray-800 hover:border-gray-700'
+                : 'bg-white/[0.03] text-gray-400 border-white/[0.06] hover:border-gray-700'
             }`}
             style={{ '--glow': opt.color === 'fuchsia' ? '217,70,239' : '99,102,241' } as React.CSSProperties}
           >
             {opt.icon} {opt.label}
           </motion.button>
-        ),
-      )}
-    </div>
-  </Wrapper>
-);
+        ))}
+      </div>
+    </Wrapper>
+  );
+};
 
 const BinaryToggle: React.FC<BiomarkerInputProps> = ({ feature, value, onChange }) => (
   <Wrapper
@@ -97,7 +105,7 @@ const CategorySelector: React.FC<BiomarkerInputProps> = ({ feature, value, onCha
             className={`py-2 px-1.5 rounded-xl text-[11px] font-bold border transition-all duration-200 truncate ${
               value === opt
                 ? 'bg-indigo-500/20 text-indigo-300 border-indigo-500/60 shadow-[0_0_12px_rgba(99,102,241,0.25)]'
-                : 'bg-gray-900/90 text-gray-400 border-gray-800 hover:border-gray-700 hover:text-gray-300'
+                : 'bg-gray-900/90 text-gray-400 border-white/[0.06] hover:border-gray-700 hover:text-gray-300'
             }`}
           >
             {catLabel(feature.name, opt)}
@@ -125,8 +133,12 @@ const ContinuousSlider: React.FC<BiomarkerInputProps> = ({ feature, value, onCha
       : ratio < 0.65 ? 'from-emerald-400 via-yellow-400 to-yellow-500'
         : 'from-yellow-500 via-orange-500 to-rose-500';
 
+  const isSentinel = feature.missing_sentinels?.includes(value);
+  const [minAllowed, maxAllowed] = feature.model_input_range ?? [min, max];
+  const isOOD = value < minAllowed || value > maxAllowed;
+
   return (
-    <Wrapper label={feature.label || feature.name} badgeColor="indigo">
+    <Wrapper label={feature.label || feature.name} badgeColor={isSentinel ? 'amber' : isOOD ? 'rose' : 'indigo'}>
       <div className="flex items-center justify-between mb-2">
         <motion.input
           type="number"
@@ -138,13 +150,19 @@ const ContinuousSlider: React.FC<BiomarkerInputProps> = ({ feature, value, onCha
             const num = parseFloat(e.target.value);
             if (!isNaN(num)) onChange(feature.name, isInt ? Math.round(num) : num);
           }}
-          className="w-24 bg-gray-900 border border-gray-700 rounded-lg px-2.5 py-1 text-sm text-right font-mono font-bold text-indigo-300 focus:outline-none focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30 transition-all"
+          className={`w-28 bg-white/[0.03] border rounded-lg px-2.5 py-1 text-sm text-right font-mono font-bold focus:outline-none transition-all ${
+            isSentinel 
+              ? 'border-amber-500/60 text-amber-300 ring-1 ring-amber-500/30' 
+              : isOOD 
+                ? 'border-rose-500/60 text-rose-300 ring-1 ring-rose-500/30' 
+                : 'border-gray-700 text-indigo-300 focus:border-indigo-500 focus:ring-1 focus:ring-indigo-500/30'
+          }`}
         />
         {feature.unit && <span className="text-[10px] text-gray-500 font-mono ml-1.5">{feature.unit}</span>}
       </div>
 
       {/* Animated gradient slider */}
-      <div className="relative h-2 rounded-full bg-gray-800 overflow-hidden">
+      <div className="relative h-2 rounded-full bg-white/[0.06] overflow-hidden">
         <motion.div
           className={`absolute inset-y-0 left-0 rounded-full bg-gradient-to-r ${trackColor}`}
           initial={false}
@@ -175,12 +193,26 @@ const ContinuousSlider: React.FC<BiomarkerInputProps> = ({ feature, value, onCha
       <div className="flex justify-between items-center mt-1.5 text-[10px] text-gray-500 font-mono">
         <span>{min}</span>
         <motion.span
-          key={ratio > 0.7 ? 'elevated' : 'normal'}
+          key={isSentinel ? 'sentinel' : isOOD ? 'ood' : ratio > 0.7 ? 'elevated' : 'normal'}
           initial={{ opacity: 0, y: 4 }}
           animate={{ opacity: 1, y: 0 }}
-          className={ratio > 0.7 ? 'text-rose-400 font-semibold' : 'text-emerald-400/80'}
+          className={
+            isSentinel
+              ? 'text-amber-400 font-semibold flex items-center gap-1'
+              : isOOD
+                ? 'text-rose-400 font-semibold flex items-center gap-1'
+                : ratio > 0.7
+                  ? 'text-rose-400 font-semibold'
+                  : 'text-emerald-400/80'
+          }
         >
-          {ratio > 0.7 ? '⚠ Elevated' : '✓ Normal'}
+          {isSentinel
+            ? '⚠️ Missing Sentinel (Abstains)'
+            : isOOD
+              ? `⚠️ Out of Bounds [${minAllowed}-${maxAllowed}]`
+              : ratio > 0.7
+                ? '⚠ Elevated'
+                : '✓ Normal'}
         </motion.span>
         <span>{max}</span>
       </div>

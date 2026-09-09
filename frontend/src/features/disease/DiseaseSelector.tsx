@@ -95,7 +95,7 @@ export const DiseaseSelector: React.FC<DiseaseSelectorProps> = ({ diseases, sele
               <div className="flex items-center gap-3 mb-3">
                 <motion.div
                   className={`p-2.5 rounded-xl transition-colors duration-300 ${
-                    isSelected ? `bg-gradient-to-br ${colors.gradient} text-white` : 'bg-gray-900 text-gray-500'
+                    isSelected ? `bg-gradient-to-br ${colors.gradient} text-white` : 'bg-white/[0.03] text-gray-500'
                   }`}
                   animate={isSelected ? { rotate: [0, 360] } : {}}
                   transition={{ duration: 0.6, ease: 'easeInOut' }}

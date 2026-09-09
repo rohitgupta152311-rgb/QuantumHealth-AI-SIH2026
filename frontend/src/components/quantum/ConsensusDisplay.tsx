@@ -20,8 +20,8 @@ export const ConsensusDisplay: React.FC<{ consensus: ConsensusResult }> = ({ con
   const quantumVoteCount = consensus.quantum_votes ?? (consensus.quantum_vote === 'high_risk' || consensus.quantum_vote === 1 ? 1 : 0);
 
   return (
-    <div className="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
-      <div className="p-4 bg-gray-800/50 border-b border-gray-800 flex justify-between items-center">
+    <div className="bg-white/[0.03] border border-white/[0.06] rounded-xl overflow-hidden">
+      <div className="p-4 bg-gray-800/50 border-b border-white/[0.06] flex justify-between items-center">
         <h3 className="font-semibold text-gray-200 flex items-center gap-2">
           <Shield size={18} className="text-indigo-400" />
           Quantum-Classical Consensus Engine
@@ -38,7 +38,7 @@ export const ConsensusDisplay: React.FC<{ consensus: ConsensusResult }> = ({ con
             <div className="text-xs text-gray-400 uppercase mt-1">Classical High-Risk Votes</div>
           </div>
           <div className="flex-1 px-8">
-            <div className="h-2.5 w-full bg-gray-800 rounded-full overflow-hidden flex">
+            <div className="h-2.5 w-full bg-white/[0.06] rounded-full overflow-hidden flex">
               <div style={{ width: `${(classicalCount / totalClassical) * 75}%` }} className="bg-blue-500 transition-all duration-500" />
               <div style={{ width: `${quantumVoteCount * 25}%` }} className="bg-purple-500 transition-all duration-500" />
             </div>

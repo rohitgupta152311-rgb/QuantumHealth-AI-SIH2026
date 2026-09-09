@@ -14,6 +14,7 @@ from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import sessionmaker
 
 from app.core.database import Base, get_db
+import app.models  # Ensures all ORM models are registered with Base.metadata
 from app.core.config import settings
 from app.datasets.loader import get_dataset_loader
 

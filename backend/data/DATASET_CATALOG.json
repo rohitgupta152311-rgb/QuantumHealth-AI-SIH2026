@@ -1,49 +1,28 @@
 {
-  "kidney_disease_apollo_cdc.csv": {
-    "filename": "kidney_disease_apollo_cdc.csv",
-    "rows": 100000,
-    "columns": 13,
-    "column_names": [
-      "age",
-      "bp",
-      "sg",
-      "al",
-      "su",
-      "bgr",
-      "bu",
-      "sc",
-      "sod",
-      "pot",
-      "hemo",
-      "htn",
-      "target"
-    ],
-    "file_size_mb": 4.38,
-    "null_count": 0,
-    "duplicate_count": 0
+  "diabetes_chinese_cohort_analytic_211k.csv": {
+    "filename": "diabetes_chinese_cohort_analytic_211k.csv",
+    "dataset_name": "Chinese Health-Screening Cohort (Longitudinal Incident Diabetes)",
+    "source_citation": "Chen et al. (2018). Association of body mass index and age with incident diabetes in Chinese adults: a population-based cohort study. BMJ Open 8(9): e021768.",
+    "doi": "10.5061/dryad.ft8750v",
+    "license": "CC0 1.0 Universal",
+    "rows": 211833,
+    "columns": 24,
+    "target_events": 4174,
+    "target_column": "censor_diabetes_at_followup",
+    "prevalence_pct": 1.97,
+    "followup_median_years": 2.99,
+    "screening_sites_count": 15,
+    "sha256": "ef24cffc16a72ef022cc48353c88cf8b758fba8fe05357bbf9b4f48b008760ef",
+    "status": "active",
+    "is_synthetic": false
   },
-  "diabetes_cdc_brfss.csv": {
-    "filename": "diabetes_cdc_brfss.csv",
-    "rows": 253680,
-    "columns": 9,
-    "column_names": [
-      "Pregnancies",
-      "Glucose",
-      "BloodPressure",
-      "SkinThickness",
-      "Insulin",
-      "BMI",
-      "DiabetesPedigreeFunction",
-      "Age",
-      "Outcome"
-    ],
-    "file_size_mb": 7.72,
-    "null_count": 0,
-    "duplicate_count": 0
-  },
-  "heart_disease_uci_cdc.csv": {
-    "filename": "heart_disease_uci_cdc.csv",
-    "rows": 200000,
+  "heart_disease_cleveland_authentic_303.csv": {
+    "filename": "heart_disease_cleveland_authentic_303.csv",
+    "dataset_name": "UCI Cleveland Clinic Foundation Heart Disease Cohort",
+    "source_citation": "Janosi, A., Steinbrunn, W., Pfisterer, M., & Detrano, R. (1989). Heart Disease Database. Cleveland Clinic Foundation.",
+    "source_url": "https://archive.ics.uci.edu/ml/datasets/heart+disease",
+    "license": "CC BY 4.0",
+    "rows": 303,
     "columns": 14,
     "column_names": [
       "age",
@@ -61,49 +40,65 @@
       "thal",
       "target"
     ],
-    "file_size_mb": 7.24,
-    "null_count": 0,
-    "duplicate_count": 0
+    "target_column": "target",
+    "positive_rate_pct": 45.87,
+    "sha256": "2150c4e70e45f297634d80d7171c5b27193b0b9770c4ef1049424895f5a60bbd",
+    "status": "active",
+    "is_synthetic": false
   },
-  "breast_cancer_wisconsin_augmented.csv": {
-    "filename": "breast_cancer_wisconsin_augmented.csv",
-    "rows": 49999,
-    "columns": 31,
+  "kidney_disease_apollo_authentic_400.csv": {
+    "filename": "kidney_disease_apollo_authentic_400.csv",
+    "dataset_name": "Apollo Hospitals India Chronic Kidney Disease Cohort",
+    "source_citation": "Rubini, L., Eswaran, P., & Soundarapandian, P. (2015). Chronic Kidney Disease Dataset. Apollo Hospitals India / UCI Machine Learning Repository.",
+    "source_url": "https://archive.ics.uci.edu/dataset/338/chronic_kidney_disease",
+    "license": "CC BY 4.0",
+    "rows": 400,
+    "columns": 13,
     "column_names": [
-      "mean radius",
-      "mean texture",
-      "mean perimeter",
-      "mean area",
-      "mean smoothness",
-      "mean compactness",
-      "mean concavity",
-      "mean concave points",
-      "mean symmetry",
-      "mean fractal dimension",
-      "radius error",
-      "texture error",
-      "perimeter error",
-      "area error",
-      "smoothness error",
-      "compactness error",
-      "concavity error",
-      "concave points error",
-      "symmetry error",
-      "fractal dimension error",
-      "worst radius",
-      "worst texture",
-      "worst perimeter",
-      "worst area",
-      "worst smoothness",
-      "worst compactness",
-      "worst concavity",
-      "worst concave points",
-      "worst symmetry",
-      "worst fractal dimension",
+      "age",
+      "bp",
+      "sg",
+      "al",
+      "su",
+      "bgr",
+      "bu",
+      "sc",
+      "sod",
+      "pot",
+      "hemo",
+      "htn",
       "target"
     ],
-    "file_size_mb": 9.74,
-    "null_count": 0,
-    "duplicate_count": 0
+    "target_column": "target",
+    "positive_rate_pct": 62.5,
+    "sha256": "f26f84b2ea53443373b1e1f2cb1bea562ab0fff871dfe42ea5db0a4cd2167730",
+    "status": "active",
+    "is_synthetic": false
+  },
+  "breast_cancer_wisconsin_diagnostic": {
+    "dataset_name": "UCI Wisconsin Diagnostic Breast Cancer (WDBC)",
+    "source_citation": "Street, W.N., Wolberg, W.H., & Mangasarian, O.L. (1993). Nuclear feature extraction for breast tumor diagnosis. IS&T/SPIE 1993.",
+    "source_url": "https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic)",
+    "source_provider": "scikit-learn bundled reference (sklearn.datasets.load_breast_cancer)",
+    "rows": 569,
+    "columns": 31,
+    "target_column": "target",
+    "status": "active",
+    "is_synthetic": false
+  },
+  "diabetes_cdc_brfss.csv": {
+    "filename": "diabetes_cdc_brfss.csv",
+    "status": "deprecated",
+    "note": "Deprecated synthetic/survey dataset. Replaced by authentic 211,833-patient longitudinal Chinese cohort (Dryad DOI: 10.5061/dryad.ft8750v)"
+  },
+  "heart_disease_uci_cdc.csv": {
+    "filename": "heart_disease_uci_cdc.csv",
+    "status": "deprecated",
+    "note": "Deprecated 200k synthetic dataset. Replaced by authentic 303-patient Cleveland Clinic cohort (Janosi et al., 1989)"
+  },
+  "kidney_disease_apollo_cdc.csv": {
+    "filename": "kidney_disease_apollo_cdc.csv",
+    "status": "deprecated",
+    "note": "Deprecated 100k synthetic dataset. Replaced by authentic 400-patient Apollo Hospitals cohort (Rubini et al., 2015)"
   }
 }

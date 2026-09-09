@@ -22,11 +22,11 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         ref={ref}
         disabled={disabled || isLoading}
         className={cn(
-          'inline-flex items-center justify-center rounded-xl font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-950 disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]',
+          'inline-flex items-center justify-center rounded-xl font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-black disabled:opacity-50 disabled:pointer-events-none active:scale-[0.98]',
           {
             'bg-gradient-to-r from-indigo-600 to-purple-600 text-white hover:from-indigo-500 hover:to-purple-500 shadow-sm focus:ring-indigo-600': variant === 'primary',
-            'bg-gray-800 text-gray-100 hover:bg-gray-700 focus:ring-gray-700 border border-gray-700/60': variant === 'secondary',
-            'bg-transparent text-gray-300 hover:bg-gray-800/80 hover:text-gray-100': variant === 'ghost',
+            'bg-white/[0.06] text-gray-100 hover:bg-white/[0.1] focus:ring-gray-700 border border-white/[0.08]': variant === 'secondary',
+            'bg-transparent text-gray-300 hover:bg-white/[0.05] hover:text-gray-100': variant === 'ghost',
             'bg-red-600 text-white hover:bg-red-500 focus:ring-red-600': variant === 'danger',
             'h-8 px-3 text-xs': size === 'sm',
             'h-10 px-4 text-sm': size === 'md',

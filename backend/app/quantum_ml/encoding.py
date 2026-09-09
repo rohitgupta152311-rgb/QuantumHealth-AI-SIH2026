@@ -1,4 +1,4 @@
-﻿"""
+"""
 Quantum feature encoding methods for QuantumHealth AI.
 Team Member 3 - Quantum ML Layer.
 
@@ -99,17 +99,25 @@ class AmplitudeEncoding:
         Normalize features to a unit vector for amplitude encoding.
 
         Args:
-            features: 1-D array of any length <= state_size.
+            features: 1-D array of length <= state_size.
 
         Returns:
             normalized: 1-D array of shape (state_size,), L2-normalized.
         """
+        if len(features) > self.state_size:
+            raise ValueError(
+                f"Feature vector length ({len(features)}) exceeds maximum capacity of "
+                f"{self.state_size} amplitudes for {self.n_qubits} qubits."
+            )
         padded = np.zeros(self.state_size, dtype=np.float64)
-        n = min(len(features), self.state_size)
+        n = len(features)
         padded[:n] = features[:n]
         norm = np.linalg.norm(padded)
-        if norm > 1e-10:
-            padded = padded / norm
+        if norm < 1e-10:
+            raise ValueError(
+                "Cannot prepare quantum state from zero-norm vector (all features are zero or near-zero)."
+            )
+        padded = padded / norm
         return padded
 
     def get_info(self) -> dict:

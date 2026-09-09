@@ -104,7 +104,8 @@ def _run_cross_validation(
     Fold models are never saved, so they cannot replace production cache files.
     """
     _, class_counts = np.unique(y_train, return_counts=True)
-    n_splits = min(5, int(class_counts.min()))
+    max_splits = 3 if len(X_train) > 5000 else 5
+    n_splits = min(max_splits, int(class_counts.min()))
     if n_splits < 2:
         return {
             "available": False,
@@ -122,7 +123,7 @@ def _run_cross_validation(
     # High-efficiency stratified sampling for cross-validation on large cohorts
     if len(X_train) > 5000:
         from sklearn.model_selection import StratifiedShuffleSplit
-        sss = StratifiedShuffleSplit(n_splits=1, train_size=4000, random_state=settings.random_seed)
+        sss = StratifiedShuffleSplit(n_splits=1, train_size=2000, random_state=settings.random_seed)
         cv_idx, _ = next(sss.split(X_train, y_train))
         cv_X, cv_y = X_train[cv_idx], y_train[cv_idx]
     else:
@@ -251,8 +252,15 @@ async def train_models(
         and pipeline_path.exists()
     )
 
-    # Held-out stratified train/test split (80/20) with high-efficiency subsampling for large cohorts
-    if len(X) > 15000:
+    # Held-out split (80/20): grouped split for multi-center cohorts (e.g. Chinese screening centers)
+    if disease == "diabetes" and data_info.get("uploaded_rows", 0) == 0:
+        _, _, groups, _ = loader.load_grouped(disease)
+        from sklearn.model_selection import GroupShuffleSplit
+        gss = GroupShuffleSplit(n_splits=1, test_size=0.2, random_state=settings.random_seed)
+        train_idx, test_idx = next(gss.split(X, y, groups))
+        X_train, y_train = X[train_idx], y[train_idx]
+        X_test, y_test = X[test_idx], y[test_idx]
+    elif len(X) > 15000:
         from sklearn.model_selection import StratifiedShuffleSplit
         sss = StratifiedShuffleSplit(n_splits=1, train_size=12000, test_size=3000, random_state=settings.random_seed)
         train_idx, test_idx = next(sss.split(X, y))
@@ -307,9 +315,15 @@ async def train_models(
         X_test_classical, X_test_quantum = pipeline.transform(X_test)
 
         # Train and cache classical and quantum models
-        trainer.train(X_train_classical, y_train, X_test_classical, y_test, feature_names)
-        qc.fit(X_train_quantum, y_train)
-        qc.save(vqc_path)
+        trainer.train(
+            X_train_classical, y_train, X_test_classical, y_test, feature_names,
+            X_train_q=X_train_quantum, X_test_q=X_test_quantum
+        )
+        if trainer.vqc_model is not None:
+            qc = trainer.vqc_model
+        else:
+            qc.fit(X_train_quantum, y_train)
+            qc.save(vqc_path)
         pipeline.save(pipeline_path)
 
         status_msg = "success"

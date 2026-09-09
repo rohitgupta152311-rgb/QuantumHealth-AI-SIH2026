@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 import { LandingPage } from './pages/LandingPage';
 import { DiseaseAnalysisPage } from './pages/DiseaseAnalysisPage';
@@ -7,6 +7,9 @@ import { HybridAIDashboard } from './pages/HybridAIDashboard';
 import { QuantumLaboratory } from './pages/QuantumLaboratory';
 import { ModelComparisonDashboard } from './pages/ModelComparisonDashboard';
 import { ExplainabilityDashboard } from './pages/ExplainabilityDashboard';
+import { LimitationsPage } from './pages/LimitationsPage';
+import { AboutPage } from './pages/AboutPage';
+import { ClinicalCopilotChat } from './components/chat/ClinicalCopilotChat';
 
 function App() {
   return (
@@ -14,13 +17,35 @@ function App() {
       <Routes>
         <Route path="/" element={<Layout />}>
           <Route index element={<LandingPage />} />
+          <Route path="about" element={<AboutPage />} />
+
+          {/* Analysis routes with parameter and alias support */}
           <Route path="analyze" element={<DiseaseAnalysisPage />} />
+          <Route path="analyze/:diseaseId" element={<DiseaseAnalysisPage />} />
+          <Route path="analysis" element={<DiseaseAnalysisPage />} />
+          <Route path="analysis/:diseaseId" element={<DiseaseAnalysisPage />} />
+          <Route path="batch" element={<DiseaseAnalysisPage defaultMode="batch" />} />
+
+          {/* Results & Dashboards */}
           <Route path="dashboard" element={<HybridAIDashboard />} />
+
+          {/* Quantum routes & aliases */}
           <Route path="quantum-lab" element={<QuantumLaboratory />} />
+          <Route path="quantum" element={<QuantumLaboratory />} />
+
+          {/* Model comparison & aliases */}
           <Route path="comparison" element={<ModelComparisonDashboard />} />
+          <Route path="models" element={<ModelComparisonDashboard />} />
+
+          {/* Explainability & Governance */}
           <Route path="explainability" element={<ExplainabilityDashboard />} />
+          <Route path="limitations" element={<LimitationsPage />} />
+
+          {/* Fallback to Home */}
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Route>
       </Routes>
+      <ClinicalCopilotChat />
     </BrowserRouter>
   );
 }

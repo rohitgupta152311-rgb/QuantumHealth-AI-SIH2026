@@ -6,12 +6,13 @@ export const MetricsRadarChart: React.FC<{ metrics: ModelMetrics[] }> = ({ metri
   const data = ['accuracy', 'precision', 'recall', 'f1', 'auc'].map(metric => {
     const row: any = { subject: metric.toUpperCase() };
     metrics.forEach(m => {
-      row[m.name] = (m as any)[metric];
+      const modelName = m.model_name || m.name || 'Model';
+      row[modelName] = (m as any)[metric] ?? (metric === 'f1' ? m.f1_score : metric === 'auc' ? m.roc_auc : 0);
     });
     return row;
   });
 
-  const colors = ['#6366f1', '#3b82f6', '#10b981', '#f59e0b'];
+  const colors = ['#6366f1', '#3b82f6', '#10b981', '#f59e0b', '#ec4899', '#8b5cf6'];
 
   return (
     <div className="h-[400px] w-full">
@@ -22,16 +23,19 @@ export const MetricsRadarChart: React.FC<{ metrics: ModelMetrics[] }> = ({ metri
           <PolarRadiusAxis angle={30} domain={[0, 1]} tick={{ fill: '#6b7280' }} />
           <Tooltip contentStyle={{ backgroundColor: '#111827', borderColor: '#374151', color: '#f3f4f6' }} />
           <Legend />
-          {metrics.map((m, i) => (
-            <Radar
-              key={m.name}
-              name={m.name}
-              dataKey={m.name}
-              stroke={colors[i % colors.length]}
-              fill={colors[i % colors.length]}
-              fillOpacity={0.3}
-            />
-          ))}
+          {metrics.map((m, i) => {
+            const modelName = m.model_name || m.name || `Model ${i + 1}`;
+            return (
+              <Radar
+                key={modelName}
+                name={modelName}
+                dataKey={modelName}
+                stroke={colors[i % colors.length]}
+                fill={colors[i % colors.length]}
+                fillOpacity={0.3}
+              />
+            );
+          })}
         </RadarChart>
       </ResponsiveContainer>
     </div>

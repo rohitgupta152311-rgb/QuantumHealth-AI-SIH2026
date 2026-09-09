@@ -41,6 +41,17 @@ class DatasetLoader:
             )
         return self._registry[disease_id].load()
 
+    def load_grouped(self, disease_id: str) -> tuple[np.ndarray, np.ndarray, np.ndarray, list[str]]:
+        """Load base dataset with group identifiers (e.g. site): (X, y, groups, feature_names)."""
+        if disease_id not in self._registry:
+            raise ValueError(f"Dataset for disease '{disease_id}' not found.")
+        ds = self._registry[disease_id]
+        if hasattr(ds, "load_grouped"):
+            return ds.load_grouped()
+        X, y, feature_names = ds.load()
+        groups = np.zeros(len(X), dtype=int)
+        return X, y, groups, feature_names
+
     def get_disease_info(self, disease_id: str) -> dict:
         if disease_id not in self._registry:
             raise ValueError(f"Disease '{disease_id}' not found.")

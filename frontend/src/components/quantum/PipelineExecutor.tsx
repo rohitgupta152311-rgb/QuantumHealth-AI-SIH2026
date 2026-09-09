@@ -84,7 +84,7 @@ export const PipelineExecutor: React.FC<PipelineExecutorProps> = ({
               className={`w-full flex items-center gap-3 p-3 rounded-xl border text-left transition-all duration-300 ${
                 isActive
                   ? `${m.borderActive} ${m.bgActive} ${m.shadowActive} text-white`
-                  : 'border-gray-800 hover:bg-gray-800/40 text-gray-400'
+                  : 'border-white/[0.06] hover:bg-gray-800/40 text-gray-400'
               }`}
             >
               {/* Radio dot */}
@@ -128,12 +128,12 @@ export const PipelineExecutor: React.FC<PipelineExecutorProps> = ({
         disabled={isLoading}
         whileHover={isLoading ? {} : { scale: 1.02, y: -1 }}
         whileTap={isLoading ? {} : { scale: 0.98 }}
-        className="gradient-border w-full group"
+        className="gradient-border w-full group cursor-pointer disabled:cursor-not-allowed"
       >
         <div className="relative w-full flex items-center justify-center gap-2.5 px-6 py-4 rounded-[1.15rem] bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white font-bold text-sm shadow-[0_0_25px_rgba(99,102,241,0.4)] hover:shadow-[0_0_40px_rgba(99,102,241,0.6)] transition-shadow overflow-hidden">
           {/* Shine sweep */}
-          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity">
-            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700" />
+          <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none">
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-700 pointer-events-none" />
           </div>
 
           {isLoading ? (
@@ -166,7 +166,7 @@ export const PipelineExecutor: React.FC<PipelineExecutorProps> = ({
             transition={{ type: 'spring', stiffness: 200, damping: 25 }}
             className="overflow-hidden"
           >
-            <div className="bg-gray-950 rounded-2xl border border-indigo-500/30 p-4">
+            <div className="bg-black rounded-2xl border border-indigo-500/30 p-4">
               <div className="flex items-center gap-2 text-xs font-mono font-semibold text-indigo-400 mb-2">
                 <motion.span
                   animate={{ opacity: [1, 0.3, 1] }}

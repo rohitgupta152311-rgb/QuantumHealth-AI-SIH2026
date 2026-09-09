@@ -16,7 +16,8 @@ export const usePrediction = () => {
       localStorage.setItem('qhai_last_prediction', JSON.stringify(data));
       return data;
     } catch (err: any) {
-      setError(err.message || 'Prediction failed');
+      const msg = err.response?.data?.detail || err.message || 'Prediction failed';
+      setError(typeof msg === 'string' ? msg : JSON.stringify(msg));
       throw err;
     } finally {
       setIsLoading(false);

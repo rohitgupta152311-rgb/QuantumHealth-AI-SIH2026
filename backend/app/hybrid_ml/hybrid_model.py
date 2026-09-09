@@ -1,4 +1,4 @@
-﻿"""
+"""
 Hybrid Quantum-Classical Model for QuantumHealth AI.
 Team Member 3 - Hybrid ML Layer.
 
@@ -131,17 +131,11 @@ class HybridModel:
         Returns:
             float in [0, 1] - estimated probability of disease.
         """
-        if self.quantum_classifier is not None and self._fitted:
-            return self.quantum_classifier.predict_proba_single(x_quantum)
-
-        if QUANTUM_AVAILABLE:
-            # Use unfitted quantum circuit as a rough approximation
-            qc = QuantumClassifier(n_qubits=self.n_qubits, n_layers=self.n_layers)
-            return qc.predict_proba_single(x_quantum)
-
-        # Ultimate fallback: sigmoid of weighted sum
-        weights = np.ones(len(x_quantum)) * 0.3
-        return float(1.0 / (1.0 + np.exp(-np.dot(x_quantum, weights))))
+        if self.quantum_classifier is None or not self._fitted:
+            raise RuntimeError(
+                "HybridModel has not been fitted. Call fit() or load() first."
+            )
+        return self.quantum_classifier.predict_proba_single(x_quantum)
 
     def predict(self, X_quantum: np.ndarray) -> np.ndarray:
         """

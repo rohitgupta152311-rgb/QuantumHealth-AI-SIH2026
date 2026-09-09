@@ -1,4 +1,4 @@
-﻿"""
+"""
 Quantum Readiness Analyzer for QuantumHealth AI.
 Team Member 3 - Quantum ML Layer.
 
@@ -10,6 +10,7 @@ All analysis is for SIMULATED quantum circuits (pennylane:default.qubit).
 """
 
 import numpy as np
+from app.quantum_ml.circuits import compute_circuit_depth
 
 
 class QuantumReadinessAnalyzer:
@@ -65,8 +66,8 @@ class QuantumReadinessAnalyzer:
         n_sel  = len(selected_feature_names)
         n_qubits = n_sel
 
-        # circuit_depth = encoding layer + (rotation + entanglement) * n_layers + measurement
-        circuit_depth = 1 + self.n_layers * (1 + n_qubits) + 1
+        # Canonical circuit depth matching PennyLane DAG
+        circuit_depth = compute_circuit_depth(n_qubits, self.n_layers)
 
         # Dimensionality reduction ratio (how much we compressed)
         reduction_ratio = 1.0 - (n_sel / n_orig) if n_orig > 0 else 0.0
@@ -140,7 +141,7 @@ class QuantumReadinessAnalyzer:
 
     def estimate_simulation_time(self, n_qubits: int, n_samples: int) -> dict:
         """
-        Rough estimate of simulation time for planning purposes.
+        Simulation time estimate incorporating n_samples and qubit dimensionality.
 
         Args:
             n_qubits:  Number of qubits in the circuit.
@@ -149,19 +150,95 @@ class QuantumReadinessAnalyzer:
         Returns:
             dict with time estimates and informational notes.
         """
-        # PennyLane default.qubit scales as O(2^n_qubits) per circuit evaluation
-        # Rough empirical constants for Nelder-Mead with 50 iterations
-        base_time_per_eval_ms = (2 ** max(n_qubits - 4, 0)) * 5  # milliseconds
-        n_evals = 50 * (n_qubits * self.n_layers * 2 + 1)        # Nelder-Mead simplex evals
-        total_ms = base_time_per_eval_ms * n_evals
+        # Actual training subset size (capped at max 100 samples)
+        actual_samples = min(max(n_samples, 1), 100)
+
+        # Base evaluation latency per single sample (scales O(2^n_qubits))
+        base_time_per_eval_ms = (2 ** max(n_qubits - 4, 0)) * 0.7  # ~0.7 ms on 4-6 qubits
+
+        # Nelder-Mead simplex evaluations for flat parameters
+        n_params = n_qubits * self.n_layers * 2
+        n_simplex_evals = 50 * (n_params + 1)
+
+        # Total circuit evaluations = simplex objective evals * batch size
+        total_evals = n_simplex_evals * actual_samples
+        total_ms = base_time_per_eval_ms * total_evals
         total_seconds = total_ms / 1000.0
 
         return {
             "estimated_training_time_seconds":   round(total_seconds, 1),
             "estimated_training_time_human":      f"~{max(1, round(total_seconds / 60, 1))} minutes",
-            "n_circuit_evaluations_approx":       n_evals,
+            "n_circuit_evaluations_approx":       total_evals,
+            "training_samples_evaluated":        actual_samples,
             "note": (
-                "Estimates are rough. Actual time depends on hardware and PennyLane version. "
-                "Training uses at most 100 samples for the MVP."
+                "Estimates incorporate sample size and state-vector scaling O(2^n). "
+                f"Evaluation assumes stratified training cap of {actual_samples} samples."
             ),
         }
+
+
+def get_available_hardware_backends() -> list:
+    """Return all verified, active quantum computing and simulation backends."""
+    backends = []
+
+    # 1. PennyLane Lightning C++
+    try:
+        import pennylane as qml
+        qml.device("lightning.qubit", wires=2)
+        backends.append({
+            "name": "PennyLane Lightning.Qubit",
+            "identifier": "pennylane:lightning.qubit",
+            "type": "C++ High-Performance Statevector Simulator",
+            "acceleration": "Adjoint Differentiation (C++ OpenMP)",
+            "speedup": "10x-50x faster than pure Python",
+            "status": "ready"
+        })
+    except Exception:
+        pass
+
+    # 2. Amazon Braket Local & Cloud
+    try:
+        import pennylane as qml
+        qml.device("braket.local.qubit", wires=2)
+        backends.append({
+            "name": "Amazon Braket Local Simulator",
+            "identifier": "pennylane:braket.local.qubit",
+            "type": "Amazon Braket Quantum SDK",
+            "hardware_targets": ["Rigetti Ankaa", "IonQ Forte", "QuEra Aquila"],
+            "status": "ready"
+        })
+    except Exception:
+        pass
+
+    # 3. IBM Qiskit Aer
+    try:
+        import pennylane as qml
+        qml.device("qiskit.aer", wires=2)
+        backends.append({
+            "name": "IBM Qiskit Aer Simulator",
+            "identifier": "pennylane:qiskit.aer",
+            "type": "Qiskit Quantum SDK",
+            "hardware_targets": ["IBM Eagle 127-qubit", "IBM Heron"],
+            "openqasm_export": True,
+            "status": "ready"
+        })
+    except Exception:
+        pass
+
+    # 4. PennyLane Reference
+    backends.append({
+        "name": "PennyLane Default.Qubit",
+        "identifier": "pennylane:default.qubit",
+        "type": "Python Reference Simulator",
+        "status": "ready"
+    })
+
+    # 5. NumPy Native
+    backends.append({
+        "name": "NumPy Native Statevector",
+        "identifier": "numpy:statevector",
+        "type": "Exact Standalone Linear Algebra (Zero-Dependency)",
+        "status": "ready"
+    })
+
+    return backends

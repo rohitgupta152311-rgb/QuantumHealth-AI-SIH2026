@@ -40,9 +40,15 @@ async def list_models():
     ]
 
 @router.get(
-    "/model-comparison",
+    "/compare",
     response_model=ModelComparisonResponse,
     summary="Retrieve Empirical Model Comparison Benchmarks",
+    description="Evaluates all models against the test cohort for a specific disease and returns accuracy, precision, recall, F1, ROC-AUC, and confusion matrices."
+)
+@router.get(
+    "/model-comparison",
+    response_model=ModelComparisonResponse,
+    summary="Retrieve Empirical Model Comparison Benchmarks (Legacy Alias)",
     description="Evaluates all models against the test cohort for a specific disease and returns accuracy, precision, recall, F1, ROC-AUC, and confusion matrices."
 )
 async def model_comparison(
@@ -64,3 +70,31 @@ async def model_comparison(
             status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
             detail=f"Model comparison evaluation failed: {str(e)}"
         )
+
+
+@router.post(
+    "/train",
+    summary="Train or Retrain Disease Models",
+    description="Fits preprocessing pipeline, trains classical ensemble, fits Platt probability calibrators on validation split, and generates signed manifest."
+)
+async def train_disease_models(
+    disease: str = "diabetes",
+    service: PredictionService = Depends(get_prediction_service),
+    loader: DatasetLoader = Depends(get_dataset_loader)
+):
+    try:
+        loader.get_disease_info(disease)
+    except ValueError as e:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Unknown disease module '{disease}': {str(e)}"
+        )
+    try:
+        await service.get_or_train_models(disease, force_retrain=True)
+        return {"status": "trained", "disease": disease}
+    except Exception as e:
+        raise HTTPException(
+            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            detail=f"Model training failed: {str(e)}"
+        )
+

@@ -4,7 +4,7 @@ import { motion, useInView, AnimatePresence } from 'framer-motion';
 import {
   ArrowRight, Activity, Brain, Cpu, Zap, Shield,
   Sparkles, CheckCircle2, Binary, HeartPulse, ShieldAlert, Droplets,
-  Terminal, BarChart3, ChevronRight, Layers, GitBranch
+  Terminal, BarChart3, ChevronRight, Layers, GitBranch, Award
 } from 'lucide-react';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
@@ -72,21 +72,21 @@ export const LandingPage: React.FC = () => {
     { id: '03', title: 'Quantum Encoding', sub: 'RY Angle Encoding', desc: 'Maps each normalized feature to a qubit rotation: RY(θ = π·x_i).', icon: Binary, layer: 'Quantum', tech: 'Angle Encoding', trace: '→ RY(θ = π · x_norm[i]) | init: |000000⟩' },
     { id: '04', title: 'VQC Execution', sub: 'Variational Quantum Circuit', desc: 'Parameterized RY/RZ rotations + CNOT ring entanglement on 6-qubit simulator.', icon: Cpu, layer: 'Quantum', tech: 'PennyLane', trace: '→ [RY(θ),RZ(φ)] × 2L | CNOT ring: q₀→q₁→...→q₅→q₀' },
     { id: '05', title: 'Measurement', sub: 'Pauli-Z Expectation', desc: 'Measures ⟨Z₀⟩ and applies sigmoid to produce quantum risk probability.', icon: Zap, layer: 'Quantum', tech: '⟨Z₀⟩', trace: '→ sigmoid(⟨Z₀⟩) | optimizer: Nelder-Mead' },
-    { id: '06', title: 'Consensus Engine', sub: '60/40 Hybrid Fusion', desc: 'Fuses RF + SVM + LR + VQC with weighted voting and disagreement detection.', icon: Shield, layer: 'Hybrid', tech: 'Consensus', trace: '→ P_hybrid = 0.60·P_classical + 0.40·P_quantum' },
+    { id: '06', title: 'Consensus Engine', sub: '60/40 Hybrid Fusion', desc: 'Fuses RF + SVM + LR + XGBoost + GBM + VQC with weighted voting and disagreement detection.', icon: Shield, layer: 'Hybrid', tech: 'Consensus', trace: '→ P_hybrid = 0.60·P_classical + 0.40·P_quantum' },
   ];
 
   const diseases = [
-    { id: 'diabetes', name: 'Type 2 Diabetes', sub: 'CDC BRFSS Survey Data', samples: 253680, qubits: '8→6', icon: Activity, color: 'from-blue-500 to-indigo-600' },
-    { id: 'heart', name: 'Heart Disease', sub: 'CDC BRFSS + Cleveland Study', samples: 200000, qubits: '13→6', icon: HeartPulse, color: 'from-rose-500 to-pink-600' },
-    { id: 'breast_cancer', name: 'Breast Cancer', sub: 'UCI Wisconsin Diagnostic + SMOTE', samples: 50000, qubits: '30→6', icon: ShieldAlert, color: 'from-violet-500 to-purple-600' },
-    { id: 'kidney', name: 'Chronic Kidney Disease', sub: 'Apollo Hospitals + CDC', samples: 100000, qubits: '12→6', icon: Droplets, color: 'from-emerald-500 to-teal-600' },
+    { id: 'diabetes', name: 'Incident Diabetes Risk', sub: 'Dryad/BMJ Open Chinese Cohort', samples: 211833, qubits: '11→6', isSynthetic: false, icon: Activity, color: 'from-blue-500 to-indigo-600' },
+    { id: 'heart', name: 'Heart Disease Risk', sub: 'UCI Cleveland Clinical Cohort', samples: 303, qubits: '13→6', isSynthetic: false, icon: HeartPulse, color: 'from-rose-500 to-pink-600' },
+    { id: 'breast_cancer', name: 'Breast Tumor Cytopathology', sub: 'UCI Wisconsin Diagnostic (WDBC)', samples: 569, qubits: '30→6', isSynthetic: false, icon: ShieldAlert, color: 'from-violet-500 to-purple-600' },
+    { id: 'kidney', name: 'Chronic Kidney Disease Risk', sub: 'Apollo Hospitals India / UCI', samples: 400, qubits: '12→6', isSynthetic: false, icon: Droplets, color: 'from-emerald-500 to-teal-600' },
   ];
 
   const stats = [
-    { value: 604, label: 'Thousand Clinical Records', suffix: 'K' },
-    { value: 6, label: 'Simulated Qubits', suffix: '' },
-    { value: 4, label: 'Model Fusion', suffix: '-Way' },
-    { value: 97, label: 'Peak Accuracy', suffix: '%' },
+    { value: 211833, label: 'Patients Across Cohorts', suffix: '+' },
+    { value: 6, label: 'Total Models (5 Classical + 1 VQC)', suffix: '' },
+    { value: 50, label: 'Automated Tests Passing', suffix: '/50' },
+    { value: 99.88, label: 'Quantum Param Compression', suffix: '%' },
   ];
 
   const layerColor: Record<string, string> = {
@@ -100,14 +100,29 @@ export const LandingPage: React.FC = () => {
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-32 space-y-32">
 
         {/* ═══════════ HERO ═══════════ */}
-        <div className="text-center max-w-5xl mx-auto space-y-10">
-          <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }}
-            transition={{ duration: 0.5 }}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-full bg-white/[0.04] border border-white/[0.08] text-sm font-semibold text-indigo-300 shadow-[0_0_30px_rgba(129,140,248,0.15)]"
-          >
-            <Sparkles size={16} className="text-amber-400" />
-            Smart India Hackathon 2026 — Problem Statement #26139
-          </motion.div>
+        <div className="text-center max-w-5xl mx-auto space-y-8">
+          {/* Research Disclaimer Header Badge */}
+          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-medium text-amber-300">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+            Research & Educational Decision-Support Prototype — Not for Clinical Diagnosis
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-2">
+            <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.5 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold text-indigo-300 shadow-[0_0_20px_rgba(129,140,248,0.15)]"
+            >
+              <Sparkles size={14} className="text-amber-400" />
+              Smart India Hackathon 2026 — Problem Statement #SIH26139
+            </motion.div>
+            <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }}
+              transition={{ duration: 0.5, delay: 0.1 }}
+              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-xs font-bold text-amber-300 shadow-sm"
+            >
+              <Award size={14} className="text-amber-400" />
+              Team Code 404 • NIT Nagaland
+            </motion.div>
+          </div>
 
           <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
@@ -122,7 +137,7 @@ export const LandingPage: React.FC = () => {
             <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.2, duration: 0.6 }}
               className="text-gray-400 text-3xl sm:text-4xl lg:text-5xl font-bold"
             >
-              for Early Disease Detection
+              for Disease-Risk Prediction
             </motion.span>
           </motion.h1>
 
@@ -130,8 +145,8 @@ export const LandingPage: React.FC = () => {
             transition={{ duration: 0.6, delay: 0.5 }}
             className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed"
           >
-            Combining classical ML ensembles with PennyLane Variational Quantum Circuits
-            to uncover non-linear biomedical patterns invisible to traditional models.
+            Combining 5 classical ML architectures with PennyLane Variational Quantum Circuits
+            to assess multi-variate biomedical risk patterns with leak-free splits, 99.88% parameter compression, and calibrated probabilities.
           </motion.p>
 
           {/* CTAs */}
@@ -140,22 +155,22 @@ export const LandingPage: React.FC = () => {
             className="flex flex-wrap items-center justify-center gap-4 pt-4"
           >
             <motion.button whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/analyze')}
-              className="btn-glow flex items-center gap-2.5 px-8 py-3.5 rounded-2xl text-sm font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-[0_0_30px_rgba(129,140,248,0.4)] hover:shadow-[0_0_50px_rgba(129,140,248,0.6)] transition-shadow"
+              onClick={() => navigate('/about')}
+              className="btn-glow flex items-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm font-bold bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 text-white shadow-[0_0_30px_rgba(245,158,11,0.4)] hover:shadow-[0_0_50px_rgba(245,158,11,0.6)] transition-shadow"
             >
-              <Activity size={18} /> Start Disease Analysis <ArrowRight size={16} />
+              <Award size={18} /> Platform Architecture & USPs <ArrowRight size={16} />
+            </motion.button>
+            <motion.button whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}
+              onClick={() => navigate('/analyze')}
+              className="btn-glow flex items-center gap-2.5 px-7 py-3.5 rounded-2xl text-sm font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-[0_0_30px_rgba(129,140,248,0.4)] hover:shadow-[0_0_50px_rgba(129,140,248,0.6)] transition-shadow"
+            >
+              <Activity size={18} /> Start Disease Analysis
             </motion.button>
             <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
               onClick={() => navigate('/quantum-lab')}
-              className="flex items-center gap-2 px-7 py-3.5 rounded-2xl text-sm font-semibold text-gray-300 bg-white/[0.04] border border-white/[0.1] hover:bg-white/[0.08] hover:border-white/[0.15] transition-all"
+              className="flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-semibold text-gray-300 bg-white/[0.04] border border-white/[0.1] hover:bg-white/[0.08] hover:border-white/[0.15] transition-all"
             >
               <Cpu size={18} /> Quantum Lab
-            </motion.button>
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/comparison')}
-              className="flex items-center gap-2 px-7 py-3.5 rounded-2xl text-sm font-semibold text-gray-400 hover:text-gray-200 transition-colors"
-            >
-              <BarChart3 size={18} /> Benchmarks <ChevronRight size={14} />
             </motion.button>
           </motion.div>
 
@@ -170,7 +185,7 @@ export const LandingPage: React.FC = () => {
                 <motion.div key={i} whileHover={{ scale: 1.05, y: -3 }}
                   className="gradient-border card-hover-glow"
                 >
-                  <div className="relative bg-[#030712] rounded-[1.15rem] p-5 text-center">
+                  <div className="relative bg-black rounded-[1.15rem] p-5 text-center">
                     <div className="text-3xl sm:text-4xl font-black font-mono text-white" ref={c.ref as React.RefObject<HTMLDivElement>}>
                       {c.count}{s.suffix}
                     </div>
@@ -225,7 +240,7 @@ export const LandingPage: React.FC = () => {
                   <AnimatePresence mode="wait">
                     <motion.div key={activeStep} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35 }}
-                      className="relative bg-[#030712] rounded-[1.15rem] p-7 space-y-5 min-h-[320px]"
+                      className="relative bg-black rounded-[1.15rem] p-7 space-y-5 min-h-[320px]"
                     >
                       <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
 
@@ -244,7 +259,7 @@ export const LandingPage: React.FC = () => {
 
                       <p className="text-gray-300 text-[15px] leading-relaxed">{steps[activeStep].desc}</p>
 
-                      <div className="bg-black/40 rounded-xl p-4 border border-white/[0.04] font-mono text-xs space-y-2">
+                      <div className="bg-black/50 rounded-xl p-4 border border-white/[0.04] font-mono text-xs space-y-2">
                         <div className="text-indigo-400 font-bold flex items-center gap-2"><Terminal size={13} /> Execution Trace</div>
                         <motion.div key={activeStep} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
                           className="text-emerald-300">{steps[activeStep].trace}</motion.div>
@@ -287,7 +302,7 @@ export const LandingPage: React.FC = () => {
                       transition={{ type: 'spring', stiffness: 300, damping: 20 }}
                       className="group gradient-border card-3d"
                     >
-                      <div className="relative bg-[#030712] rounded-[1.15rem] p-6 space-y-5 h-full flex flex-col">
+                      <div className="relative bg-black rounded-[1.15rem] p-6 space-y-5 h-full flex flex-col">
                         {/* Glow */}
                         <div className={`absolute -top-16 -right-16 w-32 h-32 rounded-full blur-3xl opacity-20 bg-gradient-to-br ${d.color} group-hover:opacity-40 transition-opacity`} />
 
@@ -298,18 +313,29 @@ export const LandingPage: React.FC = () => {
                             <Icon size={22} className="text-white" />
                           </motion.div>
                           <span ref={sc.ref as React.RefObject<HTMLSpanElement>}
-                            className="text-xs font-mono font-bold px-3 py-1 rounded-lg bg-white/[0.04] border border-white/[0.06] text-gray-400"
+                            className={`text-xs font-mono font-bold px-2.5 py-1 rounded-lg border ${
+                              d.isSynthetic 
+                                ? 'bg-amber-500/10 border-amber-500/30 text-amber-300' 
+                                : 'bg-white/[0.04] border-white/[0.06] text-gray-300'
+                            }`}
                           >
-                            {sc.count} patients
+                            {sc.count} {d.isSynthetic ? 'demo rows' : 'cohort records'}
                           </span>
                         </div>
 
                         <div className="relative">
-                          <h3 className="text-xl font-bold text-white">{d.name}</h3>
-                          <p className="text-xs text-gray-500 font-mono mt-0.5">{d.sub}</p>
+                          <h3 className="text-xl font-bold text-white flex items-center justify-between">
+                            <span>{d.name}</span>
+                          </h3>
+                          <p className="text-xs text-gray-400 font-mono mt-0.5">{d.sub}</p>
+                          {d.isSynthetic && (
+                            <span className="inline-block mt-1 text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
+                              Synthetic Demonstration
+                            </span>
+                          )}
                         </div>
 
-                        <div className="bg-black/30 p-3 rounded-xl border border-white/[0.04] text-xs font-mono space-y-1.5">
+                        <div className="bg-black/40 p-3 rounded-xl border border-white/[0.04] text-xs font-mono space-y-1.5">
                           <div className="flex justify-between text-gray-500"><span>Features:</span><span className="text-gray-300">{d.qubits} Qubits</span></div>
                           <div className="flex justify-between text-gray-500"><span>Circuit:</span><span className="text-indigo-400">2-Layer VQC</span></div>
                           <div className="flex justify-between text-gray-500"><span>Backend:</span><span className="text-purple-400">default.qubit</span></div>
@@ -335,7 +361,7 @@ export const LandingPage: React.FC = () => {
         {/* ═══════════ CREDIBILITY ═══════════ */}
         <ScrollReveal direction="scale">
           <div className="gradient-border">
-            <div className="relative bg-[#030712] rounded-[1.15rem] p-8 sm:p-10 space-y-5 overflow-hidden">
+            <div className="relative bg-black rounded-[1.15rem] p-8 sm:p-10 space-y-5 overflow-hidden">
               <div className="absolute -bottom-20 -right-20 w-60 h-60 bg-violet-500/10 rounded-full blur-3xl" />
               <div className="flex items-center gap-3 relative">
                 <div className="p-2.5 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600">

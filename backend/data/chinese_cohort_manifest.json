@@ -1,0 +1,56 @@
+{
+  "dataset_name": "Chinese Health-Screening Cohort (Longitudinal Incident Diabetes)",
+  "source_citation": "Chen et al. (2018). Association of body mass index and age with incident diabetes in Chinese adults: a population-based cohort study. BMJ Open 8(9): e021768.",
+  "dryad_doi": "10.5061/dryad.ft8750v",
+  "dryad_url": "https://doi.org/10.5061/dryad.ft8750v",
+  "license": "CC0 1.0 Universal Public Domain Dedication",
+  "total_patients": 211833,
+  "screening_sites_count": 15,
+  "screening_sites": [
+    0,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    16
+  ],
+  "incident_diabetes_events": 4174,
+  "controls_censored": 207659,
+  "event_prevalence_pct": 1.97,
+  "follow_up_years_median": 2.99,
+  "follow_up_years_iqr": [
+    2.16,
+    3.95
+  ],
+  "follow_up_years_range": [
+    2.0,
+    7.56
+  ],
+  "sha256_hashes": {
+    "source_xlsx": "ffd341a1a91ac65585b9fba70847a2681f5671a6035d9cfbf92e50795d74fbf6",
+    "raw_csv": "3189a11f286db0f799d435c1ca7608590216e4aac8f20e1c11ce6df4faa4c628",
+    "analytic_csv": "ef24cffc16a72ef022cc48353c88cf8b758fba8fe05357bbf9b4f48b008760ef"
+  },
+  "target_leakage_excluded_columns": [
+    "id",
+    "FPG_of_final_visit_mmol_L",
+    "diabetes_diagnosed_during_followup",
+    "censor_diabetes_at_followup",
+    "year_of_followup"
+  ],
+  "conversion_factors": {
+    "FPG_mmol_L_to_mg_dL": 18.0182,
+    "Cholesterol_mmol_L_to_mg_dL": 38.67,
+    "Triglyceride_mmol_L_to_mg_dL": 88.57,
+    "HDL_LDL_mmol_L_to_mg_dL": 38.67
+  }
+}

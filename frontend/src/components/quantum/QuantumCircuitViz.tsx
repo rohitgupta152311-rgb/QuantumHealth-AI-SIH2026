@@ -38,7 +38,7 @@ export const QuantumCircuitViz: React.FC<{ circuitInfo: QuantumCircuitInfo }> = 
   return (
     <div className="space-y-4">
       {/* Interactive Circuit Canvas */}
-      <div className="overflow-x-auto rounded-2xl bg-gray-950 p-6 border border-gray-800/90 font-mono text-xs shadow-inner">
+      <div className="overflow-x-auto rounded-2xl bg-black p-6 border border-gray-800/90 font-mono text-xs shadow-inner">
         <div className="min-w-[760px]">
           <svg width={qubits * 110 + 260} height={qubits * 65 + 30} className="mx-auto select-none">
             <defs>
@@ -159,13 +159,13 @@ export const QuantumCircuitViz: React.FC<{ circuitInfo: QuantumCircuitInfo }> = 
             </div>
             <button
               onClick={() => setSelectedGate(null)}
-              className="text-xs text-gray-400 hover:text-white font-mono bg-gray-900 px-2 py-0.5 rounded border border-gray-800"
+              className="text-xs text-gray-400 hover:text-white font-mono bg-white/[0.03] px-2 py-0.5 rounded border border-white/[0.06]"
             >
               Close ✕
             </button>
           </div>
           <p className="text-xs text-gray-300 leading-relaxed">{selectedGate.desc}</p>
-          <div className="bg-gray-950 p-2.5 rounded-xl border border-gray-800/80 font-mono text-[11px] text-quantum-300">
+          <div className="bg-black p-2.5 rounded-xl border border-gray-800/80 font-mono text-[11px] text-quantum-300">
             {selectedGate.math}
           </div>
         </div>
