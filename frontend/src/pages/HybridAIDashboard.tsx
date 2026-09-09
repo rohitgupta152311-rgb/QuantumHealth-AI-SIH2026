@@ -26,30 +26,37 @@ export const HybridAIDashboard: React.FC = () => {
     const saved = localStorage.getItem('qhai_last_prediction');
     if (saved) {
       try {
-        setData(JSON.parse(saved));
+        const parsed = JSON.parse(saved);
+        if (parsed && parsed.status === 'completed') {
+          setData(parsed);
+          return;
+        }
       } catch {
         localStorage.removeItem('qhai_last_prediction');
       }
     }
+    handleLoadDemo();
   }, []);
 
   const handleLoadDemo = async () => {
     setIsLoadingDemo(true);
     try {
       const demoResult = await predict({
-        disease: 'diabetes',
+        disease: 'heart',
         features: {
-          Age: 62,
-          Gender: 1,
-          BMI: 29.8,
-          SBP_mmHg: 150,
-          DBP_mmHg: 92,
-          FPG_mg_dL: 124,
-          Cholesterol_mmol_L: 6.3,
-          Triglyceride_mmol_L: 3.6,
-          ALT_UL: 58,
-          CCR_umol_L: 88,
-          family_history_of_diabetes: 1,
+          age: 58,
+          sex: 1,
+          cp: 2,
+          trestbps: 140,
+          chol: 245,
+          fbs: 0,
+          restecg: 1,
+          thalach: 150,
+          exang: 0,
+          oldpeak: 1.6,
+          slope: 1,
+          ca: 1,
+          thal: 2,
         },
         mode: 'hybrid',
       });
