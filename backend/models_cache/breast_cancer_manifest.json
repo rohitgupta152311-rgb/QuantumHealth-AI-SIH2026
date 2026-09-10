@@ -12,7 +12,7 @@
     "val_sha256": "26d34cbbfbddda54a6ae32e72e3e92059543e71bbfa4bdea8acc52e629862238",
     "test_sha256": "0ac1e66c633ce6a3eedc56a200f978eaaedd5c46b141d69b1fa56179d8e466eb"
   },
-  "preprocessing_artifact_sha256": "33411dd35bbcb7959ea555b86da8834a9c2c96ac108ee85b162015b5c8aa6404",
+  "preprocessing_artifact_sha256": "561a80a7e6df60799e71cceb299401485f9a76814ac1be29e815f5a9aa6efca1",
   "quantum_configuration": {
     "n_qubits": 6,
     "n_layers": 2,

@@ -105,7 +105,7 @@ try {
         Write-Host "Reusing frontend on port 5173 (PID(s): $FrontendOwners)."
     } else {
         $Node = (Get-Command node.exe -ErrorAction Stop).Source
-        & $Node -e 'const [major,minor]=process.versions.node.split(".").map(Number); if (!(major===20 && minor>=19 || major===22 && minor>=12 || major>=24)) { console.error("Use Node 20.19+, 22.12+, or 24+."); process.exit(1); }'
+        & $Node -e 'const [M,m]=process.versions.node.split(String.fromCharCode(46)).map(Number); process.exit((M===20&&m>=19)||(M===22&&m>=12)||M>=24 ? 0 : 1)'
         if ($LASTEXITCODE -ne 0) { throw 'The Node.js version is unsupported.' }
         $Vite = Join-Path $ProjectRoot 'frontend/node_modules/vite/bin/vite.js'
         if (-not (Test-Path -LiteralPath $Vite)) { throw 'Frontend dependencies missing. Run npm ci from the frontend folder.' }
