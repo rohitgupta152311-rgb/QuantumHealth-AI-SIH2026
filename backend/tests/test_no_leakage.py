@@ -66,6 +66,7 @@ def test_pipeline_fits_strictly_on_training_data():
     assert np.all(X_test_q >= 0.0) and np.all(X_test_q <= 1.0)
 
 
+@pytest.mark.training
 def test_platt_calibration_fitted_on_validation_split(tmp_path: Path):
     """Verify ClassicalMLTrainer fits base models on train, Platt calibrates on val, evaluates on test."""
     loader = get_dataset_loader()

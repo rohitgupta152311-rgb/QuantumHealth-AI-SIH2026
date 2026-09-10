@@ -246,7 +246,7 @@ const Wrapper: React.FC<{
 
 /* ─── Main export ──────────────────────────────── */
 export const BiomarkerInput: React.FC<BiomarkerInputProps> = (props) => {
-  const { feature, value } = props;
+  const { feature } = props;
   const min = feature.min_val ?? feature.min ?? 0;
   const max = feature.max_val ?? feature.max ?? 100;
   const nameLower = feature.name.toLowerCase();

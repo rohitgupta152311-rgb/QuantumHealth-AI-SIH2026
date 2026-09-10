@@ -310,6 +310,7 @@ async def train_models(
             model_version=f"{disease}_v1.0",
         )
         pipeline.fit(X_train, y_train, feature_names)
+        pipeline.save(pipeline_path)
 
         X_train_classical, X_train_quantum = pipeline.transform(X_train)
         X_test_classical, X_test_quantum = pipeline.transform(X_test)
@@ -317,14 +318,14 @@ async def train_models(
         # Train and cache classical and quantum models
         trainer.train(
             X_train_classical, y_train, X_test_classical, y_test, feature_names,
-            X_train_q=X_train_quantum, X_test_q=X_test_quantum
+            X_train_q=X_train_quantum, X_test_q=X_test_quantum,
+            pipeline_path=pipeline_path
         )
         if trainer.vqc_model is not None:
             qc = trainer.vqc_model
         else:
             qc.fit(X_train_quantum, y_train)
             qc.save(vqc_path)
-        pipeline.save(pipeline_path)
 
         status_msg = "success"
 

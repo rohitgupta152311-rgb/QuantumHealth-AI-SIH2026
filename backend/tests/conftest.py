@@ -56,7 +56,11 @@ async def db_session() -> AsyncGenerator[AsyncSession, None]:
 # Temporary model directory (per-test)
 # ---------------------------------------------------------------------------
 @pytest.fixture
-def tmp_model_dir(monkeypatch):
+def tmp_model_dir(monkeypatch, request):
+    if request.node.get_closest_marker("integration"):
+        # Explicit artifact integration must use the supplied cache without replacing it.
+        yield str(settings.models_cache_dir)
+        return
     d = tempfile.mkdtemp(prefix="qhtest_models_")
     monkeypatch.setattr(settings, "models_cache_dir", Path(d))
     # Keep integration tests fast. Production defaults remain 150 VQC iterations.

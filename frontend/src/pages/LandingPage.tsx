@@ -1,13 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React,{ useState,useEffect,useRef } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { motion, useInView, AnimatePresence } from 'framer-motion';
+import { motion,useInView,AnimatePresence } from 'framer-motion';
 import {
-  ArrowRight, Activity, Brain, Cpu, Zap, Shield,
-  Sparkles, CheckCircle2, Binary, HeartPulse, ShieldAlert, Droplets,
-  Terminal, BarChart3, ChevronRight, Layers, GitBranch, Award
+ArrowRight,Activity,Brain,Cpu,Zap,Shield,
+Sparkles,CheckCircle2,Binary,HeartPulse,ShieldAlert,Droplets,
+Terminal,Award
 } from 'lucide-react';
-import { Button } from '../components/ui/Button';
-import { Badge } from '../components/ui/Badge';
 import { ScrollReveal } from '../components/effects/PageTransition';
 
 /* ------------------------------------------------------------------ */
@@ -31,6 +29,11 @@ function useCounter(target: number, duration = 2000) {
 
   return { count, ref };
 }
+
+const AnimatedCount: React.FC<{ value: number; suffix?: string }> = ({ value, suffix = '' }) => {
+  const { count, ref } = useCounter(value, 2000);
+  return <span ref={ref as React.RefObject<HTMLSpanElement>}>{count}{suffix}</span>;
+};
 
 /* ------------------------------------------------------------------ */
 const TypingText: React.FC<{ text: string; delay?: number }> = ({ text, delay = 0 }) => {
@@ -72,14 +75,14 @@ export const LandingPage: React.FC = () => {
     { id: '03', title: 'Quantum Encoding', sub: 'RY Angle Encoding', desc: 'Maps each normalized feature to a qubit rotation: RY(θ = π·x_i).', icon: Binary, layer: 'Quantum', tech: 'Angle Encoding', trace: '→ RY(θ = π · x_norm[i]) | init: |000000⟩' },
     { id: '04', title: 'VQC Execution', sub: 'Variational Quantum Circuit', desc: 'Parameterized RY/RZ rotations + CNOT ring entanglement on 6-qubit simulator.', icon: Cpu, layer: 'Quantum', tech: 'PennyLane', trace: '→ [RY(θ),RZ(φ)] × 2L | CNOT ring: q₀→q₁→...→q₅→q₀' },
     { id: '05', title: 'Measurement', sub: 'Pauli-Z Expectation', desc: 'Measures ⟨Z₀⟩ and applies sigmoid to produce quantum risk probability.', icon: Zap, layer: 'Quantum', tech: '⟨Z₀⟩', trace: '→ sigmoid(⟨Z₀⟩) | optimizer: Nelder-Mead' },
-    { id: '06', title: 'Consensus Engine', sub: '60/40 Hybrid Fusion', desc: 'Fuses RF + SVM + LR + XGBoost + GBM + VQC with weighted voting and disagreement detection.', icon: Shield, layer: 'Hybrid', tech: 'Consensus', trace: '→ P_hybrid = 0.60·P_classical + 0.40·P_quantum' },
+    { id: '06', title: 'Consensus Engine', sub: 'Saved Hybrid Fusion', desc: 'Fuses RF + SVM + LR + XGBoost + GBM + VQC with weighted voting and disagreement detection.', icon: Shield, layer: 'Hybrid', tech: 'Consensus', trace: '→ P_hybrid = 0.60·P_classical + 0.40·P_quantum' },
   ];
 
   const diseases = [
-    { id: 'diabetes', name: 'Incident Diabetes Risk', sub: 'Dryad/BMJ Open Chinese Cohort', samples: 211833, qubits: '11→6', isSynthetic: false, icon: Activity, color: 'from-blue-500 to-indigo-600' },
-    { id: 'heart', name: 'Heart Disease Risk', sub: 'UCI Cleveland Clinical Cohort', samples: 303, qubits: '13→6', isSynthetic: false, icon: HeartPulse, color: 'from-rose-500 to-pink-600' },
-    { id: 'breast_cancer', name: 'Breast Tumor Cytopathology', sub: 'UCI Wisconsin Diagnostic (WDBC)', samples: 569, qubits: '30→6', isSynthetic: false, icon: ShieldAlert, color: 'from-violet-500 to-purple-600' },
-    { id: 'kidney', name: 'Chronic Kidney Disease Risk', sub: 'Apollo Hospitals India / UCI', samples: 400, qubits: '12→6', isSynthetic: false, icon: Droplets, color: 'from-emerald-500 to-teal-600' },
+    { id: 'diabetes', name: 'Incident Diabetes Risk', sub: 'Dryad/BMJ Open Chinese Cohort', samples: 211833, qubits: '11→6', isSynthetic: false, icon: Activity },
+    { id: 'heart', name: 'Heart Disease Risk', sub: 'UCI Cleveland Clinical Cohort', samples: 303, qubits: '13→6', isSynthetic: false, icon: HeartPulse },
+    { id: 'breast_cancer', name: 'Breast Tumor Cytopathology', sub: 'UCI Wisconsin Diagnostic (WDBC)', samples: 569, qubits: '30→6', isSynthetic: false, icon: ShieldAlert },
+    { id: 'kidney', name: 'Chronic Kidney Disease Risk', sub: 'Apollo Hospitals India / UCI', samples: 400, qubits: '12→6', isSynthetic: false, icon: Droplets },
   ];
 
   const stats = [
@@ -91,120 +94,98 @@ export const LandingPage: React.FC = () => {
 
   const layerColor: Record<string, string> = {
     Classical: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
-    Quantum: 'text-violet-400 bg-violet-500/10 border-violet-500/20',
-    Hybrid: 'text-pink-400 bg-pink-500/10 border-pink-500/20',
+    Quantum: 'text-teal-400 bg-teal-500/10 border-teal-500/20',
+    Hybrid: 'text-cyan-400 bg-cyan-500/10 border-cyan-500/20',
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
-      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-32 space-y-32">
+    <div className="relative min-h-screen">
+      <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-24 space-y-24">
 
         {/* ═══════════ HERO ═══════════ */}
-        <div className="text-center max-w-5xl mx-auto space-y-8">
+        <div className="text-center max-w-4xl mx-auto space-y-6">
           {/* Research Disclaimer Header Badge */}
-          <div className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/30 text-xs font-medium text-amber-300">
-            <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
+          <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-amber-500/10 border border-amber-500/25 text-xs font-medium text-amber-300">
+            <span className="w-1.5 h-1.5 rounded-full bg-amber-400" />
             Research & Educational Decision-Support Prototype — Not for Clinical Diagnosis
           </div>
 
           <div className="flex flex-wrap items-center justify-center gap-2">
-            <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.5 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/[0.04] border border-white/[0.08] text-xs font-semibold text-indigo-300 shadow-[0_0_20px_rgba(129,140,248,0.15)]"
-            >
-              <Sparkles size={14} className="text-amber-400" />
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-medium text-slate-300">
+              <Sparkles size={13} className="text-teal-400" />
               Smart India Hackathon 2026 — Problem Statement #SIH26139
-            </motion.div>
-            <motion.div initial={{ opacity: 0, y: 20, scale: 0.9 }} animate={{ opacity: 1, y: 0, scale: 1 }}
-              transition={{ duration: 0.5, delay: 0.1 }}
-              className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-amber-500/10 border border-amber-500/25 text-xs font-bold text-amber-300 shadow-sm"
-            >
-              <Award size={14} className="text-amber-400" />
+            </div>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-xs font-medium text-teal-300">
+              <Award size={13} className="text-teal-400" />
               Team Code 404 • NIT Nagaland
-            </motion.div>
+            </div>
           </div>
 
-          <motion.h1 initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.8, delay: 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
-            className="text-5xl sm:text-7xl lg:text-8xl font-black tracking-tight leading-[1.05]"
+          <motion.h1
+            initial={{ opacity: 0, y: 25 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="text-4xl sm:text-6xl lg:text-7xl font-bold tracking-tight leading-[1.1] text-slate-100"
           >
-            <span className="text-white"><TypingText text="Hybrid Quantum" delay={400} /></span>
+            <span><TypingText text="Hybrid Quantum" delay={200} /></span>
             <br />
-            <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 via-purple-400 to-pink-400 animate-gradient">
-              Intelligence
+            <span className="text-teal-400">Intelligence</span>
+            <br />
+            <span className="text-slate-400 text-2xl sm:text-4xl lg:text-5xl font-semibold">
+              for Clinical Disease-Risk Prediction
             </span>
-            <br />
-            <motion.span initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.2, duration: 0.6 }}
-              className="text-gray-400 text-3xl sm:text-4xl lg:text-5xl font-bold"
-            >
-              for Disease-Risk Prediction
-            </motion.span>
           </motion.h1>
 
-          <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.5 }}
-            className="text-lg sm:text-xl text-gray-400 max-w-3xl mx-auto leading-relaxed"
-          >
+          <p className="text-base sm:text-lg text-slate-400 max-w-3xl mx-auto leading-relaxed">
             Combining 5 classical ML architectures with PennyLane Variational Quantum Circuits
             to assess multi-variate biomedical risk patterns with leak-free splits, 99.88% parameter compression, and calibrated probabilities.
-          </motion.p>
+          </p>
 
           {/* CTAs */}
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, delay: 0.6 }}
-            className="flex flex-wrap items-center justify-center gap-4 pt-4"
-          >
-            <motion.button whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}
-              onClick={() => navigate('/about')}
-              className="btn-glow flex items-center gap-2.5 px-6 py-3.5 rounded-2xl text-sm font-bold bg-gradient-to-r from-amber-500 via-orange-500 to-indigo-600 text-white shadow-[0_0_30px_rgba(245,158,11,0.4)] hover:shadow-[0_0_50px_rgba(245,158,11,0.6)] transition-shadow"
-            >
-              <Award size={18} /> Platform Architecture & USPs <ArrowRight size={16} />
-            </motion.button>
-            <motion.button whileHover={{ scale: 1.05, y: -2 }} whileTap={{ scale: 0.95 }}
+          <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+            <button
               onClick={() => navigate('/analyze')}
-              className="btn-glow flex items-center gap-2.5 px-7 py-3.5 rounded-2xl text-sm font-bold bg-gradient-to-r from-indigo-600 via-purple-600 to-pink-600 text-white shadow-[0_0_30px_rgba(129,140,248,0.4)] hover:shadow-[0_0_50px_rgba(129,140,248,0.6)] transition-shadow"
+              className="flex items-center gap-2 px-6 py-3 rounded-xl text-sm font-semibold bg-teal-600 hover:bg-teal-500 text-white shadow-sm transition-colors"
             >
-              <Activity size={18} /> Start Disease Analysis
-            </motion.button>
-            <motion.button whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}
+              <Activity size={16} /> Start Disease Analysis
+            </button>
+            <button
+              onClick={() => navigate('/about')}
+              className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-200 transition-colors"
+            >
+              <Award size={16} /> Architecture & Methodology <ArrowRight size={14} />
+            </button>
+            <button
               onClick={() => navigate('/quantum-lab')}
-              className="flex items-center gap-2 px-6 py-3.5 rounded-2xl text-sm font-semibold text-gray-300 bg-white/[0.04] border border-white/[0.1] hover:bg-white/[0.08] hover:border-white/[0.15] transition-all"
+              className="flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-semibold bg-slate-800/80 hover:bg-slate-700 border border-slate-700 text-slate-300 transition-colors"
             >
-              <Cpu size={18} /> Quantum Lab
-            </motion.button>
-          </motion.div>
+              <Cpu size={16} /> Quantum Lab
+            </button>
+          </div>
 
           {/* Stats */}
-          <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.7, delay: 0.8 }}
-            className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-8 max-w-3xl mx-auto"
-          >
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-6 max-w-4xl mx-auto">
             {stats.map((s, i) => {
-              const c = useCounter(s.value, 2500);
               return (
-                <motion.div key={i} whileHover={{ scale: 1.05, y: -3 }}
-                  className="gradient-border card-hover-glow"
-                >
-                  <div className="relative bg-black rounded-[1.15rem] p-5 text-center">
-                    <div className="text-3xl sm:text-4xl font-black font-mono text-white" ref={c.ref as React.RefObject<HTMLDivElement>}>
-                      {c.count}{s.suffix}
-                    </div>
-                    <div className="text-[11px] text-gray-500 mt-1 font-medium">{s.label}</div>
+                <div key={i} className="rounded-xl border border-slate-800 bg-slate-900/80 p-4 text-center shadow-sm">
+                  <div className="text-2xl sm:text-3xl font-bold font-mono text-slate-100">
+                    <AnimatedCount value={s.value} suffix={s.suffix} />
                   </div>
-                </motion.div>
+                  <div className="text-xs text-slate-400 mt-1 font-medium">{s.label}</div>
+                </div>
               );
             })}
-          </motion.div>
+          </div>
         </div>
 
         {/* ═══════════ WORKFLOW ═══════════ */}
         <ScrollReveal>
-          <div className="space-y-10">
+          <div className="space-y-8">
             <div className="text-center max-w-2xl mx-auto">
-              <h2 className="text-3xl sm:text-4xl font-black text-white mb-3">
-                The <span className="bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">Hybrid</span> Workflow
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 mb-2">
+                The <span className="text-teal-400">Hybrid</span> Workflow
               </h2>
-              <p className="text-gray-500 text-sm">Six-stage pipeline from raw clinical data to consensus diagnosis.</p>
+              <p className="text-slate-400 text-sm">Six-stage pipeline from raw clinical data to consensus diagnosis.</p>
             </div>
 
             <div className="grid lg:grid-cols-5 gap-6 items-start">
@@ -214,64 +195,71 @@ export const LandingPage: React.FC = () => {
                   const isCurrent = activeStep === idx;
                   const Icon = s.icon;
                   return (
-                    <motion.div key={s.id} onClick={() => setActiveStep(idx)} whileHover={{ x: 6 }}
-                      className={`cursor-pointer p-3.5 rounded-xl border transition-all duration-300 flex items-center gap-3 ${
+                    <div
+                      key={s.id}
+                      onClick={() => setActiveStep(idx)}
+                      className={`cursor-pointer p-3.5 rounded-xl border transition-all duration-200 flex items-center gap-3 ${
                         isCurrent
-                          ? 'bg-white/[0.05] border-indigo-500/40 shadow-[0_0_25px_rgba(129,140,248,0.1)]'
-                          : 'bg-transparent border-white/[0.04] hover:bg-white/[0.02] hover:border-white/[0.08]'
+                          ? 'bg-slate-800/90 border-teal-500/40 text-slate-100 shadow-sm'
+                          : 'bg-slate-900/50 border-slate-800 hover:bg-slate-800/50 text-slate-400'
                       }`}
                     >
-                      <div className={`w-9 h-9 rounded-lg flex items-center justify-center text-xs font-black font-mono shrink-0 transition-all ${
-                        isCurrent ? 'bg-gradient-to-br from-indigo-500 to-purple-600 text-white shadow-[0_0_15px_rgba(129,140,248,0.4)]' : 'bg-white/[0.04] text-gray-500'
-                      }`}>{s.id}</div>
+                      <div className={`w-8 h-8 rounded-lg flex items-center justify-center text-xs font-bold font-mono shrink-0 transition-colors ${
+                        isCurrent ? 'bg-teal-600 text-white' : 'bg-slate-800 text-slate-400'
+                      }`}>
+                        {s.id}
+                      </div>
                       <div className="min-w-0">
-                        <div className={`text-sm font-bold truncate ${isCurrent ? 'text-white' : 'text-gray-300'}`}>{s.title}</div>
+                        <div className={`text-sm font-semibold truncate ${isCurrent ? 'text-slate-100' : 'text-slate-300'}`}>{s.title}</div>
                         <div className={`text-[10px] font-mono px-1.5 py-0.5 rounded inline-block mt-0.5 border ${layerColor[s.layer]}`}>{s.layer}</div>
                       </div>
-                      <Icon size={16} className={`ml-auto shrink-0 ${isCurrent ? 'text-indigo-400' : 'text-gray-700'}`} />
-                    </motion.div>
+                      <Icon size={16} className={`ml-auto shrink-0 ${isCurrent ? 'text-teal-400' : 'text-slate-500'}`} />
+                    </div>
                   );
                 })}
               </div>
 
               {/* Detail Card */}
               <div className="lg:col-span-3">
-                <div className="gradient-border">
+                <div className="rounded-xl border border-slate-800 bg-slate-900/90 p-6 sm:p-7 space-y-5 shadow-sm min-h-[300px]">
                   <AnimatePresence mode="wait">
-                    <motion.div key={activeStep} initial={{ opacity: 0, y: 15 }} animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }} transition={{ duration: 0.35 }}
-                      className="relative bg-black rounded-[1.15rem] p-7 space-y-5 min-h-[320px]"
+                    <motion.div
+                      key={activeStep}
+                      initial={{ opacity: 0, y: 10 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      exit={{ opacity: 0, y: -10 }}
+                      transition={{ duration: 0.25 }}
+                      className="space-y-4"
                     >
-                      <div className="absolute -top-24 -right-24 w-48 h-48 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none" />
-
                       <div className="flex items-start justify-between">
                         <div>
-                          <div className="text-4xl font-black font-mono bg-clip-text text-transparent bg-gradient-to-r from-indigo-400 to-purple-400">
+                          <div className="text-3xl font-bold font-mono text-teal-400">
                             {steps[activeStep].id}
                           </div>
-                          <h3 className="text-xl font-bold text-white mt-1">{steps[activeStep].title}</h3>
-                          <p className="text-xs text-gray-500 font-mono mt-0.5">{steps[activeStep].sub}</p>
+                          <h3 className="text-lg font-bold text-slate-100 mt-1">{steps[activeStep].title}</h3>
+                          <p className="text-xs text-slate-400 font-mono mt-0.5">{steps[activeStep].sub}</p>
                         </div>
-                        <span className="text-[11px] font-bold font-mono px-3 py-1.5 rounded-lg bg-white/[0.04] border border-white/[0.08] text-gray-400">
+                        <span className="text-[11px] font-semibold font-mono px-2.5 py-1 rounded-md bg-slate-950/60 border border-slate-800 text-slate-300">
                           {steps[activeStep].tech}
                         </span>
                       </div>
 
-                      <p className="text-gray-300 text-[15px] leading-relaxed">{steps[activeStep].desc}</p>
+                      <p className="text-slate-300 text-sm leading-relaxed">{steps[activeStep].desc}</p>
 
-                      <div className="bg-black/50 rounded-xl p-4 border border-white/[0.04] font-mono text-xs space-y-2">
-                        <div className="text-indigo-400 font-bold flex items-center gap-2"><Terminal size={13} /> Execution Trace</div>
-                        <motion.div key={activeStep} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }}
-                          className="text-emerald-300">{steps[activeStep].trace}</motion.div>
+                      <div className="bg-slate-950/80 rounded-lg p-3.5 border border-slate-800 font-mono text-xs space-y-1.5">
+                        <div className="text-teal-400 font-semibold flex items-center gap-2"><Terminal size={13} /> Execution Trace</div>
+                        <div className="text-emerald-300">{steps[activeStep].trace}</div>
                       </div>
 
                       {/* Progress dots */}
-                      <div className="flex gap-2 pt-1">
+                      <div className="flex gap-2 pt-2">
                         {steps.map((_, i) => (
-                          <button key={i} onClick={() => setActiveStep(i)}
-                            className={`h-1.5 rounded-full transition-all duration-500 ${
-                              i === activeStep ? 'w-8 bg-gradient-to-r from-indigo-500 to-purple-500' :
-                              i < activeStep ? 'w-3 bg-indigo-500/40' : 'w-3 bg-white/[0.06]'
+                          <button
+                            key={i}
+                            onClick={() => setActiveStep(i)}
+                            className={`h-1.5 rounded-full transition-all duration-300 ${
+                              i === activeStep ? 'w-8 bg-teal-500' :
+                              i < activeStep ? 'w-3 bg-teal-800' : 'w-3 bg-slate-800'
                             }`}
                           />
                         ))}
@@ -286,72 +274,62 @@ export const LandingPage: React.FC = () => {
 
         {/* ═══════════ DISEASE CARDS ═══════════ */}
         <ScrollReveal>
-          <div className="space-y-10">
+          <div className="space-y-8">
             <div className="text-center max-w-2xl mx-auto">
-              <h2 className="text-3xl sm:text-4xl font-black text-white mb-3">Disease Modules</h2>
-              <p className="text-gray-500 text-sm">Plug-and-play architecture across diverse biomedical domains.</p>
+              <h2 className="text-2xl sm:text-3xl font-bold text-slate-100 mb-2">Disease Modules</h2>
+              <p className="text-slate-400 text-sm">Plug-and-play architecture across diverse biomedical domains.</p>
             </div>
 
-            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
-              {diseases.map((d, i) => {
+            <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-5">
+              {diseases.map((d) => {
                 const Icon = d.icon;
-                const sc = useCounter(d.samples, 2500);
                 return (
-                  <ScrollReveal key={d.id} delay={i * 0.15} direction="scale">
-                    <motion.div whileHover={{ y: -10 }}
-                      transition={{ type: 'spring', stiffness: 300, damping: 20 }}
-                      className="group gradient-border card-3d"
-                    >
-                      <div className="relative bg-black rounded-[1.15rem] p-6 space-y-5 h-full flex flex-col">
-                        {/* Glow */}
-                        <div className={`absolute -top-16 -right-16 w-32 h-32 rounded-full blur-3xl opacity-20 bg-gradient-to-br ${d.color} group-hover:opacity-40 transition-opacity`} />
-
-                        <div className="flex items-center justify-between relative">
-                          <motion.div whileHover={{ rotate: 12, scale: 1.1 }}
-                            className={`p-3 rounded-xl bg-gradient-to-br ${d.color} shadow-lg`}
-                          >
-                            <Icon size={22} className="text-white" />
-                          </motion.div>
-                          <span ref={sc.ref as React.RefObject<HTMLSpanElement>}
-                            className={`text-xs font-mono font-bold px-2.5 py-1 rounded-lg border ${
-                              d.isSynthetic 
-                                ? 'bg-amber-500/10 border-amber-500/30 text-amber-300' 
-                                : 'bg-white/[0.04] border-white/[0.06] text-gray-300'
-                            }`}
-                          >
-                            {sc.count} {d.isSynthetic ? 'demo rows' : 'cohort records'}
-                          </span>
-                        </div>
-
-                        <div className="relative">
-                          <h3 className="text-xl font-bold text-white flex items-center justify-between">
-                            <span>{d.name}</span>
-                          </h3>
-                          <p className="text-xs text-gray-400 font-mono mt-0.5">{d.sub}</p>
-                          {d.isSynthetic && (
-                            <span className="inline-block mt-1 text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 border border-amber-500/30">
-                              Synthetic Demonstration
-                            </span>
-                          )}
-                        </div>
-
-                        <div className="bg-black/40 p-3 rounded-xl border border-white/[0.04] text-xs font-mono space-y-1.5">
-                          <div className="flex justify-between text-gray-500"><span>Features:</span><span className="text-gray-300">{d.qubits} Qubits</span></div>
-                          <div className="flex justify-between text-gray-500"><span>Circuit:</span><span className="text-indigo-400">2-Layer VQC</span></div>
-                          <div className="flex justify-between text-gray-500"><span>Backend:</span><span className="text-purple-400">default.qubit</span></div>
-                        </div>
-
-                        <div className="mt-auto pt-2">
-                          <motion.button whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.97 }}
-                            onClick={() => navigate('/analyze')}
-                            className={`btn-glow w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold text-white bg-gradient-to-r ${d.color} shadow-lg hover:shadow-xl transition-shadow`}
-                          >
-                            Analyze <ArrowRight size={15} />
-                          </motion.button>
-                        </div>
+                  <div
+                    key={d.id}
+                    className="rounded-xl border border-slate-800 bg-slate-900/80 p-5 space-y-4 h-full flex flex-col shadow-sm hover:border-slate-700 transition-colors"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="p-2 rounded-lg bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                        <Icon size={20} />
                       </div>
-                    </motion.div>
-                  </ScrollReveal>
+                      <span
+                        className={`text-xs font-mono font-medium px-2 py-0.5 rounded border ${
+                          d.isSynthetic
+                            ? 'bg-amber-500/10 border-amber-500/25 text-amber-300'
+                            : 'bg-slate-950/60 border-slate-800 text-slate-300'
+                        }`}
+                      >
+                        <AnimatedCount value={d.samples} /> {d.isSynthetic ? 'demo rows' : 'cohort records'}
+                      </span>
+                    </div>
+
+                    <div>
+                      <h3 className="text-base font-bold text-slate-100">
+                        {d.name}
+                      </h3>
+                      <p className="text-xs text-slate-400 font-mono mt-0.5">{d.sub}</p>
+                      {d.isSynthetic && (
+                        <span className="inline-block mt-1 text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/20">
+                          Synthetic Demonstration
+                        </span>
+                      )}
+                    </div>
+
+                    <div className="bg-slate-950/60 p-3 rounded-lg border border-slate-800/80 text-xs font-mono space-y-1.5">
+                      <div className="flex justify-between text-slate-400"><span>Features:</span><span className="text-slate-200">{d.qubits} Qubits</span></div>
+                      <div className="flex justify-between text-slate-400"><span>Circuit:</span><span className="text-teal-400">2-Layer VQC</span></div>
+                      <div className="flex justify-between text-slate-400"><span>Backend:</span><span className="text-slate-300">default.qubit</span></div>
+                    </div>
+
+                    <div className="mt-auto pt-2">
+                      <button
+                        onClick={() => navigate('/analyze')}
+                        className="w-full flex items-center justify-center gap-2 py-2 rounded-lg text-xs font-semibold text-white bg-teal-600 hover:bg-teal-500 transition-colors shadow-sm"
+                      >
+                        Analyze <ArrowRight size={14} />
+                      </button>
+                    </div>
+                  </div>
                 );
               })}
             </div>
@@ -359,29 +337,27 @@ export const LandingPage: React.FC = () => {
         </ScrollReveal>
 
         {/* ═══════════ CREDIBILITY ═══════════ */}
-        <ScrollReveal direction="scale">
-          <div className="gradient-border">
-            <div className="relative bg-black rounded-[1.15rem] p-8 sm:p-10 space-y-5 overflow-hidden">
-              <div className="absolute -bottom-20 -right-20 w-60 h-60 bg-violet-500/10 rounded-full blur-3xl" />
-              <div className="flex items-center gap-3 relative">
-                <div className="p-2.5 rounded-lg bg-gradient-to-br from-indigo-500 to-purple-600">
-                  <Shield size={20} className="text-white" />
-                </div>
-                <h3 className="text-xl font-black text-white">Scientific Integrity</h3>
+        <ScrollReveal>
+          <div className="rounded-xl border border-slate-800 bg-slate-900/90 p-6 sm:p-8 space-y-4 shadow-sm">
+            <div className="flex items-center gap-3">
+              <div className="p-2.5 rounded-lg bg-teal-500/10 text-teal-400 border border-teal-500/20">
+                <Shield size={20} />
               </div>
-              <p className="text-sm text-gray-400 leading-relaxed relative max-w-3xl">
-                QuantumHealth AI operates in <strong className="text-white">Quantum Simulation Mode</strong> using PennyLane's <code className="bg-white/[0.04] px-1.5 py-0.5 rounded text-indigo-300 font-mono text-xs">default.qubit</code>. 
-                We present honest, reproducible benchmarks — not unverified quantum supremacy claims.
-              </p>
-              <div className="flex flex-wrap gap-3 pt-2 text-xs font-mono relative">
-                {['PennyLane Simulator', 'Seeded Splits', 'SHAP Explainability', 'NISQ-Era Aware'].map((tag) => (
-                  <motion.span key={tag} whileHover={{ scale: 1.05, y: -1 }}
-                    className="flex items-center gap-1.5 bg-white/[0.03] px-3 py-1.5 rounded-lg border border-white/[0.06] text-gray-400 hover:border-indigo-500/30 hover:text-indigo-300 transition-all cursor-default"
-                  >
-                    <CheckCircle2 size={13} className="text-emerald-400" /> {tag}
-                  </motion.span>
-                ))}
-              </div>
+              <h3 className="text-lg font-bold text-slate-100">Scientific Integrity</h3>
+            </div>
+            <p className="text-sm text-slate-300 leading-relaxed max-w-3xl">
+              QuantumHealth AI operates in <strong className="text-slate-100">Quantum Simulation Mode</strong> using PennyLane's <code className="bg-slate-950/80 px-1.5 py-0.5 rounded text-teal-300 font-mono text-xs border border-slate-800">default.qubit</code>.
+              We present honest, reproducible benchmarks — not unverified quantum supremacy claims.
+            </p>
+            <div className="flex flex-wrap gap-2.5 pt-1 text-xs font-mono">
+              {['PennyLane Simulator', 'Seeded Splits', 'SHAP Explainability', 'NISQ-Era Aware'].map((tag) => (
+                <span
+                  key={tag}
+                  className="flex items-center gap-1.5 bg-slate-950/60 px-3 py-1.5 rounded-lg border border-slate-800 text-slate-400"
+                >
+                  <CheckCircle2 size={13} className="text-teal-400" /> {tag}
+                </span>
+              ))}
             </div>
           </div>
         </ScrollReveal>

@@ -110,6 +110,7 @@ def test_fpg_dual_unit_exact_conversion():
     assert total_events == 4174, f"Expected 4,174 incident events, got {total_events}"
 
 
+@pytest.mark.training
 def test_vqc_training_case_control_subset_real_events():
     """Verify VQC fit selects genuine case-control samples without 0-event slices."""
     # Synthetic test slice matching 1.97% prevalence
@@ -139,6 +140,7 @@ def test_vqc_training_case_control_subset_real_events():
     np.testing.assert_allclose(np.sum(sample_probs, axis=1), 1.0, rtol=1e-5)
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_legacy_pima_not_remapped_and_warned():
     """Verify legacy Pima inputs are rejected with warnings and NEVER remapped."""

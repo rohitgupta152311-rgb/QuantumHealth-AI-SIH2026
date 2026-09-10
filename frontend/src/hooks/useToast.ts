@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState,useCallback } from 'react';
 import type { ToastMessage } from '../types';
 
 let nextId = 0;
@@ -10,7 +10,7 @@ export const useToast = () => {
     const id = (nextId++).toString();
     setToasts(prev => [...prev, { id, type, message }]);
     setTimeout(() => {
-      removeToast(id);
+      setToasts(prev => prev.filter(t => t.id !== id));
     }, 5000);
   }, []);
 

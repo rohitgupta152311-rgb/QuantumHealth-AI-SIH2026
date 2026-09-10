@@ -1,5 +1,4 @@
 import React from 'react';
-import { motion } from 'framer-motion';
 import { Activity, HeartPulse, ShieldAlert, Droplets, type LucideIcon } from 'lucide-react';
 import type { DiseaseInfo } from '../../types';
 
@@ -39,23 +38,10 @@ const colorMap: Record<string, { gradient: string; glow: string; border: string 
   },
 };
 
-const container = {
-  hidden: {},
-  show: { transition: { staggerChildren: 0.08 } },
-};
-
-const item = {
-  hidden: { opacity: 0, y: 20, scale: 0.95 },
-  show: { opacity: 1, y: 0, scale: 1, transition: { type: 'spring', stiffness: 300, damping: 22 } },
-};
-
 export const DiseaseSelector: React.FC<DiseaseSelectorProps> = ({ diseases, selectedId, onSelect }) => {
   return (
-    <motion.div
+    <div
       className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
-      variants={container}
-      initial="hidden"
-      animate="show"
     >
       {diseases.map((disease) => {
         const isSelected = disease.id === selectedId;
@@ -63,45 +49,34 @@ export const DiseaseSelector: React.FC<DiseaseSelectorProps> = ({ diseases, sele
         const colors = colorMap[disease.id] || colorMap.diabetes;
 
         return (
-          <motion.div
+          <button
+            type="button"
+            aria-label={disease.name}
+            aria-pressed={isSelected}
             key={disease.id}
-            variants={item}
-            whileHover={{
-              scale: 1.03,
-              y: -6,
-              rotateX: 2,
-              rotateY: -2,
-              transition: { type: 'spring', stiffness: 300, damping: 20 },
-            }}
-            whileTap={{ scale: 0.97 }}
             onClick={() => onSelect(disease.id)}
-            className={`relative cursor-pointer rounded-2xl p-5 border-2 transition-all duration-300 overflow-hidden ${
+            className={`relative text-left cursor-pointer rounded-2xl p-5 border-2 transition-none overflow-hidden focus-visible:outline focus-visible:outline-2 focus-visible:outline-teal-400 ${
               isSelected
                 ? `${colors.border} ${colors.glow} bg-gray-900/80`
                 : 'border-gray-800/80 bg-gray-950/60 hover:border-gray-700'
             }`}
-            style={{ transformStyle: 'preserve-3d', perspective: '600px' }}
           >
             {/* Active gradient glow background */}
             {isSelected && (
-              <motion.div
-                layoutId="disease-active-bg"
+              <div
                 className={`absolute inset-0 bg-gradient-to-br ${colors.gradient} opacity-[0.07] rounded-2xl`}
-                transition={{ type: 'spring', stiffness: 300, damping: 30 }}
               />
             )}
 
             <div className="relative z-10">
               <div className="flex items-center gap-3 mb-3">
-                <motion.div
-                  className={`p-2.5 rounded-xl transition-colors duration-300 ${
+                <div
+                  className={`p-2.5 rounded-xl ${
                     isSelected ? `bg-gradient-to-br ${colors.gradient} text-white` : 'bg-white/[0.03] text-gray-500'
                   }`}
-                  animate={isSelected ? { rotate: [0, 360] } : {}}
-                  transition={{ duration: 0.6, ease: 'easeInOut' }}
                 >
                   <Icon size={22} />
-                </motion.div>
+                </div>
                 <div>
                   <h3 className={`font-bold text-sm ${isSelected ? 'text-white' : 'text-gray-300'}`}>
                     {disease.name}
@@ -116,21 +91,19 @@ export const DiseaseSelector: React.FC<DiseaseSelectorProps> = ({ diseases, sele
                 {disease.description}
               </p>
 
-              {/* Active pill indicator */}
-              {isSelected && (
-                <motion.div
-                  layoutId="disease-active-pill"
-                  className="mt-3 flex items-center gap-1.5"
-                  transition={{ type: 'spring', stiffness: 400, damping: 28 }}
-                >
-                  <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-                  <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Selected</span>
-                </motion.div>
-              )}
+              {/* Reserve the indicator's space so selecting a card does not shift the layout. */}
+              <div className="mt-3 flex h-4 items-center gap-1.5">
+                {isSelected && (
+                  <>
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+                    <span className="text-[10px] font-bold text-emerald-400 uppercase tracking-wider">Selected</span>
+                  </>
+                )}
+              </div>
             </div>
-          </motion.div>
+          </button>
         );
       })}
-    </motion.div>
+    </div>
   );
 };

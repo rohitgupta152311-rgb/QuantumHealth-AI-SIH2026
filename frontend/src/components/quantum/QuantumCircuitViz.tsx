@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React,{ useState } from 'react';
 import type { QuantumCircuitInfo } from '../../types';
-import { Info, Sparkles, Binary, Cpu } from 'lucide-react';
+import { Info,Sparkles } from 'lucide-react';
 
 export const QuantumCircuitViz: React.FC<{ circuitInfo: QuantumCircuitInfo }> = ({ circuitInfo }) => {
   const qubits = circuitInfo.n_qubits ?? circuitInfo.qubits ?? 6;

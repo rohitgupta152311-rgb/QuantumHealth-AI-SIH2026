@@ -1,24 +1,27 @@
 import axios from 'axios';
 import type {
-  HealthResponse,
-  DiseaseInfo,
-  PredictionRequest,
-  PredictionResponse,
-  ModelComparisonResponse,
-  QuantumCircuitInfo,
-  QuantumBenchmarkResponse,
-  BatchPredictionRequest,
-  BatchPredictionResponse,
-  QuantumNoiseSimulationRequest,
-  QuantumNoiseSimulationResponse,
-  BiomarkerEvidenceResponse,
-  ChatRequest,
-  ChatResponse,
+HealthResponse,
+DiseaseInfo,
+PredictionRequest,
+PredictionResponse,
+ModelComparisonResponse,
+QuantumCircuitInfo,
+QuantumBenchmarkResponse,
+BatchPredictionRequest,
+BatchPredictionResponse,
+QuantumNoiseSimulationRequest,
+QuantumNoiseSimulationResponse,
+BiomarkerEvidenceResponse,
+ChatRequest,
+ChatResponse,
+TrainModelsResponse,
+DatasetUploadResponse,
+ModelMetrics,
 } from '../types';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: BASE_URL,
   timeout: 300000,
 });
@@ -29,8 +32,10 @@ api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const config = error.config;
+    if (!config) return Promise.reject(error);
     if (!config._retryCount) config._retryCount = 0;
-    if (config._retryCount < 2 && error.code === 'ECONNABORTED') {
+    // Retrying a timed-out POST could repeat uploads or expensive training.
+    if (config.method === 'get' && config._retryCount < 2 && error.code === 'ECONNABORTED') {
       config._retryCount++;
       await new Promise(r => setTimeout(r, 1000 * config._retryCount));
       return api(config);
@@ -40,20 +45,16 @@ api.interceptors.response.use(
 );
 
 export const healthCheck = async (): Promise<HealthResponse> => {
-  const { data } = await api.get<HealthResponse>('/health');
+  const { data } = await api.get<HealthResponse>('/health', { timeout: 5000 });
   return data;
 };
 
 export const getDiseases = async (): Promise<DiseaseInfo[]> => {
-  try {
-    const { data } = await api.get<{ diseases: DiseaseInfo[] }>('/diseases');
-    if (data && Array.isArray(data.diseases) && data.diseases.length > 0) {
-      return data.diseases;
-    }
-  } catch (err) {
-    console.error('Backend diseases endpoint unavailable:', err);
+  const { data } = await api.get<{ diseases: DiseaseInfo[] }>('/diseases', { timeout: 10000 });
+  if (!data || !Array.isArray(data.diseases)) {
+    throw new Error('The backend returned an invalid disease registry response.');
   }
-  return FALLBACK_DISEASES;
+  return data.diseases;
 };
 
 export const getDisease = async (id: string): Promise<DiseaseInfo> => {
@@ -66,8 +67,83 @@ export const getDisease = async (id: string): Promise<DiseaseInfo> => {
   return FALLBACK_DISEASES.find(d => d.id === id) || FALLBACK_DISEASES[0];
 };
 
+/**
+ * Generates an explicit mock demonstration prediction for offline UI demonstration only.
+ * Visibly flagged with is_mock: true and is_demo: true so mock data is never confused with live results.
+ */
+export const getDemoMockPrediction = (disease: string = 'heart'): PredictionResponse => {
+  return {
+    disease,
+    status: 'completed',
+    is_mock: true,
+    is_demo: true,
+    risk_level: 'moderate',
+    model_manifest_hash: 'mock-demo-synthetic-preview',
+    classical_results: [
+      { model_name: 'RandomForest (Mock)', risk_probability: 0.38, prediction: 0, confidence: 0.24, is_calibrated: false },
+      { model_name: 'SVM (Mock)', risk_probability: 0.22, prediction: 0, confidence: 0.56, is_calibrated: false },
+      { model_name: 'LogisticRegression (Mock)', risk_probability: 0.31, prediction: 0, confidence: 0.38, is_calibrated: false },
+      { model_name: 'GradientBoosting (Mock)', risk_probability: 0.55, prediction: 1, confidence: 0.10, is_calibrated: false },
+    ],
+    quantum_result: {
+      backend: 'mock:client_demo (Synthetic Preview)',
+      risk_probability: 0.46,
+      prediction: 0,
+      confidence: 0.08,
+      circuit_depth: 17,
+      qubits_used: 6,
+      encoding: 'Angle RY(pi * x_i)',
+      simulation_mode: true,
+      execution_time_ms: 1.5,
+    },
+    hybrid_result: {
+      risk_probability: 0.39,
+      risk_percentage: 39.0,
+      prediction: 0,
+      confidence: 0.22,
+      risk_level: 'moderate',
+      method: '60/40 Classical-Quantum Consensus (Mock Demonstration)',
+    },
+    consensus: {
+      agreement: 'moderate_agreement',
+      agreement_level: 'medium',
+      classical_votes: 1,
+      quantum_votes: 0,
+      quantum_vote: 'low_risk',
+      final_vote: 0,
+      clinical_review_advised: true,
+      recommendation: 'clinical_review_advised',
+      disagreement_detected: false,
+    },
+    feature_importance: [
+      { feature: 'thal', label: 'Thallium Stress Scintigraphy', importance: 0.19, rank: 1 },
+      { feature: 'thalach', label: 'Max Heart Rate', importance: 0.12, rank: 2 },
+      { feature: 'cp', label: 'Chest Pain Type', importance: 0.10, rank: 3 },
+      { feature: 'age', label: 'Patient Age', importance: 0.09, rank: 4 },
+    ],
+    quantum_readiness: {
+      original_features: 13,
+      selected_features: 6,
+      qubits_required: 6,
+      dimensionality_reduction_ratio: 0.46,
+      encoding_method: 'Angle Encoding RY(pi * x_i)',
+      circuit_depth: 17,
+      layers: 2,
+      backend: 'pennylane:default.qubit',
+      simulation_status: 'Simulated (Mock Preview)',
+    },
+    processing_steps: [
+      { step: 1, name: 'Biomarker Sentinel Check (Mock Demo)', status: 'completed' },
+      { step: 2, name: 'Classical Ensemble Inference (Mock Demo)', status: 'completed' },
+      { step: 3, name: '6-Qubit VQC Simulation (Mock Demo)', status: 'completed' },
+      { step: 4, name: 'Hybrid Consensus Stratification (Mock Demo)', status: 'completed' },
+    ],
+    disclaimer: 'DEMO MODE — MOCK DATA: Generated for demonstration purposes only. Not evaluated by the live backend pipeline.',
+  };
+};
+
 export const predict = async (request: PredictionRequest): Promise<PredictionResponse> => {
-  const { data } = await api.post<any>('/predict', request);
+  const { data } = await api.post<any>('/predict', request, { timeout: 30000 });
 
   // If backend returned abstention, pass through directly
   if (data.status === 'abstained') {
@@ -111,7 +187,7 @@ export const predict = async (request: PredictionRequest): Promise<PredictionRes
     prediction: data.hybrid_result.prediction === 'high_risk' || data.hybrid_result.prediction === 1 ? 1 : 0,
     confidence: data.hybrid_result.confidence,
     risk_level: data.hybrid_result.risk_level,
-    method: 'Configurable Hybrid Fusion (Default 60/40)',
+    method: 'Saved Hybrid Fusion',
   } : undefined;
 
   const consensus = data.consensus ? {
@@ -168,25 +244,37 @@ export const predict = async (request: PredictionRequest): Promise<PredictionRes
   };
 };
 
+export const uploadDataset = async (file: File, disease: string): Promise<DatasetUploadResponse> => {
+  const formData = new FormData();
+  formData.append('file', file);
+  formData.append('disease', disease);
+
+  const { data } = await api.post<DatasetUploadResponse>('/datasets/upload', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return data;
+};
+
 export const getModelComparison = async (diseaseId: string): Promise<ModelComparisonResponse> => {
-  const { data } = await api.get<any>(`/models/compare?disease=${diseaseId}`);
-  return {
-    disease: data.disease,
-    models: (data.models || []).map((m: any) => ({
+  try {
+    const { data } = await api.get<any>(`/models/compare?disease=${diseaseId}`);
+    const models: ModelMetrics[] = (data.models || []).map((m: any) => ({
       model_name: m.model_name || m.name,
       name: m.model_name || m.name,
       model_type: m.model_type || 'classical',
-      accuracy: m.accuracy,
-      precision: m.precision,
-      recall: m.recall,
-      sensitivity: m.sensitivity ?? m.recall,
-      specificity: m.specificity ?? 0.0,
-      f1_score: m.f1_score ?? m.f1,
-      f1: m.f1_score ?? m.f1,
-      roc_auc: m.roc_auc ?? m.auc,
-      auc: m.roc_auc ?? m.auc,
-      pr_auc: m.pr_auc,
-      brier_score: m.brier_score,
+      accuracy: typeof m.accuracy === 'number' ? m.accuracy : undefined,
+      precision: typeof m.precision === 'number' ? m.precision : undefined,
+      recall: typeof m.recall === 'number' ? m.recall : undefined,
+      sensitivity: typeof m.sensitivity === 'number' ? m.sensitivity : (typeof m.recall === 'number' ? m.recall : undefined),
+      specificity: typeof m.specificity === 'number' ? m.specificity : undefined,
+      f1_score: typeof m.f1_score === 'number' ? m.f1_score : (typeof m.f1 === 'number' ? m.f1 : undefined),
+      f1: typeof m.f1_score === 'number' ? m.f1_score : (typeof m.f1 === 'number' ? m.f1 : undefined),
+      roc_auc: typeof m.roc_auc === 'number' ? m.roc_auc : (typeof m.auc === 'number' ? m.auc : undefined),
+      auc: typeof m.roc_auc === 'number' ? m.roc_auc : (typeof m.auc === 'number' ? m.auc : undefined),
+      pr_auc: typeof m.pr_auc === 'number' ? m.pr_auc : undefined,
+      brier_score: typeof m.brier_score === 'number' ? m.brier_score : undefined,
       is_calibrated: m.is_calibrated,
       calibration_curve: m.calibration_curve,
       training_time_s: m.training_time_s ?? m.training_time,
@@ -194,13 +282,77 @@ export const getModelComparison = async (diseaseId: string): Promise<ModelCompar
       inference_time_ms: m.inference_time_ms ?? m.inference_time,
       inference_time: m.inference_time_ms ?? m.inference_time,
       confusion_matrix: m.confusion_matrix,
-    })),
-    winner: data.winner,
-    verdict: data.verdict,
-    verdict_explanation: data.verdict_explanation,
-    explanation: data.verdict_explanation || '',
-    confusion_matrix: data.confusion_matrix,
-  };
+    }));
+
+    const validModels = models.filter((m) => typeof m.accuracy === 'number');
+    const topModel = validModels.length > 0
+      ? validModels.reduce((best, m) => (m.accuracy! > best.accuracy! ? m : best))
+      : undefined;
+    const computedWinner = data.winner || topModel?.name || topModel?.model_name;
+
+    return {
+      disease: data.disease || diseaseId,
+      models,
+      winner: computedWinner,
+      verdict: data.verdict || (topModel?.model_type === 'hybrid' ? 'hybrid_superior' : 'classical_superior'),
+      verdict_explanation: data.verdict_explanation,
+      explanation: data.verdict_explanation || data.explanation || '',
+      confusion_matrix: data.confusion_matrix,
+      provenance: data.provenance || {
+        source: 'saved_checkpoint',
+        experiment_id: data.experiment_id || `${diseaseId}-checkpoint`,
+      },
+    };
+  } catch (primaryErr) {
+    try {
+      const { data: experiments } = await api.get<any[]>('/experiments/experiment-results');
+      const experiment = experiments.find((item) => item.disease === diseaseId && item.metrics?.metrics);
+      if (experiment) {
+        const metrics = experiment.metrics.metrics;
+        const models: ModelMetrics[] = [
+          ['Classical Random Forest', 'classical'],
+          ['Quantum VQC (simulator)', 'quantum'],
+          ['Hybrid Ensemble', 'hybrid'],
+        ].map(([name, key]) => {
+          const model = metrics[key] || {};
+          return {
+            model_name: name,
+            name,
+            model_type: key,
+            accuracy: typeof model.accuracy === 'number' ? model.accuracy : undefined,
+            precision: typeof model.precision === 'number' ? model.precision : undefined,
+            recall: typeof model.recall === 'number' ? model.recall : undefined,
+            f1_score: typeof model.f1_score === 'number' ? model.f1_score : (typeof model.f1 === 'number' ? model.f1 : undefined),
+            f1: typeof model.f1_score === 'number' ? model.f1_score : (typeof model.f1 === 'number' ? model.f1 : undefined),
+            roc_auc: typeof model.auc_roc === 'number' ? model.auc_roc : (typeof model.auc === 'number' ? model.auc : undefined),
+            auc: typeof model.auc_roc === 'number' ? model.auc_roc : (typeof model.auc === 'number' ? model.auc : undefined),
+            confusion_matrix: model.confusion_matrix,
+          };
+        });
+        const validModels = models.filter((m) => typeof m.accuracy === 'number');
+        const topModel = validModels.length > 0
+          ? validModels.reduce((best, model) => model.accuracy! > best.accuracy! ? model : best)
+          : undefined;
+        return {
+          disease: diseaseId,
+          models,
+          winner: topModel?.name,
+          verdict: 'checkpoint_evaluation',
+          explanation: `Saved evaluation checkpoint from experiment #${experiment.id} (${experiment.created_at || 'historical'}).`,
+          verdict_explanation: `Saved evaluation checkpoint from experiment #${experiment.id}. Provenance: Checkpoint ID #${experiment.id}.`,
+          provenance: {
+            source: 'saved_checkpoint',
+            experiment_id: experiment.id,
+            timestamp: experiment.created_at,
+          },
+          confusion_matrix: metrics.hybrid?.confusion_matrix,
+        };
+      }
+    } catch {
+      // ignore fallback error
+    }
+    throw primaryErr;
+  }
 };
 
 export const getQuantumCircuit = async (diseaseId: string): Promise<QuantumCircuitInfo> => {
@@ -227,8 +379,11 @@ export const getQuantumCircuit = async (diseaseId: string): Promise<QuantumCircu
   };
 };
 
-export const trainModels = async (diseaseId: string): Promise<any> => {
-  const { data } = await api.post(`/models/train?disease=${diseaseId}`);
+export const trainModels = async (diseaseId: string): Promise<TrainModelsResponse> => {
+  const { data } = await api.post<TrainModelsResponse>('/models/train', {
+    disease: diseaseId,
+    force_retrain: true,
+  });
   return data;
 };
 

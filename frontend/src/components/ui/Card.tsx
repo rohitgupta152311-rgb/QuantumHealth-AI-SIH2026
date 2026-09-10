@@ -1,5 +1,5 @@
 import React from 'react';
-import { clsx, type ClassValue } from 'clsx';
+import { clsx,type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 function cn(...inputs: ClassValue[]) {
@@ -16,8 +16,8 @@ export const Card = React.forwardRef<HTMLDivElement, CardProps>(
       <div
         ref={ref}
         className={cn(
-          'relative rounded-2xl border border-white/[0.06] p-6 bg-white/[0.02] backdrop-blur-xl transition-all duration-300',
-          glowing && 'quantum-glow border-indigo-500/20 bg-indigo-500/[0.03]',
+          'relative rounded-2xl border border-slate-800 p-6 bg-slate-900/80 backdrop-blur-md transition-all duration-200 shadow-sm',
+          glowing && 'border-teal-500/30 bg-slate-900 shadow-[0_0_15px_rgba(20,184,166,0.08)]',
           className
         )}
         {...props}

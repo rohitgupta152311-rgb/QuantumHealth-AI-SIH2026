@@ -28,9 +28,9 @@ from app.quantum_ml.circuits import compute_circuit_depth
 from app.quantum_ml.vqc import QuantumClassifier
 
 try:
-    from app.classical_ml.xgboost_model import XGBoostModel
-    XGBOOST_AVAILABLE = True
+    from app.classical_ml.xgboost_model import XGBoostModel, XGBOOST_AVAILABLE
 except ImportError:
+    XGBoostModel = None
     XGBOOST_AVAILABLE = False
 
 
@@ -331,6 +331,7 @@ class ClassicalMLTrainer:
             "calibrators": self.calibrators,
             "alpha_star": self.alpha_star,
             "abstention_threshold": self.abstention_disagreement_threshold,
+            "metrics": self._metrics,
             "feature_names": feature_names,
             "preprocessing_hash": prep_hash,
             "data_hashes": {
@@ -466,6 +467,47 @@ class ClassicalMLTrainer:
             return {}
         return self.models["RandomForest"].get_feature_importance(feature_names)
 
+    def load_cached(self, pipeline_path: Path | str, feature_names: list[str] | None = None) -> None:
+        """Restore a trusted composite checkpoint atomically. Never train on failure."""
+        bundle = joblib.load(str(self._get_bundle_path()))
+        with open(self._get_manifest_path(), encoding="utf-8") as stream:
+            manifest = json.load(stream)
+        required = {
+            "disease_id", "models", "vqc_model", "hybrid_ensemble", "calibrators",
+            "alpha_star", "abstention_threshold", "feature_names", "preprocessing_hash", "data_hashes",
+        }
+        if not isinstance(bundle, dict) or required - bundle.keys():
+            raise ValueError("Incomplete composite model bundle; restore a complete checkpoint.")
+        if bundle["disease_id"] != self.disease_id or manifest.get("disease_id") != self.disease_id:
+            raise ValueError("Model bundle/manifest disease does not match the requested disease.")
+        digest = hashlib.sha256(Path(pipeline_path).read_bytes()).hexdigest()
+        if bundle["preprocessing_hash"] != digest or manifest.get("preprocessing_artifact_sha256") != digest:
+            raise ValueError("Preprocessing artifact does not match the saved model bundle/manifest.")
+        if feature_names is not None and bundle["feature_names"] != feature_names:
+            raise ValueError("Saved feature schema does not match the current disease schema.")
+        if not bundle["models"] or not isinstance(bundle["models"], dict):
+            raise ValueError("Saved classifiers are missing.")
+        for key in ("alpha_star", "abstention_threshold"):
+            value = bundle[key]
+            if not isinstance(value, (int, float)) or not np.isfinite(value) or not 0 <= value <= 1:
+                raise ValueError(f"Invalid saved {key}.")
+        if not isinstance(bundle["calibrators"], dict) or not isinstance(manifest.get("test_metrics_summary"), list):
+            raise ValueError("Saved calibration or metric metadata is incomplete.")
+        if bundle["vqc_model"] is not None and bundle["hybrid_ensemble"] is None:
+            raise ValueError("Saved hybrid ensemble is missing; fixed-weight fallback is not a valid reload.")
+        metrics = bundle.get("metrics", manifest["test_metrics_summary"])
+        if not isinstance(metrics, list):
+            raise ValueError("Saved model metrics must be a list.")
+        self.models = bundle["models"]
+        self.vqc_model = bundle["vqc_model"]
+        self.hybrid_ensemble = bundle["hybrid_ensemble"]
+        self.calibrators = bundle["calibrators"]
+        self.alpha_star = bundle["alpha_star"]
+        self.abstention_disagreement_threshold = bundle["abstention_threshold"]
+        self._manifest = manifest
+        self._metrics = metrics
+        self._trained = True
+
     def load_or_train(
         self,
         X_train: np.ndarray,
@@ -485,27 +527,9 @@ class ClassicalMLTrainer:
         bundle_path = self._get_bundle_path()
         manifest_path = self._get_manifest_path()
 
-        if bundle_path.exists() and manifest_path.exists():
-            try:
-                bundle = joblib.load(str(bundle_path))
-                # Validate integrity
-                if bundle.get("disease_id") == self.disease_id:
-                    self.models = bundle["models"]
-                    self.vqc_model = bundle.get("vqc_model")
-                    self.hybrid_ensemble = bundle.get("hybrid_ensemble")
-                    self.calibrators = bundle.get("calibrators", {})
-                    self.alpha_star = bundle.get("alpha_star", 0.40)
-                    self.abstention_disagreement_threshold = bundle.get("abstention_threshold", 0.45)
-                    self._trained = True
-
-                    with open(manifest_path, "r", encoding="utf-8") as f:
-                        self._manifest = json.load(f)
-
-                    # Populate metrics from manifest summary
-                    self._metrics = self._manifest.get("test_metrics_summary", [])
-                    return
-            except Exception:
-                pass
+        if bundle_path.exists() or manifest_path.exists():
+            self.load_cached(pipeline_path or self.models_cache_dir / f"{self.disease_id}_pipeline.pkl", feature_names)
+            return
 
         # Fallback to training
         self.train(

@@ -21,10 +21,7 @@ jobs:
         working-directory: backend
         run: pip install -r requirements.txt
       - name: Test
-        working-directory: backend
-        env:
-          PYTHONPATH: .
-        run: pytest tests -v --tb=short
+        run: python -m pytest -v --tb=short
 
   frontend:
     name: Frontend (React + TypeScript)
@@ -42,6 +39,12 @@ jobs:
       - name: Type check
         working-directory: frontend
         run: npx tsc --noEmit
+      - name: Lint
+        working-directory: frontend
+        run: npm run lint
+      - name: Frontend tests
+        working-directory: frontend
+        run: npm test -- --run
       - name: Build
         working-directory: frontend
         run: npm run build

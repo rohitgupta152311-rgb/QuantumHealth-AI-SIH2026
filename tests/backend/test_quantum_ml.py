@@ -25,8 +25,8 @@ def test_amplitude_encoding():
 def test_quantum_classifier_prediction():
     qc = QuantumClassifier(n_qubits=4, n_layers=1)
     x = np.array([0.2, 0.8, 0.4, 0.6])
-    prob = qc.predict_proba_single(x)
-    assert 0.0 <= prob <= 1.0
+    with pytest.raises(RuntimeError, match="not been fitted"):
+        qc.predict_proba_single(x)
 
 def test_quantum_readiness_analyzer():
     analyzer = QuantumReadinessAnalyzer(n_layers=2)

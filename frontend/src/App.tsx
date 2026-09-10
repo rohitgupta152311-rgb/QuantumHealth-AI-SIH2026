@@ -1,5 +1,4 @@
-import React from 'react';
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { BrowserRouter,Routes,Route,Navigate } from 'react-router-dom';
 import { Layout } from './components/layout/Layout';
 import { LandingPage } from './pages/LandingPage';
 import { DiseaseAnalysisPage } from './pages/DiseaseAnalysisPage';
@@ -9,6 +8,9 @@ import { ModelComparisonDashboard } from './pages/ModelComparisonDashboard';
 import { ExplainabilityDashboard } from './pages/ExplainabilityDashboard';
 import { LimitationsPage } from './pages/LimitationsPage';
 import { AboutPage } from './pages/AboutPage';
+import { DatasetsPage } from './pages/DatasetsPage';
+import { TrainingHistoryPage } from './pages/TrainingHistoryPage';
+import { SettingsPage } from './pages/SettingsPage';
 import { ClinicalCopilotChat } from './components/chat/ClinicalCopilotChat';
 
 function App() {
@@ -40,6 +42,11 @@ function App() {
           {/* Explainability & Governance */}
           <Route path="explainability" element={<ExplainabilityDashboard />} />
           <Route path="limitations" element={<LimitationsPage />} />
+
+          {/* Clinical Operations & Training (from bb) */}
+          <Route path="datasets" element={<DatasetsPage />} />
+          <Route path="training" element={<TrainingHistoryPage />} />
+          <Route path="settings" element={<SettingsPage />} />
 
           {/* Fallback to Home */}
           <Route path="*" element={<Navigate to="/" replace />} />

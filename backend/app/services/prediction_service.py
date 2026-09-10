@@ -183,8 +183,15 @@ class PredictionService:
             eval_X_q = X_test_q
             eval_y = y_test
 
-        metrics = trainer.get_model_metrics()
-        if not metrics:
+        # Older manifests contain abbreviated summaries, not API-ready metrics.
+        # Evaluate missing fields from saved classifiers rather than inventing values.
+        required_metrics = {
+            "model_name", "model_type", "accuracy", "precision", "recall", "f1_score",
+            "roc_auc", "training_time_s", "inference_time_ms", "confusion_matrix",
+        }
+        metrics = [m for m in trainer.get_model_metrics() if m.get("model_type") == "classical"]
+        if ({m.get("model_name") for m in metrics} != set(trainer.models)
+                or any(not required_metrics.issubset(m) for m in metrics)):
             from app.classical_ml.evaluator import compute_metrics
             metrics = []
             for name, model in trainer.models.items():

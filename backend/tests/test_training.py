@@ -16,6 +16,7 @@ UPLOAD_URL = "/api/v1/datasets/upload"
 
 # ---- Force retrain --------------------------------------------------------
 
+@pytest.mark.training
 async def test_force_retrain_creates_models(client: AsyncClient):
     """Training with force_retrain=true should create model files and return metrics."""
     resp = await client.post(
@@ -42,6 +43,7 @@ async def test_force_retrain_creates_models(client: AsyncClient):
         assert 0 <= metrics["classical"][m] <= 1
 
 
+@pytest.mark.training
 async def test_force_retrain_overwrites_cached(client: AsyncClient):
     """Two successive force_retrain calls should both succeed (overwriting models)."""
     resp1 = await client.post(
@@ -60,6 +62,7 @@ async def test_force_retrain_overwrites_cached(client: AsyncClient):
     assert id2 > id1, "Second train should create a new model_version"
 
 
+@pytest.mark.training
 async def test_training_returns_cv_summary_and_held_out_metrics(client: AsyncClient):
     """CV must be real, summarized, and separate from final held-out metrics."""
     upload_resp = await client.post(
@@ -92,6 +95,7 @@ async def test_training_returns_cv_summary_and_held_out_metrics(client: AsyncCli
 
 # ---- Cached models (no retrain) ------------------------------------------
 
+@pytest.mark.training
 async def test_cached_models_used_when_no_retrain(client: AsyncClient):
     """After initial train, force_retrain=false should use cached models."""
     # First train
@@ -110,6 +114,7 @@ async def test_cached_models_used_when_no_retrain(client: AsyncClient):
 
 # ---- Uploaded samples included in training --------------------------------
 
+@pytest.mark.training
 async def test_uploaded_samples_in_training_diabetes(client: AsyncClient):
     """Uploaded CSV rows should appear in the training data metadata for diabetes."""
     csv_buf = make_diabetes_csv()
@@ -131,6 +136,7 @@ async def test_uploaded_samples_in_training_diabetes(client: AsyncClient):
     assert data_info["total_rows"] == 20  # For diabetes, trains on real uploaded data
 
 
+@pytest.mark.training
 async def test_heart_training_uses_13_feature_uploaded_data(client: AsyncClient):
     """Heart disease module training must use real uploaded data with 13 features."""
     csv_buf = make_heart_csv()
@@ -160,6 +166,7 @@ async def test_heart_training_uses_13_feature_uploaded_data(client: AsyncClient)
 
 # ---- Validation errors on bad data ---------------------------------------
 
+@pytest.mark.training
 async def test_unknown_disease_rejected(client: AsyncClient):
     """Unknown disease should return 422."""
     resp = await client.post(

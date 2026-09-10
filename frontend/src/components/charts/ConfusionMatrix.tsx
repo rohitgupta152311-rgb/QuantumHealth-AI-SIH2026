@@ -7,7 +7,7 @@ interface ConfusionMatrixProps {
 
 export const ConfusionMatrix: React.FC<ConfusionMatrixProps> = ({
   matrix,
-  labels = ['Negative (0)', 'Positive (1)']
+  labels: _labels = ['Negative (0)', 'Positive (1)']
 }) => {
   const tn = matrix[0]?.[0] ?? 0;
   const fp = matrix[0]?.[1] ?? 0;

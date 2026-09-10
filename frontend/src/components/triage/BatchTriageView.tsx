@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import React,{ useState } from 'react';
+import { motion } from 'framer-motion';
 import {
-  Users, UploadCloud, FileSpreadsheet, Play, CheckCircle2, AlertTriangle,
-  AlertOctagon, ShieldAlert, ArrowUpDown, Download, RefreshCw, Award, Search
+Users,UploadCloud,Play,CheckCircle2,AlertTriangle,
+AlertOctagon,ShieldAlert,Download,RefreshCw,Award,Search
 } from 'lucide-react';
 import { predictBatch } from '../../services/api';
-import type { BatchPredictionResponse, BatchPatientResult, BatchPatientItem } from '../../types';
+import type { BatchPredictionResponse,BatchPatientItem } from '../../types';
 
 interface BatchTriageViewProps {
   disease: string;

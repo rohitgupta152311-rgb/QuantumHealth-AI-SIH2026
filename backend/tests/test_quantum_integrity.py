@@ -175,6 +175,7 @@ def test_paired_bootstrap_comparison_similar_performance():
     assert verdict["winner"] == "Statistically Indistinguishable"
 
 
+@pytest.mark.training
 def test_vqc_training_no_leakage_and_calibration():
     """VQC trained only on training split, calibrated on validation split, evaluated on test."""
     np.random.seed(42)

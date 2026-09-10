@@ -13,7 +13,7 @@ class HealthResponse(BaseModel):
     team_name: str = Field("Code 404", description="Registered SIH Team Name")
     institution: str = Field("National Institute of Technology Nagaland", description="Host Institution")
     models_count: int = Field(6, description="5 Classical Architectures + 1 Variational Quantum Classifier")
-    test_suite_status: str = Field("50/50 Passing", description="Automated Pytest verification status")
+    test_suite_status: str = Field("not_verified", description="Automated Pytest verification status")
     recalibration_standard: str = Field("ICMR-INDIAB 2023", description="South Asian cardiometabolic standard")
 
 @router.get(
@@ -32,6 +32,6 @@ async def health_check():
         "team_name": "Code 404",
         "institution": "National Institute of Technology Nagaland",
         "models_count": 6,
-        "test_suite_status": "50/50 Passing",
+        "test_suite_status": "not_verified",
         "recalibration_standard": "ICMR-INDIAB 2023",
     }

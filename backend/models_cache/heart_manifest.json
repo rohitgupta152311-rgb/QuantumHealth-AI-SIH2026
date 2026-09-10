@@ -1,6 +1,6 @@
 {
   "disease_id": "heart",
-  "created_at": "2026-09-08T08:32:56.038157+00:00",
+  "created_at": "2026-09-10T17:43:26.681015+00:00",
   "split_protocol": "Stratified 60/20/20 split (seed=42)",
   "split_sizes": {
     "train_samples": 181,
@@ -12,7 +12,7 @@
     "val_sha256": "a8f099abe8eb11d9d06b8cae9400ec64b9a5c8da5ac03ab8f441c3cfa31e770f",
     "test_sha256": "a8181d8d41b48b5b0d07880038ee58d84bafd59a6ed3d1656ee5d2e15c269dbc"
   },
-  "preprocessing_artifact_sha256": "36352f9cfac9e38e806f611642aaf88c917ea3ae68c4714de542dcbd78e2a330",
+  "preprocessing_artifact_sha256": "42db633412b05bb76273534f5fc4b0532b6e07e8b04abdc3e06f8b264145a480",
   "quantum_configuration": {
     "n_qubits": 6,
     "n_layers": 2,
@@ -27,16 +27,11 @@
     "tuned_alpha": 0.0,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
-    "abstention_disagreement_threshold": 0.4885
+    "abstention_disagreement_threshold": 0.4383
   },
   "calibration": {
     "method": "Platt Scaling (Sigmoid fitted on unaugmented validation split)",
     "calibrated_models": [
-      "RandomForest",
-      "SVM",
-      "LogisticRegression",
-      "GradientBoosting",
-      "XGBoost",
       "QuantumVQC"
     ]
   },
@@ -276,26 +271,26 @@
       "model": "RandomForest",
       "type": "classical",
       "accuracy": 0.9016,
-      "roc_auc": 0.947,
-      "pr_auc": 0.9065,
-      "brier_score": 0.0889,
+      "roc_auc": 0.9567,
+      "pr_auc": 0.9278,
+      "brier_score": 0.1012,
       "sensitivity": 0.9643,
       "specificity": 0.8485,
       "f1_score": 0.9,
-      "is_calibrated": true,
+      "is_calibrated": false,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8,
+          0.8063,
           0.9688
         ],
         "roc_auc_95_ci": [
-          0.8806,
-          0.9902
+          0.8965,
+          0.9967
         ],
         "brier_95_ci": [
-          0.0477,
-          0.1281
+          0.0674,
+          0.131
         ],
         "accuracy_95_ci": [
           0.8197,
@@ -306,30 +301,30 @@
     {
       "model": "SVM",
       "type": "classical",
-      "accuracy": 0.8361,
-      "roc_auc": 0.9264,
-      "pr_auc": 0.8772,
-      "brier_score": 0.1129,
-      "sensitivity": 0.9286,
-      "specificity": 0.7576,
-      "f1_score": 0.8387,
-      "is_calibrated": true,
+      "accuracy": 0.8197,
+      "roc_auc": 0.9259,
+      "pr_auc": 0.8765,
+      "brier_score": 0.1191,
+      "sensitivity": 0.9643,
+      "specificity": 0.697,
+      "f1_score": 0.8308,
+      "is_calibrated": false,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.7169,
-          0.9296
+          0.7211,
+          0.9231
         ],
         "roc_auc_95_ci": [
           0.8547,
-          0.9798
+          0.9797
         ],
         "brier_95_ci": [
-          0.0695,
-          0.1571
+          0.0804,
+          0.1602
         ],
         "accuracy_95_ci": [
-          0.7377,
+          0.7213,
           0.918
         ]
       }
@@ -340,27 +335,27 @@
       "accuracy": 0.8852,
       "roc_auc": 0.9502,
       "pr_auc": 0.9238,
-      "brier_score": 0.0898,
-      "sensitivity": 0.9286,
-      "specificity": 0.8485,
-      "f1_score": 0.8814,
-      "is_calibrated": true,
+      "brier_score": 0.0977,
+      "sensitivity": 0.9643,
+      "specificity": 0.8182,
+      "f1_score": 0.8852,
+      "is_calibrated": false,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.7867,
-          0.9509
+          0.7868,
+          0.9538
         ],
         "roc_auc_95_ci": [
           0.8903,
           0.9923
         ],
         "brier_95_ci": [
-          0.0544,
-          0.1285
+          0.0607,
+          0.1377
         ],
         "accuracy_95_ci": [
-          0.8033,
+          0.8193,
           0.9508
         ]
       }
@@ -368,127 +363,127 @@
     {
       "model": "GradientBoosting",
       "type": "classical",
-      "accuracy": 0.8689,
+      "accuracy": 0.8525,
       "roc_auc": 0.9459,
       "pr_auc": 0.9368,
-      "brier_score": 0.0972,
+      "brier_score": 0.1026,
       "sensitivity": 0.9643,
-      "specificity": 0.7879,
-      "f1_score": 0.871,
-      "is_calibrated": true,
+      "specificity": 0.7576,
+      "f1_score": 0.8571,
+      "is_calibrated": false,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.7689,
-          0.9539
+          0.7545,
+          0.9413
         ],
         "roc_auc_95_ci": [
           0.8891,
           0.9903
         ],
         "brier_95_ci": [
-          0.0531,
-          0.135
+          0.058,
+          0.1446
         ],
         "accuracy_95_ci": [
-          0.7869,
-          0.9508
+          0.7701,
+          0.9344
         ]
       }
     },
     {
       "model": "XGBoost",
       "type": "classical",
-      "accuracy": 0.8689,
+      "accuracy": 0.8525,
       "roc_auc": 0.9545,
       "pr_auc": 0.9335,
-      "brier_score": 0.0892,
+      "brier_score": 0.09,
       "sensitivity": 0.9286,
-      "specificity": 0.8182,
-      "f1_score": 0.8667,
-      "is_calibrated": true,
+      "specificity": 0.7879,
+      "f1_score": 0.8525,
+      "is_calibrated": false,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.7777,
-          0.9524
+          0.7499,
+          0.9297
         ],
         "roc_auc_95_ci": [
           0.8923,
           0.9935
         ],
         "brier_95_ci": [
-          0.0444,
-          0.1308
+          0.0447,
+          0.1348
         ],
         "accuracy_95_ci": [
-          0.7869,
-          0.9508
+          0.7705,
+          0.9344
         ]
       }
     },
     {
       "model": "QuantumVQC",
       "type": "quantum",
-      "accuracy": 0.541,
-      "roc_auc": 0.7035,
-      "pr_auc": 0.7317,
-      "brier_score": 0.244,
-      "sensitivity": 0.0,
-      "specificity": 1.0,
-      "f1_score": 0.0,
+      "accuracy": 0.6557,
+      "roc_auc": 0.7446,
+      "pr_auc": 0.7536,
+      "brier_score": 0.2341,
+      "sensitivity": 0.3571,
+      "specificity": 0.9091,
+      "f1_score": 0.4878,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.0,
-          0.0
+          0.3156,
+          0.6794
         ],
         "roc_auc_95_ci": [
-          0.5516,
-          0.8474
+          0.6054,
+          0.8708
         ],
         "brier_95_ci": [
-          0.2341,
-          0.2522
+          0.222,
+          0.2458
         ],
         "accuracy_95_ci": [
-          0.4258,
-          0.6557
+          0.5406,
+          0.7869
         ]
       }
     },
     {
       "model": "HybridEnsemble",
       "type": "hybrid",
-      "accuracy": 0.9016,
+      "accuracy": 0.918,
       "roc_auc": 0.9524,
       "pr_auc": 0.9053,
-      "brier_score": 0.1122,
+      "brier_score": 0.116,
       "sensitivity": 0.9643,
-      "specificity": 0.8485,
-      "f1_score": 0.9,
+      "specificity": 0.8788,
+      "f1_score": 0.9153,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8,
-          0.9688
+          0.8275,
+          0.9811
         ],
         "roc_auc_95_ci": [
           0.8868,
           0.9947
         ],
         "brier_95_ci": [
-          0.0844,
-          0.1377
+          0.0911,
+          0.1395
         ],
         "accuracy_95_ci": [
-          0.8197,
-          0.9672
+          0.8525,
+          0.9836
         ]
       }
     }
   ],
-  "manifest_sha256": "e9541eefa39f3204117b68784f401c4ca70e22b5d10c408a024e719bd5d3cb9d"
+  "manifest_sha256": "4a0754f6a564531aaddb4f53520cc93f7d581ac83c195b8be3078c12f551d1ba"
 }

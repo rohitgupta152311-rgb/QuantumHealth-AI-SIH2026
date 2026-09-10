@@ -8,6 +8,7 @@ async def test_health_check(async_client):
     assert data["status"] == "ok"
     assert data["simulation_mode"] is True
     assert "quantum_backend" in data
+    assert data["test_suite_status"] == "not_verified"
 
 @pytest.mark.asyncio
 async def test_get_diseases(async_client):
@@ -15,11 +16,12 @@ async def test_get_diseases(async_client):
     assert response.status_code == 200
     data = response.json()
     assert "diseases" in data
-    assert len(data["diseases"]) == 3
+    assert len(data["diseases"]) == 4
     disease_ids = [d["id"] for d in data["diseases"]]
     assert "diabetes" in disease_ids
     assert "heart" in disease_ids
     assert "breast_cancer" in disease_ids
+    assert "kidney" in disease_ids
 
 @pytest.mark.asyncio
 async def test_get_disease_details(async_client):
@@ -27,7 +29,11 @@ async def test_get_disease_details(async_client):
     assert response.status_code == 200
     data = response.json()
     assert data["id"] == "diabetes"
-    assert len(data["features"]) == 8
+    assert {f["name"] for f in data["features"]} == {
+        "Age", "Gender", "BMI", "SBP_mmHg", "DBP_mmHg", "FPG_mg_dL",
+        "Cholesterol_mmol_L", "Triglyceride_mmol_L", "ALT_UL", "CCR_umol_L",
+        "family_history_of_diabetes",
+    }
 
     # Non-existent disease
     err_res = await async_client.get("/api/v1/diseases/unknown_disease_xyz")
@@ -43,6 +49,7 @@ async def test_get_models(async_client):
     assert "RandomForest" in model_names
     assert "Hybrid VQC" in model_names
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_model_comparison(async_client):
     response = await async_client.get("/api/v1/models/model-comparison?disease=diabetes")
@@ -53,6 +60,7 @@ async def test_model_comparison(async_client):
     assert "verdict" in data
     assert "winner" in data
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_quantum_config(async_client):
     response = await async_client.get("/api/v1/quantum/quantum-config?disease=diabetes")
@@ -63,6 +71,7 @@ async def test_quantum_config(async_client):
     assert "feature_to_qubit_map" in data
     assert len(data["feature_to_qubit_map"]) == 6
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_predict_diabetes_success(async_client):
     sample_payload = {
@@ -94,12 +103,11 @@ async def test_predict_diabetes_success(async_client):
 
 @pytest.mark.asyncio
 async def test_predict_validation_errors(async_client):
-    # Missing required features
+    # Malformed numerical input must fail validation before model loading.
     incomplete_payload = {
         "disease": "diabetes",
         "features": {
-            "Glucose": 120
-            # Missing other 7 features
+            "Age": "not-a-number"
         }
     }
     response = await async_client.post("/api/v1/predict", json=incomplete_payload)

@@ -14,8 +14,18 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Optional, Dict, List
 
-import firebase_admin
-from firebase_admin import credentials, firestore, auth, storage
+try:
+    import firebase_admin
+    from firebase_admin import credentials, firestore, auth, storage
+    FIREBASE_AVAILABLE = True
+except ImportError:
+    firebase_admin = None
+    credentials = None
+    firestore = None
+    auth = None
+    storage = None
+    FIREBASE_AVAILABLE = False
+
 from app.core.config import settings
 
 logger = logging.getLogger("quantumhealth.firebase")
@@ -210,7 +220,7 @@ class FirebaseManager:
             return
         
         self.mode: str = "mock_offline"
-        self.app: Optional[firebase_admin.App] = None
+        self.app: Optional[Any] = None
         self.project_id: str = "quantumhealth-ai-offline"
         self.db: Any = None
         self._error_detail: Optional[str] = None
@@ -220,8 +230,8 @@ class FirebaseManager:
 
     def initialize(self) -> None:
         """Discover credentials and initialize Firebase SDK or fallback to Mock mode."""
-        if not settings.firebase_enabled:
-            logger.info("Firebase integration explicitly disabled via settings. Using mock mode.")
+        if not FIREBASE_AVAILABLE or not settings.firebase_enabled:
+            logger.info("Firebase integration unavailable or disabled via settings. Using mock mode.")
             self.mode = "mock_offline"
             self.db = MockFirestoreClient()
             return
@@ -362,7 +372,7 @@ class FirebaseManager:
             "status": "healthy",
             "mode": self.mode,
             "project_id": self.project_id,
-            "firebase_admin_version": firebase_admin.__version__,
+            "firebase_admin_version": getattr(firebase_admin, "__version__", "mock_offline"),
             "is_live_cloud": (self.mode == "live"),
             "storage_bucket": settings.firebase_storage_bucket or "not_configured",
             "mock_stats": stats,

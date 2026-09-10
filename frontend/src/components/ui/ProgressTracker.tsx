@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
-import { CheckCircle2, Loader2, Clock } from 'lucide-react';
+import { CheckCircle2,Loader2,Clock } from 'lucide-react';
 import { TrainingProgress } from '../../types';
 
 interface ProgressTrackerProps {

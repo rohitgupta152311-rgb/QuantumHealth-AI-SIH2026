@@ -135,6 +135,8 @@ export interface LocalDriver {
 export interface PredictionResponse {
   disease: string;
   status?: 'completed' | 'abstained';
+  is_mock?: boolean;
+  is_demo?: boolean;
   abstention_reason?: string;
   disagreement_range?: {
     lower: number;
@@ -169,14 +171,14 @@ export interface ModelMetrics {
   model_name: string;
   name?: string;
   model_type?: string;
-  accuracy: number;
-  precision: number;
-  recall: number;
+  accuracy?: number;
+  precision?: number;
+  recall?: number;
   sensitivity?: number;
   specificity?: number;
-  f1_score: number;
+  f1_score?: number;
   f1?: number;
-  roc_auc: number;
+  roc_auc?: number;
   auc?: number;
   pr_auc?: number;
   brier_score?: number;
@@ -189,14 +191,39 @@ export interface ModelMetrics {
   confusion_matrix?: number[][];
 }
 
+export interface BenchmarkProvenance {
+  source: string;
+  experiment_id?: number;
+  checkpoint_hash?: string;
+  timestamp?: string;
+}
+
 export interface ModelComparisonResponse {
   disease: string;
   models: ModelMetrics[];
   winner?: string;
-  verdict: 'hybrid_better' | 'classical_better' | 'similar' | 'similar_performance' | 'further_research' | 'further_research_required';
+  verdict: 'hybrid_better' | 'classical_better' | 'similar' | 'similar_performance' | 'further_research' | 'further_research_required' | 'checkpoint_evaluation';
   explanation?: string;
   verdict_explanation?: string;
+  provenance?: BenchmarkProvenance;
   confusion_matrix?: number[][];
+}
+
+export interface RowValidationError {
+  row: number;
+  column: string;
+  error: string;
+}
+
+export interface DatasetUploadResponse {
+  dataset_id: number;
+  disease: string;
+  original_filename: string;
+  accepted_rows: number;
+  rejected_rows: number;
+  duplicate_rows: number;
+  validation_errors: RowValidationError[];
+  created_at: string;
 }
 
 export interface QuantumCircuitInfo {
@@ -379,3 +406,9 @@ export interface ChatResponse {
   suggested_followups: string[];
 }
 
+export interface TrainModelsResponse {
+  status: string;
+  disease: string;
+  experiment_id: number;
+  model_version_id: number;
+}

@@ -192,6 +192,7 @@ async def test_clinical_audits_endpoint(client: AsyncClient):
     assert found is True
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_predict_endpoint_syncs_to_firebase(client: AsyncClient):
     """

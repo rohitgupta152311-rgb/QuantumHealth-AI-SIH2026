@@ -1,16 +1,35 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { Activity, BarChart3, FlaskConical, LayoutDashboard, Shield, Cpu, Scale, Award } from 'lucide-react';
+import {
+Activity,
+BarChart3,
+FlaskConical,
+LayoutDashboard,
+Shield,
+Cpu,
+Scale,
+Award,
+Database,
+History,
+Settings,
+X,
+} from 'lucide-react';
 import { clsx } from 'clsx';
 
 const primaryNavItems = [
-  { name: 'Platform Overview', path: '/about', icon: Award, tag: 'About' },
-  { name: 'Disease Risk Analysis', path: '/analyze', icon: Activity, tag: 'Predict' },
-  { name: 'Hybrid AI Dashboard', path: '/dashboard', icon: LayoutDashboard, tag: 'Results' },
-  { name: 'Quantum Laboratory', path: '/quantum-lab', icon: FlaskConical, tag: 'VQC' },
-  { name: 'Model Comparison', path: '/comparison', icon: BarChart3, tag: 'Benchmark' },
-  { name: 'Model Explainability', path: '/explainability', icon: Shield, tag: 'SHAP/FI' },
-  { name: 'Limitations & Ethics', path: '/limitations', icon: Scale, tag: 'Governance' },
+  { name: 'Overview', path: '/about', icon: Award },
+  { name: 'Disease Analysis', path: '/analyze', icon: Activity },
+  { name: 'AI Dashboard', path: '/dashboard', icon: LayoutDashboard },
+  { name: 'Quantum Lab', path: '/quantum-lab', icon: FlaskConical },
+  { name: 'Model Comparison', path: '/comparison', icon: BarChart3 },
+  { name: 'Explainability', path: '/explainability', icon: Shield },
+];
+
+const operationsNavItems = [
+  { name: 'Datasets', path: '/datasets', icon: Database },
+  { name: 'Training Runs', path: '/training', icon: History },
+  { name: 'Settings', path: '/settings', icon: Settings },
+  { name: 'Limitations', path: '/limitations', icon: Scale },
 ];
 
 interface SidebarProps {
@@ -18,77 +37,106 @@ interface SidebarProps {
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
+  const renderNavItem = (item: { name: string; path: string; icon: React.ElementType }) => (
+    <NavLink
+      key={item.path}
+      to={item.path}
+      onClick={onCloseMobile}
+      className={({ isActive }) =>
+        clsx(
+          'group flex items-center gap-2.5 rounded-lg px-2.5 py-[7px] text-[13px] font-medium transition-colors duration-150 focus:outline-none focus-visible:ring-2 focus-visible:ring-teal-500',
+          isActive
+            ? 'bg-teal-500/10 text-teal-300 border border-teal-500/25'
+            : 'text-slate-400 hover:bg-slate-800/60 hover:text-slate-200 border border-transparent'
+        )
+      }
+    >
+      {({ isActive }) => (
+        <>
+          <item.icon
+            size={16}
+            className={clsx(
+              'flex-shrink-0 transition-colors',
+              isActive ? 'text-teal-400' : 'text-slate-500 group-hover:text-slate-300'
+            )}
+            aria-hidden="true"
+          />
+          <span className="truncate">{item.name}</span>
+        </>
+      )}
+    </NavLink>
+  );
+
   return (
-    <aside className="h-full flex flex-col justify-between bg-black border-r border-white/[0.04] p-5">
-      <div className="space-y-8">
-        <div>
-          <div className="px-3 mb-3 text-[10px] font-semibold tracking-[0.2em] text-white/30 uppercase">
-            Core Modules
+    <aside
+      aria-label="Main Navigation"
+      className="h-full flex flex-col bg-slate-950 border-r border-slate-800/80"
+    >
+      {/* Scrollable nav area */}
+      <div className="flex-1 overflow-y-auto px-3 py-4 space-y-4">
+        {/* Mobile Header with Close Button */}
+        {onCloseMobile && (
+          <div className="flex items-center justify-between pb-2 border-b border-slate-800 lg:hidden">
+            <span className="text-[10px] font-bold text-slate-300 uppercase tracking-wider">Menu</span>
+            <button
+              type="button"
+              onClick={onCloseMobile}
+              aria-label="Close navigation menu"
+              className="p-1 rounded-md text-slate-400 hover:text-white hover:bg-slate-800 transition-colors"
+            >
+              <X size={16} />
+            </button>
           </div>
-          <nav className="flex flex-col gap-1">
-            {primaryNavItems.map((item) => (
-              <NavLink
-                key={item.path}
-                to={item.path}
-                onClick={onCloseMobile}
-                className={({ isActive }) =>
-                  clsx(
-                    'group relative flex items-center justify-between rounded-xl px-3.5 py-3 text-[13px] font-medium transition-all duration-200',
-                    isActive
-                      ? 'bg-white/[0.06] text-white border border-white/[0.08] shadow-[0_0_20px_rgba(99,102,241,0.08)]'
-                      : 'text-white/40 hover:bg-white/[0.03] hover:text-white/70 border border-transparent'
-                  )
-                }
-              >
-                {({ isActive }) => (
-                  <>
-                    <div className="flex items-center gap-3">
-                      <item.icon size={17} className={clsx('transition-colors', isActive ? 'text-indigo-400' : 'text-white/25 group-hover:text-white/50')} />
-                      <span>{item.name}</span>
-                    </div>
-                    <span className={clsx(
-                      'text-[9px] font-mono px-1.5 py-0.5 rounded-md transition-all tracking-wider',
-                      isActive
-                        ? 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/20'
-                        : 'bg-white/[0.03] text-white/20 group-hover:text-white/30'
-                    )}>
-                      {item.tag}
-                    </span>
-                  </>
-                )}
-              </NavLink>
-            ))}
+        )}
+
+        {/* Clinical Decision Support */}
+        <div>
+          <div className="px-2.5 mb-1.5 text-[10px] font-semibold tracking-[0.12em] text-slate-500 uppercase font-mono">
+            Clinical
+          </div>
+          <nav className="flex flex-col gap-0.5" aria-label="Clinical Modules">
+            {primaryNavItems.map(renderNavItem)}
           </nav>
         </div>
 
-        {/* Quantum Specs Quick Info Widget */}
-        <div className="bg-gradient-to-br from-indigo-500/[0.06] to-purple-500/[0.03] border border-white/[0.06] rounded-2xl p-4 space-y-3">
-          <div className="flex items-center gap-2 text-[11px] font-semibold text-indigo-300/80">
-            <Cpu size={13} className="text-indigo-400/60" />
-            <span className="tracking-wide">Quantum Engine</span>
+        {/* Operations & Governance */}
+        <div>
+          <div className="px-2.5 mb-1.5 text-[10px] font-semibold tracking-[0.12em] text-slate-500 uppercase font-mono">
+            Operations
           </div>
-          <div className="grid grid-cols-2 gap-2 text-xs">
+          <nav className="flex flex-col gap-0.5" aria-label="Operations and Governance">
+            {operationsNavItems.map(renderNavItem)}
+          </nav>
+        </div>
+
+        {/* Quantum Specs — compact */}
+        <div className="bg-slate-900/80 border border-slate-800 rounded-lg p-3 space-y-2">
+          <div className="flex items-center gap-1.5 text-[11px] font-semibold text-teal-400">
+            <Cpu size={13} aria-hidden="true" />
+            <span>Quantum Target</span>
+          </div>
+          <div className="grid grid-cols-2 gap-1.5">
             {[
-              { label: 'Wires', value: '6 Qubits' },
-              { label: 'Ansatz', value: '2-Layer VQC' },
-              { label: 'Encoding', value: 'Angle (RY)' },
-              { label: 'Entangle', value: 'Ring CNOT' },
+              { label: 'Qubits', value: '6' },
+              { label: 'Ansatz', value: '2L VQC' },
+              { label: 'Encode', value: 'RY(θ)' },
+              { label: 'Entang.', value: 'CNOT' },
             ].map((spec) => (
-              <div key={spec.label} className="bg-white/[0.02] p-2.5 rounded-lg border border-white/[0.04]">
-                <span className="text-[9px] text-white/25 block tracking-wider uppercase">{spec.label}</span>
-                <span className="font-mono font-semibold text-white/70 text-[11px]">{spec.value}</span>
+              <div key={spec.label} className="bg-slate-950/80 px-2 py-1.5 rounded border border-slate-800/60">
+                <span className="text-[8px] text-slate-500 block uppercase font-mono leading-none">{spec.label}</span>
+                <span className="font-mono font-semibold text-slate-300 text-[11px] leading-tight">{spec.value}</span>
               </div>
             ))}
           </div>
         </div>
       </div>
 
-      {/* Footer Info */}
-      <div className="pt-4 border-t border-white/[0.04] text-[11px] text-white/20">
+      {/* Footer — always pinned at bottom */}
+      <div className="px-3 py-2.5 border-t border-slate-800/80 text-[11px] text-slate-500 flex-shrink-0">
         <div className="flex items-center justify-between">
-          <span className="font-mono">v1.0.0 (SIH)</span>
-          <span className="text-emerald-400/60 flex items-center gap-1.5 font-mono">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400/60"></span> Live Sim
+          <span className="font-mono">v1.0 SIH</span>
+          <span className="text-emerald-400 flex items-center gap-1 font-mono">
+            <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" /> Sim
           </span>
         </div>
       </div>

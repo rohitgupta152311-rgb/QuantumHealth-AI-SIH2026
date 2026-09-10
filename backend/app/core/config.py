@@ -19,6 +19,8 @@ class Settings(BaseSettings):
     quantum_n_qubits: int = 6
     quantum_max_train_samples: int = 300
     quantum_vqc_epochs: int = 200
+    # Startup and inference must not silently perform expensive training.
+    auto_train_missing_models: bool = False
     random_seed: int = 42
     cors_origins: list[str] = [
         "http://localhost:5173",

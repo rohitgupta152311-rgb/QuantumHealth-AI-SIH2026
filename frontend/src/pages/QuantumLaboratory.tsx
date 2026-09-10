@@ -1,27 +1,26 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React,{ useEffect,useState,useCallback } from 'react';
 import { Card } from '../components/ui/Card';
 import { Button } from '../components/ui/Button';
 import { Badge } from '../components/ui/Badge';
 import { QuantumCircuitViz } from '../components/quantum/QuantumCircuitViz';
 import { QuantumReadinessCard } from '../components/quantum/QuantumReadinessCard';
 import {
-  getQuantumConfig,
-  runQuantumBenchmark,
-  simulateQuantumCircuit,
-  simulateQuantumNoise,
+getQuantumConfig,
+runQuantumBenchmark,
+simulateQuantumCircuit,
+simulateQuantumNoise,
 } from '../services/api';
 import {
-  Cpu, Binary, Sparkles, Copy, Check, Terminal,
-  Zap, Layers, RefreshCw, Activity, Gauge, Server,
-  ShieldCheck, Play, Award, CheckCircle2, ChevronRight,
-  Database, Flame, Compass, GitBranch, Sliders, Scale,
+Cpu,Binary,Copy,Check,Terminal,
+Zap,RefreshCw,Activity,Server,
+ShieldCheck,Play,Award,CheckCircle2,Flame,Compass,Sliders,Scale
 } from 'lucide-react';
 import type {
-  QuantumCircuitInfo,
-  QuantumReadiness,
-  QuantumBenchmarkResponse,
-  SimulatorBenchmarkResult,
-  QuantumNoiseSimulationResponse,
+QuantumCircuitInfo,
+QuantumReadiness,
+QuantumBenchmarkResponse,
+SimulatorBenchmarkResult,
+QuantumNoiseSimulationResponse,
 } from '../types';
 
 export const QuantumLaboratory: React.FC = () => {
@@ -74,7 +73,7 @@ export const QuantumLaboratory: React.FC = () => {
   }, []);
 
   // Run benchmark handler
-  const handleRunBenchmark = useCallback(async (qubits: number = benchmarkQubits) => {
+  const handleRunBenchmark = useCallback(async (qubits: number) => {
     setIsBenchmarking(true);
     setBenchmarkError(null);
     try {
@@ -85,12 +84,12 @@ export const QuantumLaboratory: React.FC = () => {
     } finally {
       setIsBenchmarking(false);
     }
-  }, [benchmarkQubits]);
+  }, []);
 
   // Initial fast benchmark on load
   useEffect(() => {
-    handleRunBenchmark(6);
-  }, []);
+    void handleRunBenchmark(6);
+  }, [handleRunBenchmark]);
 
   // Run live simulation on active backend
   const handleLiveSimulate = useCallback(async () => {
@@ -135,7 +134,7 @@ export const QuantumLaboratory: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    handleSimulateNoise(noiseRate, readoutNoise);
+    void handleSimulateNoise(0.02, 0.015);
   }, [handleSimulateNoise]);
 
   const pennylaneCode = `# QuantumHealth AI — PennyLane Variational Quantum Circuit (VQC)
@@ -191,7 +190,7 @@ def vqc_circuit(weights, features):
   return (
     <div className="space-y-8 pb-16">
       {/* Page Header */}
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-white/[0.06] pb-6">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 border-b border-slate-800 pb-6">
         <div>
           <div className="flex items-center gap-2 text-quantum-400 text-xs font-mono font-bold uppercase tracking-wider mb-1">
             <Cpu size={14} /> Quantum Machine Learning Simulator Suite
@@ -213,10 +212,8 @@ def vqc_circuit(weights, features):
       </div>
 
       {/* Quantum Simulator Multi-Engine Benchmark Suite */}
-      <Card className="bg-white/[0.03] border-white/[0.06] backdrop-blur relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-gradient-to-bl from-quantum-500/10 via-purple-500/5 to-transparent rounded-full blur-3xl pointer-events-none" />
-
-        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/[0.06]">
+      <Card className="bg-slate-900/90 border-slate-800 backdrop-blur relative overflow-hidden">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
           <div>
             <div className="flex items-center gap-2">
               <Flame size={18} className="text-amber-400" />
@@ -275,7 +272,7 @@ def vqc_circuit(weights, features):
         {/* High-Level Benchmark Summary Cards */}
         {benchmarkData && (
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
-            <div className="bg-black/60 p-4 rounded-xl border border-white/[0.06] flex items-center gap-3">
+            <div className="bg-black/60 p-4 rounded-xl border border-slate-800 flex items-center gap-3">
               <div className="p-3 bg-amber-500/10 rounded-xl text-amber-400 border border-amber-500/20">
                 <Award size={22} />
               </div>
@@ -290,7 +287,7 @@ def vqc_circuit(weights, features):
               </div>
             </div>
 
-            <div className="bg-black/60 p-4 rounded-xl border border-white/[0.06] flex items-center gap-3">
+            <div className="bg-black/60 p-4 rounded-xl border border-slate-800 flex items-center gap-3">
               <div className="p-3 bg-quantum-500/10 rounded-xl text-quantum-400 border border-quantum-500/20">
                 <Server size={22} />
               </div>
@@ -305,7 +302,7 @@ def vqc_circuit(weights, features):
               </div>
             </div>
 
-            <div className="bg-black/60 p-4 rounded-xl border border-white/[0.06] flex items-center gap-3">
+            <div className="bg-black/60 p-4 rounded-xl border border-slate-800 flex items-center gap-3">
               <div className="p-3 bg-emerald-500/10 rounded-xl text-emerald-400 border border-emerald-500/20">
                 <ShieldCheck size={22} />
               </div>
@@ -343,7 +340,7 @@ def vqc_circuit(weights, features):
                     className={`p-4 rounded-xl border transition-all cursor-pointer relative flex flex-col justify-between ${
                       isSelected
                         ? 'bg-quantum-950/40 border-quantum-500 shadow-[0_0_15px_rgba(99,102,241,0.25)] ring-1 ring-quantum-400/40'
-                        : 'bg-black/50 border-white/[0.06] hover:border-white/[0.15] hover:bg-white/[0.02]'
+                        : 'bg-black/50 border-slate-800 hover:border-white/[0.15] hover:bg-white/[0.02]'
                     }`}
                   >
                     <div>
@@ -409,7 +406,7 @@ def vqc_circuit(weights, features):
                     {/* Capabilities Tags */}
                     <div className="flex items-center gap-1 flex-wrap pt-2 border-t border-white/[0.04]">
                       {sim.capabilities.map((cap, i) => (
-                        <span key={i} className="text-[9px] font-mono text-gray-400 bg-white/[0.04] px-1.5 py-0.5 rounded border border-white/[0.06]">
+                        <span key={i} className="text-[9px] font-mono text-gray-400 bg-white/[0.04] px-1.5 py-0.5 rounded border border-slate-800">
                           {cap}
                         </span>
                       ))}
@@ -422,7 +419,7 @@ def vqc_circuit(weights, features):
         )}
 
         {/* Live Simulation Trigger Bar */}
-        <div className="mt-6 pt-4 border-t border-white/[0.06] flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-black/40 p-3.5 rounded-xl border border-white/[0.06]">
+        <div className="mt-6 pt-4 border-t border-slate-800 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-black/40 p-3.5 rounded-xl border border-slate-800">
           <div className="flex items-center gap-3">
             <div className="p-2 bg-quantum-500/10 rounded-lg text-quantum-400 border border-quantum-500/20">
               <Zap size={18} />
@@ -473,8 +470,8 @@ def vqc_circuit(weights, features):
       {readiness && <QuantumReadinessCard readiness={readiness} />}
 
       {/* ─── NISQ Hardware Noise & Parameter Compression Laboratory ─── */}
-      <Card className="bg-white/[0.03] border-white/[0.06] backdrop-blur overflow-hidden">
-        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-white/[0.06]">
+      <Card className="bg-slate-900/90 border-slate-800 backdrop-blur overflow-hidden">
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 pb-4 border-b border-slate-800">
           <div>
             <div className="flex items-center gap-2 text-quantum-400 text-xs font-mono font-bold uppercase tracking-wider mb-1">
               <Scale size={14} /> NISQ Physics & Parameter Compression
@@ -496,7 +493,7 @@ def vqc_circuit(weights, features):
 
         {/* 1. Parameter Compression & Dimensionality Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-          <div className="bg-black/60 p-4 rounded-xl border border-white/[0.06]">
+          <div className="bg-black/60 p-4 rounded-xl border border-slate-800">
             <div className="text-[10px] font-mono text-gray-400 uppercase tracking-wider mb-1">Quantum Parameter Footprint</div>
             <div className="text-2xl font-black text-white font-mono">
               {noiseData?.quantum_parameter_count ?? 24} <span className="text-xs text-quantum-400 font-normal">trainable angles</span>
@@ -506,7 +503,7 @@ def vqc_circuit(weights, features):
             </div>
           </div>
 
-          <div className="bg-black/60 p-4 rounded-xl border border-white/[0.06]">
+          <div className="bg-black/60 p-4 rounded-xl border border-slate-800">
             <div className="text-[10px] font-mono text-gray-400 uppercase tracking-wider mb-1">Classical Tree Footprint</div>
             <div className="text-2xl font-black text-amber-300 font-mono">
               ~{(noiseData?.classical_rf_node_count ?? 18000).toLocaleString()} <span className="text-xs text-gray-400 font-normal">nodes</span>
@@ -516,7 +513,7 @@ def vqc_circuit(weights, features):
             </div>
           </div>
 
-          <div className="bg-black/60 p-4 rounded-xl border border-white/[0.06]">
+          <div className="bg-black/60 p-4 rounded-xl border border-slate-800">
             <div className="text-[10px] font-mono text-gray-400 uppercase tracking-wider mb-1">Parameter Compression Ratio</div>
             <div className="text-2xl font-black text-emerald-400 font-mono">
               {noiseData?.parameter_compression_ratio ? `${noiseData.parameter_compression_ratio}%` : '99.88%'}
@@ -526,7 +523,7 @@ def vqc_circuit(weights, features):
             </div>
           </div>
 
-          <div className="bg-black/60 p-4 rounded-xl border border-white/[0.06]">
+          <div className="bg-black/60 p-4 rounded-xl border border-slate-800">
             <div className="text-[10px] font-mono text-gray-400 uppercase tracking-wider mb-1">State Fidelity Retention</div>
             <div className="text-2xl font-black font-mono text-indigo-300">
               {noiseData?.fidelity_retention_pct ? `${noiseData.fidelity_retention_pct}%` : '74.2%'}
@@ -540,7 +537,7 @@ def vqc_circuit(weights, features):
         {/* 2. Interactive Noise Controls & Live Physics Sim */}
         <div className="grid lg:grid-cols-3 gap-6 mb-6">
           {/* Controls Column */}
-          <div className="bg-black/50 p-5 rounded-2xl border border-white/[0.06] space-y-5">
+          <div className="bg-black/50 p-5 rounded-2xl border border-slate-800 space-y-5">
             <div className="flex items-center gap-2 text-xs font-mono font-bold text-gray-300 uppercase tracking-wider">
               <Sliders size={14} className="text-quantum-400" /> NISQ Noise Generators
             </div>
@@ -615,7 +612,7 @@ def vqc_circuit(weights, features):
           </div>
 
           {/* Results Column */}
-          <div className="lg:col-span-2 bg-black/50 p-5 rounded-2xl border border-white/[0.06] flex flex-col justify-between">
+          <div className="lg:col-span-2 bg-black/50 p-5 rounded-2xl border border-slate-800 flex flex-col justify-between">
             <div>
               <div className="flex items-center justify-between gap-2 mb-4">
                 <span className="text-xs font-mono font-bold text-gray-300 uppercase tracking-wider flex items-center gap-1.5">
@@ -627,7 +624,7 @@ def vqc_circuit(weights, features):
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 mb-4 text-xs font-mono">
-                <div className="bg-black p-3 rounded-xl border border-white/[0.06]">
+                <div className="bg-black p-3 rounded-xl border border-slate-800">
                   <span className="text-[10px] text-gray-500 block mb-0.5">Ideal Expectation ⟨Z₀⟩</span>
                   <div className="text-quantum-300 font-bold text-base">
                     {noiseData?.ideal_expectation !== undefined ? noiseData.ideal_expectation.toFixed(4) : '0.3420'}
@@ -635,7 +632,7 @@ def vqc_circuit(weights, features):
                   <div className="text-[10px] text-gray-500 mt-0.5">No noise limit</div>
                 </div>
 
-                <div className="bg-black p-3 rounded-xl border border-white/[0.06]">
+                <div className="bg-black p-3 rounded-xl border border-slate-800">
                   <span className="text-[10px] text-gray-500 block mb-0.5">Perturbed ⟨Z₀⟩ (Noisy)</span>
                   <div className="text-amber-300 font-bold text-base">
                     {noiseData?.noisy_expectation !== undefined ? noiseData.noisy_expectation.toFixed(4) : '0.3015'}
@@ -645,7 +642,7 @@ def vqc_circuit(weights, features):
                   </div>
                 </div>
 
-                <div className="bg-black p-3 rounded-xl border border-white/[0.06] col-span-2 sm:col-span-1">
+                <div className="bg-black p-3 rounded-xl border border-slate-800 col-span-2 sm:col-span-1">
                   <span className="text-[10px] text-gray-500 block mb-0.5">Ensemble Risk Output</span>
                   <div className="flex items-center gap-2">
                     <span className="text-gray-400 text-sm">{(noiseData?.ideal_risk_probability ? noiseData.ideal_risk_probability * 100 : 34.2).toFixed(1)}%</span>
@@ -658,7 +655,7 @@ def vqc_circuit(weights, features):
 
               {/* Noise Curve Mini Visualizer */}
               {noiseData?.noise_curve && noiseData.noise_curve.length > 0 && (
-                <div className="bg-black p-3.5 rounded-xl border border-white/[0.06] space-y-2">
+                <div className="bg-black p-3.5 rounded-xl border border-slate-800 space-y-2">
                   <div className="text-[10px] font-mono text-gray-400 flex items-center justify-between">
                     <span>Fidelity Decay Curve Across Error Rates: F(p) = (1-p)ⁿ</span>
                     <span className="text-quantum-400">Total Circuit Gates: {noiseData.total_gate_count}</span>
@@ -679,7 +676,7 @@ def vqc_circuit(weights, features):
             </div>
 
             {/* Error Mitigation Callout */}
-            <div className="mt-4 pt-3 border-t border-white/[0.06] flex items-center justify-between text-[11px] text-gray-400">
+            <div className="mt-4 pt-3 border-t border-slate-800 flex items-center justify-between text-[11px] text-gray-400">
               <span className="flex items-center gap-1.5">
                 <ShieldCheck size={14} className="text-quantum-400" />
                 Zero-Noise Extrapolation (ZNE) & Richardson Extrapolation enabled for fault-tolerant mapping.
@@ -691,8 +688,8 @@ def vqc_circuit(weights, features):
       </Card>
 
       {/* Bloch Sphere Interactive Visualizer & Qubit State Vector */}
-      <Card className="bg-white/[0.03] border-white/[0.06] backdrop-blur">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-white/[0.06]">
+      <Card className="bg-slate-900/90 border-slate-800 backdrop-blur">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-800">
           <div>
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Binary size={18} className="text-quantum-400" /> Interactive Qubit State & Bloch Sphere Visualizer
@@ -711,7 +708,7 @@ def vqc_circuit(weights, features):
                 className={`px-3 py-1 rounded-lg text-xs font-mono font-bold border transition-all ${
                   selectedQubit === q
                     ? 'bg-quantum-600 text-white border-quantum-400 shadow-[0_0_10px_rgba(99,102,241,0.4)]'
-                    : 'bg-black text-gray-400 border-white/[0.06] hover:text-white'
+                    : 'bg-black text-gray-400 border-slate-800 hover:text-white'
                 }`}
               >
                 q[{q}]
@@ -722,7 +719,7 @@ def vqc_circuit(weights, features):
 
         <div className="grid md:grid-cols-3 gap-8 items-center">
           {/* 3D Bloch Sphere SVG Widget */}
-          <div className="flex flex-col items-center justify-center p-4 bg-black rounded-2xl border border-white/[0.06]">
+          <div className="flex flex-col items-center justify-center p-4 bg-black rounded-2xl border border-slate-800">
             <svg width="220" height="220" className="select-none">
               {/* Outer Sphere Rim */}
               <circle cx={cx} cy={cy} r={sphereR} fill="#000000" stroke="#4f46e5" strokeWidth="1.5" strokeDasharray="2 2" opacity="0.7" />
@@ -754,7 +751,7 @@ def vqc_circuit(weights, features):
             <div className="space-y-2">
               <div className="flex justify-between items-center text-xs">
                 <span className="font-semibold text-gray-300">Biomedical Feature Value x[{selectedQubit}]</span>
-                <span className="font-mono text-quantum-400 font-bold bg-black px-2.5 py-1 rounded-md border border-white/[0.06]">
+                <span className="font-mono text-quantum-400 font-bold bg-black px-2.5 py-1 rounded-md border border-slate-800">
                   x = {rotationAngle.toFixed(3)}
                 </span>
               </div>
@@ -776,19 +773,19 @@ def vqc_circuit(weights, features):
 
             {/* State Decomposition Grid */}
             <div className="grid grid-cols-2 gap-3 text-xs font-mono">
-              <div className="bg-black p-3.5 rounded-xl border border-white/[0.06]">
+              <div className="bg-black p-3.5 rounded-xl border border-slate-800">
                 <span className="text-gray-500 text-[10px] block mb-1">State Amplitude $|0\rangle$</span>
                 <div className="text-emerald-400 font-bold text-lg">{(prob0 * 100).toFixed(1)}%</div>
                 <div className="text-gray-500 text-[10px] mt-0.5">cos²(θ/2) probability</div>
               </div>
-              <div className="bg-black p-3.5 rounded-xl border border-white/[0.06]">
+              <div className="bg-black p-3.5 rounded-xl border border-slate-800">
                 <span className="text-gray-500 text-[10px] block mb-1">State Amplitude $|1\rangle$</span>
                 <div className="text-rose-400 font-bold text-lg">{(prob1 * 100).toFixed(1)}%</div>
                 <div className="text-gray-500 text-[10px] mt-0.5">sin²(θ/2) probability</div>
               </div>
             </div>
 
-            <div className="p-3 bg-black/80 rounded-xl border border-white/[0.06] font-mono text-[11px] text-gray-300">
+            <div className="p-3 bg-black/80 rounded-xl border border-slate-800 font-mono text-[11px] text-gray-300">
               State Vector $|\psi\rangle = {Math.cos(theta / 2).toFixed(3)}|0\rangle + {Math.sin(theta / 2).toFixed(3)}|1\rangle$
             </div>
           </div>
@@ -796,8 +793,8 @@ def vqc_circuit(weights, features):
       </Card>
 
       {/* Circuit Architecture Visualizer */}
-      <Card className="bg-white/[0.03] border-white/[0.06] backdrop-blur">
-        <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/[0.06]">
+      <Card className="bg-slate-900/90 border-slate-800 backdrop-blur">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
           <div>
             <h3 className="text-lg font-bold text-white flex items-center gap-2">
               <Cpu size={18} className="text-quantum-400" /> Variational Quantum Classifier (VQC) Circuit
@@ -813,8 +810,8 @@ def vqc_circuit(weights, features):
       </Card>
 
       {/* PennyLane Source Code & Execution Specs */}
-      <Card className="bg-white/[0.03] border-white/[0.06] backdrop-blur">
-        <div className="flex items-center justify-between mb-4 pb-3 border-b border-white/[0.06]">
+      <Card className="bg-slate-900/90 border-slate-800 backdrop-blur">
+        <div className="flex items-center justify-between mb-4 pb-3 border-b border-slate-800">
           <div className="flex items-center gap-2">
             <Terminal size={18} className="text-indigo-400" />
             <h3 className="text-lg font-bold text-white">PennyLane Implementation Blueprint</h3>
@@ -830,7 +827,7 @@ def vqc_circuit(weights, features):
           </Button>
         </div>
 
-        <pre className="bg-black p-5 rounded-2xl border border-white/[0.06] font-mono text-xs text-quantum-200 overflow-x-auto leading-relaxed shadow-inner">
+        <pre className="bg-black p-5 rounded-2xl border border-slate-800 font-mono text-xs text-quantum-200 overflow-x-auto leading-relaxed shadow-inner">
           {pennylaneCode}
         </pre>
       </Card>

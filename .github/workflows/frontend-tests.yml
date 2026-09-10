@@ -5,10 +5,12 @@ on:
     branches: [main, develop]
     paths:
       - 'frontend/**'
+      - '.github/workflows/frontend-tests.yml'
   pull_request:
     branches: [main, develop]
     paths:
       - 'frontend/**'
+      - '.github/workflows/frontend-tests.yml'
 
 jobs:
   test:
@@ -37,8 +39,10 @@ jobs:
       - name: Run Vitest
         working-directory: frontend
         run: npm test -- --run
-        continue-on-error: true
       
+      - name: Lint
+        working-directory: frontend
+        run: npm run lint
       - name: Build frontend
         working-directory: frontend
         run: npm run build

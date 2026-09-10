@@ -2,6 +2,7 @@ import pytest
 from httpx import AsyncClient, ASGITransport
 from main import app
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_all_diseases_end_to_end_predict():
     async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as client:

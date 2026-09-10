@@ -62,7 +62,7 @@ def generate_offline_clinical_reply(message: str, context: Optional[Dict[str, An
         reply = (
             "### 🔬 Quantum Machine Learning Architecture & Parameter Advantage\n\n"
             "In our **Hybrid Quantum-Classical Platform**, the quantum module operates as a **6-qubit Variational Quantum Classifier (VQC)** built in PennyLane:\n\n"
-            "- **64-Dimensional Hilbert Space**: The 6-qubit register maps normalized biomedical inputs ($x_i \in [0, 1]$) into a complex state space $\mathcal{H}^{\otimes 6}$ via single-qubit angle rotations $RY(\pi \cdot x_i)$.\n"
+            "- **64-Dimensional Hilbert Space**: The 6-qubit register maps normalized biomedical inputs ($x_i \\in [0, 1]$) into a complex state space $\\mathcal{H}^{\\otimes 6}$ via single-qubit angle rotations $RY(\\pi \\cdot x_i)$.\\n"
             "- **99.88% Parameter Compression**: While a classical Random Forest ensemble uses **~18,000 decision split nodes** (300 estimators × depth 8), our VQC achieves non-linear classification using only **24 trainable rotation angles** (2 layers × 6 qubits × 2 rotation gates $RY, RZ$).\n"
             "- **Ring-Topology Entanglement**: Nearest-neighbor CNOT gates create quantum entanglement across wires, capturing cross-biomarker dependencies (e.g., blood pressure interacting with glucose).\n"
             "- **NISQ Noise Resilience**: Under physical depolarizing noise rates (p ≈ 1.5-2.0%), state fidelity retention is maintained at ~74%, with Zero-Noise Extrapolation (ZNE) mitigating gate errors.\n\n"

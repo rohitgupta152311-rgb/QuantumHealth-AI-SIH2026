@@ -94,6 +94,7 @@ def test_preprocessing_pipeline_save_and_load():
         assert loaded_pipeline.selector.selected_names == pipeline.selector.selected_names
 
 
+@pytest.mark.training
 def test_vqc_save_load_preserves_parameters_and_probabilities():
     """
     QuantumClassifier.load() must preserve exact trained parameters

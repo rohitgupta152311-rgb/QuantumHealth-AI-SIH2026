@@ -28,6 +28,7 @@ async def test_unknown_feature_rejected_with_422():
         assert "Unknown or unexpected feature provided" in res.json()["detail"]
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_missing_sentinel_glucose_zero_triggers_abstention():
     transport = ASGITransport(app=app)
@@ -53,6 +54,7 @@ async def test_missing_sentinel_glucose_zero_triggers_abstention():
         assert data.get("hybrid_result") is None
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_out_of_distribution_triggers_abstention():
     transport = ASGITransport(app=app)
@@ -78,6 +80,7 @@ async def test_out_of_distribution_triggers_abstention():
         assert data.get("hybrid_result") is None
 
 
+@pytest.mark.integration
 @pytest.mark.asyncio
 async def test_valid_input_completes_with_calibrated_explanations():
     transport = ASGITransport(app=app)

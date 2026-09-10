@@ -41,43 +41,31 @@ class TrainingOrchestrator:
 
         pipeline_path = self._models_cache_dir / f"{disease_id}_pipeline.pkl"
         probe_trainer = ClassicalMLTrainer(disease_id, self._models_cache_dir)
-        model_names = list(probe_trainer.models.keys())
-        all_cached = (
-            pipeline_path.exists() and
-            all((self._models_cache_dir / f"{disease_id}_{m}.pkl").exists() for m in model_names)
-        )
-
         vqc_model = None
-        vqc_path = self._models_cache_dir / f"{disease_id}_vqc.pkl"
-        
-        if all_cached and not force_retrain:
+        if not force_retrain:
             try:
+                probe_trainer.load_cached(pipeline_path, [f["name"] for f in disease_info["features"]])
                 pipeline = PreprocessingPipeline(
                     n_quantum_features=settings.quantum_n_qubits,
-                    missing_sentinels=sentinels_map
+                    missing_sentinels=sentinels_map,
                 )
                 pipeline.load(pipeline_path)
-                trainer = probe_trainer
-                for name in model_names:
-                    trainer.models[name].load(str(self._models_cache_dir / f"{disease_id}_{name}.pkl"))
-                    calib_path = self._models_cache_dir / f"{disease_id}_{name}_calibrated.pkl"
-                    if calib_path.exists():
-                        import joblib
-                        trainer.calibrators[name] = joblib.load(str(calib_path))
-                trainer._trained = True
+                logger.info("Loaded complete cached bundle for '%s'.", disease_id)
+                return TrainedModelBundle(probe_trainer, pipeline, probe_trainer.vqc_model)
+            except Exception as exc:
+                logger.warning("Cached bundle load failed for '%s': %s", disease_id, exc)
+                if not settings.auto_train_missing_models:
+                    raise RuntimeError(
+                        f"Cached models for '{disease_id}' are missing or incompatible: {exc}. "
+                        "Restore a complete compatible checkpoint. Automatic training is disabled."
+                    ) from exc
 
-                if vqc_path.exists():
-                    vqc_model = QuantumClassifier(
-                        n_qubits=settings.quantum_n_qubits,
-                        n_layers=settings.quantum_n_layers,
-                        backend="numpy:statevector",
-                    )
-                    vqc_model.load(vqc_path)
-
-                logger.info(f"Loaded cached models for '{disease_id}'.")
-                return TrainedModelBundle(trainer, pipeline, vqc_model)
-            except Exception as e:
-                logger.warning(f"Fast-path load failed for '{disease_id}', retraining: {e}")
+        if not force_retrain and not settings.auto_train_missing_models:
+            raise RuntimeError(
+                f"Cached models for '{disease_id}' are missing or incompatible. "
+                "Automatic training is disabled. Restore compatible model artifacts "
+                "or explicitly request training through the training endpoint."
+            )
 
         if on_progress: on_progress("Loading and splitting dataset", 0.3)
         if disease_id == "diabetes":
@@ -174,7 +162,8 @@ class TrainingOrchestrator:
 
         trainer.train(
             X_train_c, y_train, X_test_c, y_test, feature_names,
-            X_val=X_val_c, y_val=y_val, dataset_meta=disease_info
+            X_val=X_val_c, y_val=y_val, dataset_meta=disease_info,
+            pipeline_path=pipeline_path
         )
 
         return data_info

@@ -5,6 +5,7 @@ from app.classical_ml.svm import SVMModel
 from app.classical_ml.logistic_regression import LogisticRegressionModel
 from app.classical_ml.evaluator import compute_metrics
 
+@pytest.mark.training
 def test_random_forest(dummy_data):
     X, y, _ = dummy_data
     model = RandomForestModel(n_estimators=10)
@@ -16,6 +17,7 @@ def test_random_forest(dummy_data):
     probs = model.predict_proba(X)
     assert probs.shape == (len(y), 2)
 
+@pytest.mark.training
 def test_svm(dummy_data):
     X, y, _ = dummy_data
     model = SVMModel()
@@ -24,6 +26,7 @@ def test_svm(dummy_data):
     preds = model.predict(X)
     assert preds.shape == y.shape
 
+@pytest.mark.training
 def test_logistic_regression(dummy_data):
     X, y, _ = dummy_data
     model = LogisticRegressionModel()
@@ -32,6 +35,7 @@ def test_logistic_regression(dummy_data):
     preds = model.predict(X)
     assert preds.shape == y.shape
 
+@pytest.mark.training
 def test_compute_metrics(dummy_data):
     X, y, _ = dummy_data
     model = RandomForestModel(n_estimators=10)

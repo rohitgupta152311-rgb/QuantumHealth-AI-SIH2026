@@ -1,12 +1,12 @@
 import React from 'react';
-import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, Cell } from 'recharts';
+import { BarChart,Bar,XAxis,YAxis,CartesianGrid,Tooltip,ResponsiveContainer,Cell } from 'recharts';
 import type { ModelMetrics } from '../../types';
 
 export const ROCCurveChart: React.FC<{ models: ModelMetrics[] }> = ({ models }) => {
   const colors = ['#6366f1', '#3b82f6', '#10b981', '#f59e0b'];
   const data = models.map((model) => ({
-    name: model.name,
-    auc: model.auc,
+    name: model.model_name || model.name || 'Model',
+    auc: model.roc_auc ?? model.auc ?? 0,
   }));
 
   return (
