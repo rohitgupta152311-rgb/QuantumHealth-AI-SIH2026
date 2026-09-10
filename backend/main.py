@@ -9,8 +9,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 
 # Scikit-learn Cython loss unpickling compatibility across Linux/Windows/Python versions
 try:
-    import sklearn._loss._loss
-    sys.modules["_loss"] = sklearn._loss._loss
+    import sklearn._loss._loss as _ll
+    sys.modules["_loss"] = _ll
+    for _name in dir(_ll):
+        if _name.startswith("Cy") and isinstance(getattr(_ll, _name), type):
+            _fn_name = f"__pyx_unpickle_{_name}"
+            if not hasattr(_ll, _fn_name):
+                setattr(_ll, _fn_name, lambda *a: a[0]() if a and isinstance(a[0], type) else None)
 except Exception:
     pass
 

@@ -55,9 +55,14 @@ class GradientBoostingModel:
 
     def load(self, path: str):
         try:
-            import sklearn._loss._loss
             import sys
-            sys.modules["_loss"] = sklearn._loss._loss
+            import sklearn._loss._loss as _ll
+            sys.modules["_loss"] = _ll
+            for _name in dir(_ll):
+                if _name.startswith("Cy") and isinstance(getattr(_ll, _name), type):
+                    _fn_name = f"__pyx_unpickle_{_name}"
+                    if not hasattr(_ll, _fn_name):
+                        setattr(_ll, _fn_name, lambda *a: a[0]() if a and isinstance(a[0], type) else None)
         except Exception:
             pass
         self.model = joblib.load(path)

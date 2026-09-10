@@ -470,9 +470,14 @@ class ClassicalMLTrainer:
     def load_cached(self, pipeline_path: Path | str, feature_names: list[str] | None = None) -> None:
         """Restore a trusted composite checkpoint atomically. Never train on failure."""
         try:
-            import sklearn._loss._loss
             import sys
-            sys.modules["_loss"] = sklearn._loss._loss
+            import sklearn._loss._loss as _ll
+            sys.modules["_loss"] = _ll
+            for _name in dir(_ll):
+                if _name.startswith("Cy") and isinstance(getattr(_ll, _name), type):
+                    _fn_name = f"__pyx_unpickle_{_name}"
+                    if not hasattr(_ll, _fn_name):
+                        setattr(_ll, _fn_name, lambda *a: a[0]() if a and isinstance(a[0], type) else None)
         except Exception:
             pass
         bundle = joblib.load(str(self._get_bundle_path()))
