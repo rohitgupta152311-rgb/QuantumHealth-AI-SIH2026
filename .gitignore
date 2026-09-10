@@ -51,7 +51,8 @@ ENV/
 env/
 
 # ── ML Models Cache ──────────────────────────────────────────────────────────
-backend/models_cache/*.pkl
+# Allow pre-trained models for cloud deployment
+!backend/models_cache/*.pkl
 backend/models_cache/*.joblib
 backend/quantumhealth.db
 backend/quantumhealth.db-journal
