@@ -115,6 +115,28 @@ async def add_process_time_header(request: Request, call_next):
 
 app.include_router(api_router, prefix="/api/v1")
 
+# Serve built frontend SPA if available (for unified 24/7 cloud deployment on Render, Docker, or Cloud Run)
+frontend_dist = Path(__file__).resolve().parent.parent / "frontend" / "dist"
+if not frontend_dist.exists():
+    frontend_dist = Path(__file__).resolve().parent / "dist"
+
+if frontend_dist.exists():
+    from fastapi.staticfiles import StaticFiles
+    from fastapi.responses import FileResponse
+
+    assets_dir = frontend_dist / "assets"
+    if assets_dir.exists():
+        app.mount("/assets", StaticFiles(directory=str(assets_dir)), name="static_assets")
+
+    @app.get("/{full_path:path}")
+    async def serve_spa(full_path: str):
+        if full_path.startswith("api/"):
+            return None
+        target = frontend_dist / full_path
+        if target.is_file():
+            return FileResponse(target)
+        return FileResponse(frontend_dist / "index.html")
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host=settings.host, port=settings.port, reload=True)
