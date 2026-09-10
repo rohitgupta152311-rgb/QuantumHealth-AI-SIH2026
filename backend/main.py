@@ -35,6 +35,17 @@ async def lifespan(app: FastAPI):
     except Exception as e:
         logger.warning(f"Database initialization note: {e}")
 
+    # Initialize Firebase manager (Dual-mode: Cloud Firestore or Local PHC fallback)
+    try:
+        from app.core.firebase import firebase_manager
+        firebase_manager.initialize()
+        fb_status = firebase_manager.get_status()
+        logger.info(
+            f"Firebase initialized: mode='{fb_status['mode']}', project_id='{fb_status['project_id']}'"
+        )
+    except Exception as e:
+        logger.warning(f"Firebase initialization note: {e}")
+
     # Non-blocking background pre-warm of disease models and circuits
     async def _prewarm_models():
         try:
@@ -73,7 +84,8 @@ app = FastAPI(
         {"name": "predict", "description": "Hybrid disease prediction pipeline and consensus decision engine."},
         {"name": "models", "description": "Comparative benchmarking, training triggers, and accuracy evaluations."},
         {"name": "quantum", "description": "Quantum circuit architecture, qubit wire mapping, and gate specs."},
-        {"name": "experiments", "description": "Historical diagnostic audits and experiment logging."}
+        {"name": "experiments", "description": "Historical diagnostic audits and experiment logging."},
+        {"name": "firebase", "description": "Cloud Firestore persistence, audit syncing, and Firebase Auth verification."}
     ],
     lifespan=lifespan
 )

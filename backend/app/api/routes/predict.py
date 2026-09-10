@@ -1,10 +1,11 @@
 import logging
-from fastapi import APIRouter, Depends, HTTPException, status
+from fastapi import APIRouter, Depends, HTTPException, status, BackgroundTasks
 from app.schemas.prediction import (
     PredictionRequest, PredictionResponse,
     BatchPredictionRequest, BatchPredictionResponse, BatchPatientResult
 )
 from app.services.prediction_service import PredictionService
+from app.services.firebase_service import firebase_service
 from app.datasets.loader import get_dataset_loader, DatasetLoader
 from app.core.config import settings
 
@@ -34,6 +35,7 @@ def get_prediction_service() -> PredictionService:
 )
 async def predict(
     request: PredictionRequest,
+    background_tasks: BackgroundTasks,
     service: PredictionService = Depends(get_prediction_service),
     loader: DatasetLoader = Depends(get_dataset_loader)
 ):
@@ -112,6 +114,8 @@ async def predict(
             "population_limitation",
             "Evaluated on reference training cohort; not validated across all demographic populations."
         )
+        # Asynchronously sync prediction to Firebase Firestore audit store
+        background_tasks.add_task(firebase_service.save_prediction, result)
         return result
     except Exception as e:
         logger.error(f"Prediction error for {request.disease}: {str(e)}", exc_info=True)
@@ -130,6 +134,7 @@ async def predict(
 )
 async def predict_batch(
     request: BatchPredictionRequest,
+    background_tasks: BackgroundTasks,
     service: PredictionService = Depends(get_prediction_service),
     loader: DatasetLoader = Depends(get_dataset_loader)
 ):
@@ -252,6 +257,18 @@ async def predict_batch(
     pop_note = "Standard Reference Cohort Calibration"
     if request.apply_icmr_calibration and request.disease == "diabetes":
         pop_note = "ICMR-INDIAB South Asian Phenotype Calibration Applied (BMI cut-off >= 23 kg/m2)"
+
+    # Asynchronously record population batch triage summary to Firebase Firestore
+    triage_summary = {
+        "disease": request.disease,
+        "total_patients": len(results),
+        "high_risk_count": summary_counts.get("urgent_followup", 0),
+        "moderate_risk_count": summary_counts.get("moderate_monitoring", 0),
+        "low_risk_count": summary_counts.get("routine_screening", 0),
+        "abstained_count": summary_counts.get("data_quality_alert", 0),
+        "icmr_recalibrated": bool(request.apply_icmr_calibration and request.disease == "diabetes"),
+    }
+    background_tasks.add_task(firebase_service.save_batch_triage, triage_summary)
 
     return BatchPredictionResponse(
         disease=request.disease,

@@ -31,6 +31,13 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3000"
     ]
 
+    # Firebase configuration
+    firebase_enabled: bool = True
+    firebase_project_id: str | None = None
+    firebase_service_account_path: str | None = None
+    firebase_service_account_json: str | None = None
+    firebase_storage_bucket: str | None = None
+
 settings = Settings()
 
 # Ensure model cache dir exists
