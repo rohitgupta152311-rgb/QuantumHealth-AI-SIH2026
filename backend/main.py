@@ -7,6 +7,13 @@ from pathlib import Path
 # Add backend root to sys.path
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+# Scikit-learn Cython loss unpickling compatibility across Linux/Windows/Python versions
+try:
+    import sklearn._loss._loss
+    sys.modules["_loss"] = sklearn._loss._loss
+except Exception:
+    pass
+
 from fastapi import FastAPI, Request
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager

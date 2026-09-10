@@ -54,5 +54,11 @@ class GradientBoostingModel:
         joblib.dump(self.model, path)
 
     def load(self, path: str):
+        try:
+            import sklearn._loss._loss
+            import sys
+            sys.modules["_loss"] = sklearn._loss._loss
+        except Exception:
+            pass
         self.model = joblib.load(path)
         return self

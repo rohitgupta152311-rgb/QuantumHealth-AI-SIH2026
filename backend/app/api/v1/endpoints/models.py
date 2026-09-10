@@ -323,6 +323,7 @@ async def train_models(
         )
         if trainer.vqc_model is not None:
             qc = trainer.vqc_model
+            qc.save(vqc_path)
         else:
             qc.fit(X_train_quantum, y_train)
             qc.save(vqc_path)

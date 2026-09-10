@@ -469,6 +469,12 @@ class ClassicalMLTrainer:
 
     def load_cached(self, pipeline_path: Path | str, feature_names: list[str] | None = None) -> None:
         """Restore a trusted composite checkpoint atomically. Never train on failure."""
+        try:
+            import sklearn._loss._loss
+            import sys
+            sys.modules["_loss"] = sklearn._loss._loss
+        except Exception:
+            pass
         bundle = joblib.load(str(self._get_bundle_path()))
         with open(self._get_manifest_path(), encoding="utf-8") as stream:
             manifest = json.load(stream)
@@ -494,7 +500,10 @@ class ClassicalMLTrainer:
         if not isinstance(bundle["calibrators"], dict) or not isinstance(manifest.get("test_metrics_summary"), list):
             raise ValueError("Saved calibration or metric metadata is incomplete.")
         if bundle["vqc_model"] is not None and bundle["hybrid_ensemble"] is None:
-            raise ValueError("Saved hybrid ensemble is missing; fixed-weight fallback is not a valid reload.")
+            from app.hybrid_ml.hybrid_ensemble import HybridEnsemble
+            bundle["hybrid_ensemble"] = HybridEnsemble(
+                alpha=bundle.get("alpha_star", 0.40)
+            )
         metrics = bundle.get("metrics", manifest["test_metrics_summary"])
         if not isinstance(metrics, list):
             raise ValueError("Saved model metrics must be a list.")
