@@ -112,3 +112,7 @@ QuantumHealth-AI-SIH2026/
 
 .firebase/
 
+
+cloudflared.exe
+backend/cloudflared.exe
+
