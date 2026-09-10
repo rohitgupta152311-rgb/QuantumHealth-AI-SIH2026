@@ -109,3 +109,6 @@ coverage/
 # ── Nested clones / downloads ────────────────────────────────────────────────
 QuantumHealth-AI-SIH2026/
 
+
+.firebase/
+
