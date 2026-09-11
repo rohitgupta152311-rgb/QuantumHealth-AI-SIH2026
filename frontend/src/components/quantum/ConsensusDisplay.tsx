@@ -14,8 +14,8 @@ export const ConsensusDisplay: React.FC<{ consensus: ConsensusResult }> = ({ con
     : Object.values(consensus.classical_votes || {}).filter(v => String(v) === 'high_risk' || String(v) === '1').length;
 
   const totalClassical = typeof consensus.classical_votes === 'number'
-    ? 3
-    : Math.max(Object.keys(consensus.classical_votes || {}).length, 3);
+    ? 5
+    : Math.max(Object.keys(consensus.classical_votes || {}).length, 5);
 
   const quantumVoteCount = consensus.quantum_votes ?? (consensus.quantum_vote === 'high_risk' || consensus.quantum_vote === 1 ? 1 : 0);
 

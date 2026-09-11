@@ -50,10 +50,15 @@ export const ClinicalCopilotChat: React.FC = () => {
     if (savedPred) {
       try {
         const parsed = JSON.parse(savedPred);
+        const hybridRiskPct = parsed.hybrid_result?.risk_percentage 
+          ?? (parsed.hybrid_result?.risk_probability !== undefined ? Math.round(parsed.hybrid_result.risk_probability * 100) : undefined)
+          ?? parsed.risk_percentage 
+          ?? (parsed.risk_probability !== undefined ? Math.round(parsed.risk_probability * 100) : 0);
+
         setPatientContext({
           disease: parsed.disease,
-          risk_percentage: parsed.risk_percentage ?? Math.round((parsed.risk_probability || 0) * 100),
-          risk_level: parsed.risk_level,
+          risk_percentage: hybridRiskPct,
+          risk_level: parsed.hybrid_result?.risk_level || parsed.risk_level,
           consensus_agreement: parsed.consensus?.agreement,
           disagreement_spread: parsed.disagreement_range?.spread,
           features: parsed.features_dict || parsed.input_features,
