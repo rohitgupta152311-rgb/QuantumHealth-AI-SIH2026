@@ -5,7 +5,7 @@
 
 [[redirects]]
   from = "/api/*"
-  to = "https://novels-interactions-honolulu-pacific.trycloudflare.com/api/:splat"
+  to = "https://quantumhealth-ai.onrender.com/api/:splat"
   status = 200
   force = true
 
