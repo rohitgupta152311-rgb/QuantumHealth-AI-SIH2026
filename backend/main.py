@@ -105,8 +105,8 @@ app = FastAPI(
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
-    allow_origin_regex=r"(http://(localhost|127\.0\.0\.1)(:\d+)?|https://.*\.web\.app|https://.*\.firebaseapp\.com|https://.*\.netlify\.app|https://.*\.trycloudflare\.com)",
+    allow_origins=settings.cors_origins + ["https://quantumhealth-ai.onrender.com"],
+    allow_origin_regex=r"(http://(localhost|127\.0\.0\.1)(:\d+)?|https://.*\.web\.app|https://.*\.firebaseapp\.com|https://.*\.netlify\.app|https://.*\.onrender\.com|https://.*\.trycloudflare\.com|https://.*\.vercel\.app)",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -143,7 +143,8 @@ if frontend_dist.exists():
     @app.get("/{full_path:path}")
     async def serve_spa(full_path: str):
         if full_path.startswith("api/"):
-            return None
+            from fastapi import HTTPException
+            raise HTTPException(status_code=404, detail="API route not found")
         target = frontend_dist / full_path
         if target.is_file():
             return FileResponse(target)

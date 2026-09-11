@@ -3,6 +3,7 @@ Prediction service facade.
 Delegates to TrainingOrchestrator, InferenceEngine, and ExplanationService.
 """
 import time
+import asyncio
 import logging
 import numpy as np
 from pathlib import Path
@@ -67,7 +68,7 @@ class PredictionService:
         qc = self._vqc_models.get(disease_id) or getattr(trainer, "vqc_model", None)
         disease_info = self._dataset_loader.get_disease_info(disease_id)
         
-        inf_res = self.inference.predict_single(disease_id, features_dict, disease_info, trainer, pipeline, qc, mode)
+        inf_res = await asyncio.to_thread(self.inference.predict_single, disease_id, features_dict, disease_info, trainer, pipeline, qc, mode)
         
         if inf_res["status"] == "abstained":
             return {"disease": disease_id, **inf_res}
@@ -158,6 +159,9 @@ class PredictionService:
 
     async def get_model_comparison(self, disease_id: str) -> dict:
         await self.get_or_train_models(disease_id)
+        return await asyncio.to_thread(self._compute_comparison_sync, disease_id)
+
+    def _compute_comparison_sync(self, disease_id: str) -> dict:
         pipeline = self._pipelines[disease_id]
         trainer = self._trainers[disease_id]
         X, y, feature_names = self._dataset_loader.load(disease_id)

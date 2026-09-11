@@ -1,3 +1,4 @@
+import asyncio
 import logging
 from dataclasses import dataclass
 from typing import Optional, Callable
@@ -44,12 +45,15 @@ class TrainingOrchestrator:
         vqc_model = None
         if not force_retrain:
             try:
-                probe_trainer.load_cached(pipeline_path, [f["name"] for f in disease_info["features"]])
-                pipeline = PreprocessingPipeline(
-                    n_quantum_features=settings.quantum_n_qubits,
-                    missing_sentinels=sentinels_map,
-                )
-                pipeline.load(pipeline_path)
+                def _load_sync():
+                    probe_trainer.load_cached(pipeline_path, [f["name"] for f in disease_info["features"]])
+                    pipeline = PreprocessingPipeline(
+                        n_quantum_features=settings.quantum_n_qubits,
+                        missing_sentinels=sentinels_map,
+                    )
+                    pipeline.load(pipeline_path)
+                    return pipeline
+                pipeline = await asyncio.to_thread(_load_sync)
                 logger.info("Loaded complete cached bundle for '%s'.", disease_id)
                 return TrainedModelBundle(probe_trainer, pipeline, probe_trainer.vqc_model)
             except Exception as exc:
@@ -68,57 +72,61 @@ class TrainingOrchestrator:
             )
 
         if on_progress: on_progress("Loading and splitting dataset", 0.3)
-        if disease_id == "diabetes":
-            X, y, groups, feature_names = self._dataset_loader.load_grouped(disease_id)
-            from sklearn.model_selection import GroupShuffleSplit
-            gss_test = GroupShuffleSplit(n_splits=1, test_size=0.20, random_state=settings.random_seed)
-            train_val_idx, test_idx = next(gss_test.split(X, y, groups))
-            X_temp, X_test = X[train_val_idx], X[test_idx]
-            y_temp, y_test = y[train_val_idx], y[test_idx]
-            groups_temp = groups[train_val_idx]
+        def _train_sync():
+            if disease_id == "diabetes":
+                X, y, groups, feature_names = self._dataset_loader.load_grouped(disease_id)
+                from sklearn.model_selection import GroupShuffleSplit
+                gss_test = GroupShuffleSplit(n_splits=1, test_size=0.20, random_state=settings.random_seed)
+                train_val_idx, test_idx = next(gss_test.split(X, y, groups))
+                X_temp, X_test = X[train_val_idx], X[test_idx]
+                y_temp, y_test = y[train_val_idx], y[test_idx]
+                groups_temp = groups[train_val_idx]
 
-            gss_val = GroupShuffleSplit(n_splits=1, test_size=0.25, random_state=settings.random_seed)
-            train_idx, val_idx = next(gss_val.split(X_temp, y_temp, groups_temp))
-            X_train, X_val = X_temp[train_idx], X_temp[val_idx]
-            y_train, y_val = y_temp[train_idx], y_temp[val_idx]
-        else:
-            X, y, feature_names = self._dataset_loader.load(disease_id)
-            X_temp, X_test, y_temp, y_test = train_test_split(
-                X, y, test_size=0.20, random_state=settings.random_seed, stratify=y
-            )
-            X_train, X_val, y_train, y_val = train_test_split(
-                X_temp, y_temp, test_size=0.25, random_state=settings.random_seed, stratify=y_temp
-            )
+                gss_val = GroupShuffleSplit(n_splits=1, test_size=0.25, random_state=settings.random_seed)
+                train_idx, val_idx = next(gss_val.split(X_temp, y_temp, groups_temp))
+                X_train, X_val = X_temp[train_idx], X_temp[val_idx]
+                y_train, y_val = y_temp[train_idx], y_temp[val_idx]
+            else:
+                X, y, feature_names = self._dataset_loader.load(disease_id)
+                X_temp, X_test, y_temp, y_test = train_test_split(
+                    X, y, test_size=0.20, random_state=settings.random_seed, stratify=y
+                )
+                X_train, X_val, y_train, y_val = train_test_split(
+                    X_temp, y_temp, test_size=0.25, random_state=settings.random_seed, stratify=y_temp
+                )
 
-        if on_progress: on_progress("Fitting pipeline", 0.5)
-        pipeline = PreprocessingPipeline(
-            n_quantum_features=settings.quantum_n_qubits,
-            model_version=f"{disease_id}_v1.0",
-            missing_sentinels=sentinels_map
-        )
-        pipeline.fit(X_train, y_train, feature_names)
-        pipeline.save(pipeline_path)
-
-        X_train_c, X_train_q = pipeline.transform(X_train)
-        X_val_c, X_val_q = pipeline.transform(X_val)
-        X_test_c, X_test_q = pipeline.transform(X_test)
-
-        trainer = ClassicalMLTrainer(disease_id, self._models_cache_dir)
-        if on_progress: on_progress("Training models", 0.7)
-        if force_retrain:
-            trainer.train(
-                X_train_c, y_train, X_test_c, y_test, feature_names,
-                X_val=X_val_c, y_val=y_val,
-                X_train_q=X_train_q, X_val_q=X_val_q, X_test_q=X_test_q,
-                dataset_meta=disease_info, pipeline_path=pipeline_path
+            if on_progress: on_progress("Fitting pipeline", 0.5)
+            pipeline = PreprocessingPipeline(
+                n_quantum_features=settings.quantum_n_qubits,
+                model_version=f"{disease_id}_v1.0",
+                missing_sentinels=sentinels_map
             )
-        else:
-            trainer.load_or_train(
-                X_train_c, y_train, X_test_c, y_test, feature_names,
-                X_val=X_val_c, y_val=y_val,
-                X_train_q=X_train_q, X_val_q=X_val_q, X_test_q=X_test_q,
-                dataset_meta=disease_info, pipeline_path=pipeline_path
-            )
+            pipeline.fit(X_train, y_train, feature_names)
+            pipeline.save(pipeline_path)
+
+            X_train_c, X_train_q = pipeline.transform(X_train)
+            X_val_c, X_val_q = pipeline.transform(X_val)
+            X_test_c, X_test_q = pipeline.transform(X_test)
+
+            trainer = ClassicalMLTrainer(disease_id, self._models_cache_dir)
+            if on_progress: on_progress("Training models", 0.7)
+            if force_retrain:
+                trainer.train(
+                    X_train_c, y_train, X_test_c, y_test, feature_names,
+                    X_val=X_val_c, y_val=y_val,
+                    X_train_q=X_train_q, X_val_q=X_val_q, X_test_q=X_test_q,
+                    dataset_meta=disease_info, pipeline_path=pipeline_path
+                )
+            else:
+                trainer.load_or_train(
+                    X_train_c, y_train, X_test_c, y_test, feature_names,
+                    X_val=X_val_c, y_val=y_val,
+                    X_train_q=X_train_q, X_val_q=X_val_q, X_test_q=X_test_q,
+                    dataset_meta=disease_info, pipeline_path=pipeline_path
+                )
+            return trainer, pipeline
+
+        trainer, pipeline = await asyncio.to_thread(_train_sync)
             
         if on_progress: on_progress("Completed training", 1.0)
         return TrainedModelBundle(trainer, pipeline, trainer.vqc_model)
@@ -141,29 +149,31 @@ class TrainingOrchestrator:
             disease_id, db
         )
 
-        if len(X) < 10:
-            raise ValueError(f"Insufficient data: {len(X)} samples (minimum 10).")
-        if len(np.unique(y)) < 2:
-            raise ValueError("Need both 0 and 1 labels for training.")
+        def _train_with_uploads_sync():
+            if len(X) < 10:
+                raise ValueError(f"Insufficient data: {len(X)} samples (minimum 10).")
+            if len(np.unique(y)) < 2:
+                raise ValueError("Need both 0 and 1 labels for training.")
 
-        X_temp, X_test, y_temp, y_test = train_test_split(
-            X, y, test_size=0.20, random_state=settings.random_seed, stratify=y
-        )
-        X_train, X_val, y_train, y_val = train_test_split(
-            X_temp, y_temp, test_size=0.25, random_state=settings.random_seed, stratify=y_temp
-        )
+            X_temp, X_test, y_temp, y_test = train_test_split(
+                X, y, test_size=0.20, random_state=settings.random_seed, stratify=y
+            )
+            X_train, X_val, y_train, y_val = train_test_split(
+                X_temp, y_temp, test_size=0.25, random_state=settings.random_seed, stratify=y_temp
+            )
 
-        pipeline.fit(X_train, y_train, feature_names)
-        pipeline.save(pipeline_path)
+            pipeline.fit(X_train, y_train, feature_names)
+            pipeline.save(pipeline_path)
 
-        X_train_c, _ = pipeline.transform(X_train)
-        X_val_c, _ = pipeline.transform(X_val)
-        X_test_c, _ = pipeline.transform(X_test)
+            X_train_c, _ = pipeline.transform(X_train)
+            X_val_c, _ = pipeline.transform(X_val)
+            X_test_c, _ = pipeline.transform(X_test)
 
-        trainer.train(
-            X_train_c, y_train, X_test_c, y_test, feature_names,
-            X_val=X_val_c, y_val=y_val, dataset_meta=disease_info,
-            pipeline_path=pipeline_path
-        )
+            trainer.train(
+                X_train_c, y_train, X_test_c, y_test, feature_names,
+                X_val=X_val_c, y_val=y_val, dataset_meta=disease_info,
+                pipeline_path=pipeline_path
+            )
 
+        await asyncio.to_thread(_train_with_uploads_sync)
         return data_info

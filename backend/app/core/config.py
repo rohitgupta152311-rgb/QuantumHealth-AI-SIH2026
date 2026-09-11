@@ -33,6 +33,8 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3000",
         "https://quantum-health-ai.web.app",
         "https://quantum-health-ai.firebaseapp.com",
+        "https://quantumhealth-ai.onrender.com",
+        "https://dainty-croquembouche-6ee104.netlify.app",
     ]
 
     # Firebase configuration
