@@ -165,6 +165,10 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
       'mean area': 551.1,
       'mean smoothness': 0.096,
       'mean compactness': 0.092,
+      'mean concavity': 0.043,
+      'mean concave points': 0.033,
+      'mean symmetry': 0.179,
+      'mean fractal dimension': 0.061,
     },
     continuousKeys: [
       'mean radius',
@@ -173,6 +177,10 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
       'mean area',
       'mean smoothness',
       'mean compactness',
+      'mean concavity',
+      'mean concave points',
+      'mean symmetry',
+      'mean fractal dimension',
     ],
     featureGroups: [
       {
@@ -184,6 +192,11 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
         groupName: 'Membrane Regularity & Cytological Texture',
         description: 'Gray-scale variations, nuclear membrane smoothness, and compactness.',
         featureKeys: ['mean texture', 'mean smoothness', 'mean compactness'],
+      },
+      {
+        groupName: 'Nuclear Shape & Boundary Contour',
+        description: 'Concavity depth, concave indentation points, bilateral symmetry, and fractal boundary.',
+        featureKeys: ['mean concavity', 'mean concave points', 'mean symmetry', 'mean fractal dimension'],
       },
     ],
     presets: [
@@ -198,6 +211,10 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
           'mean area': 385.0,
           'mean smoothness': 0.082,
           'mean compactness': 0.048,
+          'mean concavity': 0.015,
+          'mean concave points': 0.012,
+          'mean symmetry': 0.165,
+          'mean fractal dimension': 0.058,
         },
       },
       {
@@ -211,6 +228,10 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
           'mean area': 680.0,
           'mean smoothness': 0.102,
           'mean compactness': 0.115,
+          'mean concavity': 0.065,
+          'mean concave points': 0.048,
+          'mean symmetry': 0.188,
+          'mean fractal dimension': 0.063,
         },
       },
       {
@@ -224,6 +245,10 @@ export const diseaseConfigs: Record<string, DiseaseConfig> = {
           'mean area': 1320.0,
           'mean smoothness': 0.125,
           'mean compactness': 0.245,
+          'mean concavity': 0.285,
+          'mean concave points': 0.155,
+          'mean symmetry': 0.242,
+          'mean fractal dimension': 0.075,
         },
       },
     ],

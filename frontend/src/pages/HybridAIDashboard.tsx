@@ -143,13 +143,28 @@ export const HybridAIDashboard: React.FC = () => {
             </p>
           </div>
 
-          <Button
-            size="sm"
-            onClick={() => navigate('/analyze')}
-            leftIcon={<RefreshCw size={16} />}
-          >
-            Adjust Biomarker Inputs
-          </Button>
+          <div className="flex items-center gap-3">
+            <Button
+              size="sm"
+              variant="primary"
+              onClick={handleLoadDemo}
+              isLoading={isLoadingDemo}
+              leftIcon={<Sparkles size={16} />}
+            >
+              Load Verified Patient Case
+            </Button>
+            <Button
+              size="sm"
+              variant="secondary"
+              onClick={() => {
+                localStorage.removeItem('qhai_last_prediction');
+                navigate('/analyze');
+              }}
+              leftIcon={<RefreshCw size={16} />}
+            >
+              Adjust Biomarker Inputs
+            </Button>
+          </div>
         </div>
 
         {(data.is_mock || data.is_demo) && (

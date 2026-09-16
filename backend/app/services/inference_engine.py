@@ -66,21 +66,23 @@ class InferenceEngine:
         q_time = (time.time() - q_start) * 1000
 
         c_probs = [r["risk_probability"] for r in classical_results]
+        c_mean = sum(c_probs) / max(len(c_probs), 1)
         all_probs = c_probs + [q_prob]
         disagreement_range = self._consensus_engine.compute_disagreement_range(all_probs)
         prob_spread = disagreement_range["spread"]
+        
+        # Abstention threshold is derived strictly from validation |c_mean - q_prob|
+        cq_diff = abs(c_mean - q_prob)
         abstention_threshold = getattr(trainer, "abstention_disagreement_threshold", 0.45)
 
-        if prob_spread > abstention_threshold:
+        if cq_diff > abstention_threshold:
             return {
                 "status": "abstained",
-                "abstention_reason": f"High internal model disagreement (spread = {prob_spread:.2f} > validated safe threshold {abstention_threshold:.2f}). Candidate models diverge significantly on this profile, precluding a reliable diagnostic risk assessment.",
+                "abstention_reason": f"High classical-quantum model disagreement (divergence = {cq_diff:.2f} > validated safe threshold {abstention_threshold:.2f}). Candidate models diverge significantly on this profile, precluding a reliable diagnostic risk assessment.",
                 "disagreement_range": disagreement_range,
                 "model_manifest_hash": manifest.get("manifest_sha256"),
                 "disclaimer": "Model abstained to prevent delivering a false sense of certainty."
             }
-
-        c_mean = sum(c_probs) / max(len(c_probs), 1)
         if mode == "quantum":
             hybrid_prob = q_prob
         elif mode == "classical":
