@@ -40,7 +40,7 @@ class PredictionRequest(BaseModel):
 class ClassicalResult(BaseModel):
     """Results from an individual classical machine learning model."""
     model_config = ConfigDict(protected_namespaces=(), populate_by_name=True)
-    model_name: str = Field(..., alias="name", description="Name of the classical model (e.g. 'RandomForest', 'SVM', 'LogisticRegression')")
+    model_name: str = Field(..., description="Name of the classical model (e.g. 'RandomForest', 'SVM', 'LogisticRegression')")
     risk_probability: float = Field(..., ge=0.0, le=1.0, description="Calibrated risk probability score in [0.0, 1.0]")
     prediction: Literal["high_risk", "low_risk"] = Field(..., description="Binary classification output")
     confidence: Optional[float] = Field(None, description="Deprecated metric; prefer calibrated risk probability")
