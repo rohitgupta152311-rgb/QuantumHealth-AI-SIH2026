@@ -1,6 +1,6 @@
 {
   "disease_id": "heart",
-  "created_at": "2026-09-10T17:43:26.681015+00:00",
+  "created_at": "2026-09-19T06:32:18.300133+00:00",
   "split_protocol": "Stratified 60/20/20 split (seed=42)",
   "split_sizes": {
     "train_samples": 181,
@@ -12,7 +12,7 @@
     "val_sha256": "a8f099abe8eb11d9d06b8cae9400ec64b9a5c8da5ac03ab8f441c3cfa31e770f",
     "test_sha256": "a8181d8d41b48b5b0d07880038ee58d84bafd59a6ed3d1656ee5d2e15c269dbc"
   },
-  "preprocessing_artifact_sha256": "36352f9cfac9e38e806f611642aaf88c917ea3ae68c4714de542dcbd78e2a330",
+  "preprocessing_artifact_sha256": "8cc636cc3de6f82114e8ba19024250ebfc0bd587ace9f7996f8863e7bc10d6b0",
   "quantum_configuration": {
     "n_qubits": 6,
     "n_layers": 2,
@@ -24,14 +24,19 @@
     "calibration_transform": "born_probability"
   },
   "hybrid_ensemble_configuration": {
-    "tuned_alpha": 0.0,
+    "tuned_alpha": 0.15,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
-    "abstention_disagreement_threshold": 0.4383
+    "abstention_disagreement_threshold": 0.4885
   },
   "calibration": {
     "method": "Platt Scaling (Sigmoid fitted on unaugmented validation split)",
     "calibrated_models": [
+      "RandomForest",
+      "SVM",
+      "LogisticRegression",
+      "GradientBoosting",
+      "XGBoost",
       "QuantumVQC"
     ]
   },
@@ -271,26 +276,26 @@
       "model": "RandomForest",
       "type": "classical",
       "accuracy": 0.9016,
-      "roc_auc": 0.9567,
-      "pr_auc": 0.9278,
-      "brier_score": 0.1012,
+      "roc_auc": 0.947,
+      "pr_auc": 0.9065,
+      "brier_score": 0.0889,
       "sensitivity": 0.9643,
       "specificity": 0.8485,
       "f1_score": 0.9,
-      "is_calibrated": false,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8063,
+          0.8,
           0.9688
         ],
         "roc_auc_95_ci": [
-          0.8965,
-          0.9967
+          0.8806,
+          0.9902
         ],
         "brier_95_ci": [
-          0.0674,
-          0.131
+          0.0477,
+          0.1281
         ],
         "accuracy_95_ci": [
           0.8197,
@@ -301,30 +306,30 @@
     {
       "model": "SVM",
       "type": "classical",
-      "accuracy": 0.8197,
-      "roc_auc": 0.9259,
-      "pr_auc": 0.8765,
-      "brier_score": 0.1191,
-      "sensitivity": 0.9643,
-      "specificity": 0.697,
-      "f1_score": 0.8308,
-      "is_calibrated": false,
+      "accuracy": 0.8361,
+      "roc_auc": 0.9264,
+      "pr_auc": 0.8772,
+      "brier_score": 0.1129,
+      "sensitivity": 0.9286,
+      "specificity": 0.7576,
+      "f1_score": 0.8387,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.7211,
-          0.9231
+          0.7169,
+          0.9296
         ],
         "roc_auc_95_ci": [
           0.8547,
-          0.9797
+          0.9798
         ],
         "brier_95_ci": [
-          0.0804,
-          0.1602
+          0.0695,
+          0.1571
         ],
         "accuracy_95_ci": [
-          0.7213,
+          0.7377,
           0.918
         ]
       }
@@ -335,27 +340,27 @@
       "accuracy": 0.8852,
       "roc_auc": 0.9502,
       "pr_auc": 0.9238,
-      "brier_score": 0.0977,
-      "sensitivity": 0.9643,
-      "specificity": 0.8182,
-      "f1_score": 0.8852,
-      "is_calibrated": false,
+      "brier_score": 0.0898,
+      "sensitivity": 0.9286,
+      "specificity": 0.8485,
+      "f1_score": 0.8814,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.7868,
-          0.9538
+          0.7867,
+          0.9509
         ],
         "roc_auc_95_ci": [
           0.8903,
           0.9923
         ],
         "brier_95_ci": [
-          0.0607,
-          0.1377
+          0.0544,
+          0.1285
         ],
         "accuracy_95_ci": [
-          0.8193,
+          0.8033,
           0.9508
         ]
       }
@@ -363,127 +368,127 @@
     {
       "model": "GradientBoosting",
       "type": "classical",
-      "accuracy": 0.8525,
+      "accuracy": 0.8689,
       "roc_auc": 0.9459,
       "pr_auc": 0.9368,
-      "brier_score": 0.1026,
+      "brier_score": 0.0972,
       "sensitivity": 0.9643,
-      "specificity": 0.7576,
-      "f1_score": 0.8571,
-      "is_calibrated": false,
+      "specificity": 0.7879,
+      "f1_score": 0.871,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.7545,
-          0.9413
+          0.7689,
+          0.9539
         ],
         "roc_auc_95_ci": [
           0.8891,
           0.9903
         ],
         "brier_95_ci": [
-          0.058,
-          0.1446
+          0.0531,
+          0.135
         ],
         "accuracy_95_ci": [
-          0.7701,
-          0.9344
+          0.7869,
+          0.9508
         ]
       }
     },
     {
       "model": "XGBoost",
       "type": "classical",
-      "accuracy": 0.8525,
+      "accuracy": 0.8689,
       "roc_auc": 0.9545,
       "pr_auc": 0.9335,
-      "brier_score": 0.09,
+      "brier_score": 0.0892,
       "sensitivity": 0.9286,
-      "specificity": 0.7879,
-      "f1_score": 0.8525,
-      "is_calibrated": false,
+      "specificity": 0.8182,
+      "f1_score": 0.8667,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.7499,
-          0.9297
+          0.7777,
+          0.9524
         ],
         "roc_auc_95_ci": [
           0.8923,
           0.9935
         ],
         "brier_95_ci": [
-          0.0447,
-          0.1348
+          0.0444,
+          0.1308
         ],
         "accuracy_95_ci": [
-          0.7705,
-          0.9344
+          0.7869,
+          0.9508
         ]
       }
     },
     {
       "model": "QuantumVQC",
       "type": "quantum",
-      "accuracy": 0.6557,
-      "roc_auc": 0.7446,
-      "pr_auc": 0.7536,
-      "brier_score": 0.2341,
-      "sensitivity": 0.3571,
-      "specificity": 0.9091,
-      "f1_score": 0.4878,
+      "accuracy": 0.541,
+      "roc_auc": 0.7035,
+      "pr_auc": 0.7317,
+      "brier_score": 0.244,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "f1_score": 0.0,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.3156,
-          0.6794
+          0.0,
+          0.0
         ],
         "roc_auc_95_ci": [
-          0.6054,
-          0.8708
+          0.5516,
+          0.8474
         ],
         "brier_95_ci": [
-          0.222,
-          0.2458
+          0.2341,
+          0.2522
         ],
         "accuracy_95_ci": [
-          0.5406,
-          0.7869
+          0.4258,
+          0.6557
         ]
       }
     },
     {
       "model": "HybridEnsemble",
       "type": "hybrid",
-      "accuracy": 0.918,
+      "accuracy": 0.9016,
       "roc_auc": 0.9524,
       "pr_auc": 0.9053,
-      "brier_score": 0.116,
+      "brier_score": 0.0968,
       "sensitivity": 0.9643,
-      "specificity": 0.8788,
-      "f1_score": 0.9153,
-      "is_calibrated": true,
+      "specificity": 0.8485,
+      "f1_score": 0.9,
+      "is_calibrated": false,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8275,
-          0.9811
+          0.8,
+          0.9688
         ],
         "roc_auc_95_ci": [
           0.8868,
           0.9947
         ],
         "brier_95_ci": [
-          0.0911,
-          0.1395
+          0.0641,
+          0.1289
         ],
         "accuracy_95_ci": [
-          0.8525,
-          0.9836
+          0.8197,
+          0.9672
         ]
       }
     }
   ],
-  "manifest_sha256": "4a0754f6a564531aaddb4f53520cc93f7d581ac83c195b8be3078c12f551d1ba"
+  "manifest_sha256": "95b6ef88910b30083f0c71f1bd3cf9af9fe4378c2df385614ef8fd1634562123"
 }

@@ -6,8 +6,12 @@ import { Button } from '../components/ui/Button';
 import { RiskGauge } from '../components/charts/RiskGauge';
 import { ConsensusDisplay } from '../components/quantum/ConsensusDisplay';
 import { FeatureImportanceChart } from '../components/charts/FeatureImportanceChart';
+import { ModelComparisonChart } from '../components/charts/ModelComparisonChart';
+import { FeatureImpactChart } from '../components/charts/FeatureImpactChart';
+import { PatientRadarChart } from '../components/charts/PatientRadarChart';
+import { ModelAgreementChart } from '../components/charts/ModelAgreementChart';
 import {
-Activity,Cpu,ShieldCheck,AlertTriangle,ArrowRight,BarChart3,RefreshCw,AlertOctagon,HelpCircle,GitCommit,Printer,Award,BookOpen,Sparkles
+  Activity,Cpu,ShieldCheck,AlertTriangle,ArrowRight,BarChart3,RefreshCw,AlertOctagon,HelpCircle,GitCommit,Printer,Award,BookOpen,Sparkles
 } from 'lucide-react';
 import type { PredictionResponse } from '../types';
 import { ClinicalReportModal } from '../components/reports/ClinicalReportModal';
@@ -236,6 +240,36 @@ export const HybridAIDashboard: React.FC = () => {
   const diseaseConfig = getDiseaseConfig(data.disease);
   const diseaseTitle = diseaseConfig?.name || data.disease;
 
+  const radarFeatures = React.useMemo(() => {
+    if (!diseaseConfig) return [];
+    let inputFeatures: Record<string, number> = {};
+    const storedFeaturesStr = localStorage.getItem(`qhai_features_${data.disease}`);
+    if (storedFeaturesStr) {
+      try {
+        inputFeatures = JSON.parse(storedFeaturesStr);
+      } catch (e) {}
+    } else if (classicalDrivers.length > 0) {
+      classicalDrivers.forEach(d => {
+        inputFeatures[d.feature] = d.input_value;
+      });
+    }
+
+    return (diseaseConfig.continuousKeys || []).slice(0, 6).map(key => {
+      const patientValue = inputFeatures[key] || diseaseConfig.medians[key] || 0;
+      const medianValue = diseaseConfig.medians[key] || 0;
+      const max = Math.max(patientValue, medianValue) * 1.5 || 100;
+      const min = 0;
+      return {
+        name: key,
+        label: key,
+        patientValue,
+        medianValue,
+        min,
+        max
+      };
+    });
+  }, [data.disease, diseaseConfig, classicalDrivers]);
+
   return (
     <div className="space-y-8 pb-16">
       {/* Step Indicator: 1. Select Cohort -> 2. Patient Biomarkers -> 3. Synthesized Diagnostic Assessment */}
@@ -402,8 +436,13 @@ export const HybridAIDashboard: React.FC = () => {
           </div>
         </Card>
 
+        {/* Patient Radar Chart */}
+        <Card className="flex flex-col items-center justify-center p-6 bg-slate-900/80 border-slate-800">
+          <PatientRadarChart features={radarFeatures} riskLevel={data.risk_level || (isHighRisk ? 'high' : 'low')} />
+        </Card>
+
         {/* Quantum-Classical Consensus Engine Card */}
-        <div className="md:col-span-2">
+        <div className="md:col-span-1 flex flex-col gap-6">
           {data.consensus ? (
             <ConsensusDisplay consensus={data.consensus} />
           ) : (
@@ -411,6 +450,15 @@ export const HybridAIDashboard: React.FC = () => {
               <span className="text-slate-500 text-sm">Consensus data synthesized.</span>
             </Card>
           )}
+          
+          <Card className="p-4 bg-slate-900/80 border-slate-800 shrink-0">
+            <ModelAgreementChart
+              classicalResults={data.classical_results || []}
+              quantumProbability={data.quantum_result?.risk_probability}
+              hybridProbability={data.hybrid_result?.risk_probability}
+              disagreementRange={data.disagreement_range}
+            />
+          </Card>
         </div>
       </div>
 
@@ -484,6 +532,10 @@ export const HybridAIDashboard: React.FC = () => {
             })}
           </div>
 
+          <div className="mt-6 pt-4 border-t border-slate-800">
+            <FeatureImpactChart drivers={classicalDrivers} />
+          </div>
+
           <div className="text-[11px] text-slate-500 border-t border-slate-800/80 pt-2 italic">
             * Explains internal model response behavior on this case. Does not establish clinical etiology or medical causality.
           </div>
@@ -491,6 +543,14 @@ export const HybridAIDashboard: React.FC = () => {
       )}
 
       {/* Detailed Models Breakdown Grid */}
+      <Card className="mb-8 p-6 bg-slate-900/80 border-slate-800">
+        <ModelComparisonChart
+          classicalResults={data.classical_results || []}
+          quantumResult={data.quantum_result}
+          hybridResult={data.hybrid_result}
+        />
+      </Card>
+      
       <div className="grid lg:grid-cols-2 gap-8">
         {/* Classical Models Column */}
         <Card className="bg-slate-900/80 border-slate-800">

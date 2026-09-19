@@ -1,6 +1,6 @@
 {
   "disease_id": "breast_cancer",
-  "created_at": "2026-09-10T17:46:49.288608+00:00",
+  "created_at": "2026-09-19T06:32:29.053503+00:00",
   "split_protocol": "Stratified 60/20/20 split (seed=42)",
   "split_sizes": {
     "train_samples": 341,
@@ -8,11 +8,11 @@
     "test_samples": 114
   },
   "split_hashes": {
-    "train_sha256": "1be3fd1db097bfc19311465c8403fd932f432c8a91a1771e78b5cb742b5c0545",
-    "val_sha256": "26d34cbbfbddda54a6ae32e72e3e92059543e71bbfa4bdea8acc52e629862238",
-    "test_sha256": "0ac1e66c633ce6a3eedc56a200f978eaaedd5c46b141d69b1fa56179d8e466eb"
+    "train_sha256": "ea8319aa0dcbf4f79ef1a572bcb40f5e2c5340efb97afc7641130ca138f74522",
+    "val_sha256": "7c1718482a628a737af9077e0a438e31177673186e5db5a99ccff59d6d7baffa",
+    "test_sha256": "02f83e7cef08ef433b930ef73f4fb8b90363b6ea46788d847461c1df48dbd21a"
   },
-  "preprocessing_artifact_sha256": "561a80a7e6df60799e71cceb299401485f9a76814ac1be29e815f5a9aa6efca1",
+  "preprocessing_artifact_sha256": "75c9caad301ea5f1730ccea27946f34dcc160114ee88a3d08f6f069ece02f4fa",
   "quantum_configuration": {
     "n_qubits": 6,
     "n_layers": 2,
@@ -24,14 +24,19 @@
     "calibration_transform": "born_probability"
   },
   "hybrid_ensemble_configuration": {
-    "tuned_alpha": 0.0,
+    "tuned_alpha": 0.15,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
-    "abstention_disagreement_threshold": 0.5064
+    "abstention_disagreement_threshold": 0.5118
   },
   "calibration": {
     "method": "Platt Scaling (Sigmoid fitted on unaugmented validation split)",
     "calibrated_models": [
+      "RandomForest",
+      "SVM",
+      "LogisticRegression",
+      "GradientBoosting",
+      "XGBoost",
       "QuantumVQC"
     ]
   },
@@ -425,61 +430,61 @@
     {
       "model": "RandomForest",
       "type": "classical",
-      "accuracy": 0.9386,
-      "roc_auc": 0.9934,
-      "pr_auc": 0.9961,
-      "brier_score": 0.0363,
-      "sensitivity": 0.9444,
-      "specificity": 0.9286,
-      "f1_score": 0.951,
-      "is_calibrated": false,
+      "accuracy": 0.9561,
+      "roc_auc": 0.998,
+      "pr_auc": 0.9967,
+      "brier_score": 0.0252,
+      "sensitivity": 0.9048,
+      "specificity": 0.9861,
+      "f1_score": 0.9383,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.9104,
-          0.9799
+          0.8787,
+          0.9805
         ],
         "roc_auc_95_ci": [
-          0.9823,
+          0.9927,
           1.0
         ],
         "brier_95_ci": [
-          0.0186,
-          0.0553
+          0.0117,
+          0.044
         ],
         "accuracy_95_ci": [
-          0.8947,
-          0.9737
+          0.9211,
+          0.9827
         ]
       }
     },
     {
       "model": "SVM",
       "type": "classical",
-      "accuracy": 0.9737,
-      "roc_auc": 0.9947,
-      "pr_auc": 0.9968,
-      "brier_score": 0.0272,
-      "sensitivity": 0.9722,
-      "specificity": 0.9762,
-      "f1_score": 0.979,
-      "is_calibrated": false,
+      "accuracy": 0.9825,
+      "roc_auc": 0.9944,
+      "pr_auc": 0.9929,
+      "brier_score": 0.0195,
+      "sensitivity": 0.9524,
+      "specificity": 1.0,
+      "f1_score": 0.9756,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.9517,
+          0.9333,
           1.0
         ],
         "roc_auc_95_ci": [
-          0.9821,
+          0.9792,
           1.0
         ],
         "brier_95_ci": [
-          0.0112,
-          0.0511
+          0.0068,
+          0.043
         ],
         "accuracy_95_ci": [
-          0.9386,
+          0.9561,
           1.0
         ]
       }
@@ -487,124 +492,124 @@
     {
       "model": "LogisticRegression",
       "type": "classical",
-      "accuracy": 0.9561,
-      "roc_auc": 0.9931,
-      "pr_auc": 0.9956,
-      "brier_score": 0.0313,
-      "sensitivity": 0.9444,
-      "specificity": 0.9762,
-      "f1_score": 0.9645,
-      "is_calibrated": false,
+      "accuracy": 0.9649,
+      "roc_auc": 0.9954,
+      "pr_auc": 0.9936,
+      "brier_score": 0.032,
+      "sensitivity": 0.9048,
+      "specificity": 1.0,
+      "f1_score": 0.95,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.9291,
-          0.987
+          0.8916,
+          0.988
         ],
         "roc_auc_95_ci": [
-          0.9787,
+          0.9841,
           1.0
         ],
         "brier_95_ci": [
-          0.0158,
-          0.0493
+          0.0167,
+          0.0548
         ],
         "accuracy_95_ci": [
-          0.9123,
-          0.9825
+          0.9211,
+          0.9912
         ]
       }
     },
     {
       "model": "GradientBoosting",
       "type": "classical",
-      "accuracy": 0.9561,
-      "roc_auc": 0.9927,
-      "pr_auc": 0.9955,
-      "brier_score": 0.0335,
-      "sensitivity": 0.9583,
-      "specificity": 0.9524,
-      "f1_score": 0.965,
-      "is_calibrated": false,
+      "accuracy": 0.9649,
+      "roc_auc": 0.9934,
+      "pr_auc": 0.9908,
+      "brier_score": 0.0292,
+      "sensitivity": 0.9286,
+      "specificity": 0.9861,
+      "f1_score": 0.9512,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.937,
-          0.987
+          0.8823,
+          0.9888
         ],
         "roc_auc_95_ci": [
-          0.9776,
+          0.9779,
           1.0
         ],
         "brier_95_ci": [
-          0.0145,
-          0.0596
+          0.0106,
+          0.0562
         ],
         "accuracy_95_ci": [
           0.9211,
-          0.9825
+          0.9912
         ]
       }
     },
     {
       "model": "XGBoost",
       "type": "classical",
-      "accuracy": 0.9474,
-      "roc_auc": 0.9937,
-      "pr_auc": 0.9963,
-      "brier_score": 0.0319,
-      "sensitivity": 0.9583,
-      "specificity": 0.9286,
-      "f1_score": 0.9583,
-      "is_calibrated": false,
+      "accuracy": 0.9737,
+      "roc_auc": 0.9911,
+      "pr_auc": 0.9891,
+      "brier_score": 0.0255,
+      "sensitivity": 0.9286,
+      "specificity": 1.0,
+      "f1_score": 0.963,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.918,
-          0.9861
+          0.914,
+          1.0
         ],
         "roc_auc_95_ci": [
-          0.9814,
+          0.9711,
           1.0
         ],
         "brier_95_ci": [
-          0.0171,
-          0.0537
+          0.004,
+          0.0569
         ],
         "accuracy_95_ci": [
-          0.9033,
-          0.9825
+          0.9386,
+          1.0
         ]
       }
     },
     {
       "model": "QuantumVQC",
       "type": "quantum",
-      "accuracy": 0.8684,
-      "roc_auc": 0.9901,
-      "pr_auc": 0.994,
-      "brier_score": 0.1411,
-      "sensitivity": 1.0,
-      "specificity": 0.6429,
-      "f1_score": 0.9057,
+      "accuracy": 0.8772,
+      "roc_auc": 0.9818,
+      "pr_auc": 0.9655,
+      "brier_score": 0.1146,
+      "sensitivity": 0.7143,
+      "specificity": 0.9722,
+      "f1_score": 0.8108,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8549,
-          0.9455
+          0.6774,
+          0.8916
         ],
         "roc_auc_95_ci": [
-          0.9753,
-          0.9993
+          0.9534,
+          0.9978
         ],
         "brier_95_ci": [
-          0.1281,
-          0.1558
+          0.1024,
+          0.1304
         ],
         "accuracy_95_ci": [
-          0.8068,
-          0.9211
+          0.8158,
+          0.9213
         ]
       }
     },
@@ -612,33 +617,33 @@
       "model": "HybridEnsemble",
       "type": "hybrid",
       "accuracy": 0.9737,
-      "roc_auc": 0.996,
-      "pr_auc": 0.9977,
-      "brier_score": 0.0332,
-      "sensitivity": 0.9722,
-      "specificity": 0.9762,
-      "f1_score": 0.979,
-      "is_calibrated": true,
+      "roc_auc": 0.9967,
+      "pr_auc": 0.9952,
+      "brier_score": 0.0262,
+      "sensitivity": 0.9286,
+      "specificity": 1.0,
+      "f1_score": 0.963,
+      "is_calibrated": false,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.9506,
-          0.9937
+          0.914,
+          1.0
         ],
         "roc_auc_95_ci": [
-          0.9886,
+          0.986,
           1.0
         ],
         "brier_95_ci": [
-          0.0208,
-          0.0513
+          0.0147,
+          0.0459
         ],
         "accuracy_95_ci": [
           0.9386,
-          0.9912
+          1.0
         ]
       }
     }
   ],
-  "manifest_sha256": "c8708ccb5aa98fb43b26f0a2302029fb45a26428a80d993ed97a905bbc1c30f1"
+  "manifest_sha256": "4b0de828b2c7e2cf643a56ebc3f9bed666e32b12b7021c67e85a461e6b21c7fa"
 }

@@ -177,19 +177,21 @@ class ClassicalMLTrainer:
             q_train_time = time.time() - q_start
             qc.save(self.models_cache_dir / f"{self.disease_id}_vqc.pkl")
 
-            # Stratified representative validation subsampling for quantum calibration
+            # Balanced validation subsampling for quantum calibration
+            # CRITICAL: Use 50/50 class balance (not prevalence-preserving)
+            # to prevent Platt calibrator from collapsing to the base rate
+            # on extremely imbalanced datasets like diabetes (1.97% prevalence)
             max_q_eval = 500
             if X_val_q is not None and y_val is not None and len(X_val_q) >= 10:
                 if len(X_val_q) > max_q_eval:
                     pos_idx = np.where(y_val == 1)[0]
                     neg_idx = np.where(y_val == 0)[0]
                     rng = np.random.RandomState(42)
-                    true_prev = len(pos_idx) / len(y_val)
-                    n_pos = max(2, int(round(true_prev * max_q_eval)))
-                    n_pos = min(len(pos_idx), n_pos)
-                    n_neg = min(len(neg_idx), max_q_eval - n_pos)
+                    # Balanced sampling: equal positives and negatives
+                    n_pos = min(len(pos_idx), max_q_eval // 2)
+                    n_neg = min(len(neg_idx), n_pos)  # Match positive count
                     val_sub = np.concatenate([
-                        rng.choice(pos_idx, size=n_pos, replace=False),
+                        rng.choice(pos_idx, size=n_pos, replace=len(pos_idx) < n_pos),
                         rng.choice(neg_idx, size=n_neg, replace=False)
                     ])
                     rng.shuffle(val_sub)

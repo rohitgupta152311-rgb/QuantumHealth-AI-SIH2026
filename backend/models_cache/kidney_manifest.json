@@ -1,6 +1,6 @@
 {
   "disease_id": "kidney",
-  "created_at": "2026-09-10T17:46:23.856078+00:00",
+  "created_at": "2026-09-19T06:32:39.934557+00:00",
   "split_protocol": "Stratified 60/20/20 split (seed=42)",
   "split_sizes": {
     "train_samples": 240,
@@ -12,7 +12,7 @@
     "val_sha256": "4227c7977bfad429c7d08a3dd3af81596a2f7ef9d3085b955a39f48b20d3a34d",
     "test_sha256": "fb340956355fd4a7da07e443dea376c69aa531c7a1dd0313880473c6235bfca9"
   },
-  "preprocessing_artifact_sha256": "14ce76bb1f2d0d5a4674064d1c405f4763d038c7a8977045de8ec888d4d3de8c",
+  "preprocessing_artifact_sha256": "0a3359e62216d24e7284af15c3db81c3a77f1ee28cbecd01ebba4ce9a42aef5e",
   "quantum_configuration": {
     "n_qubits": 6,
     "n_layers": 2,
@@ -24,14 +24,19 @@
     "calibration_transform": "born_probability"
   },
   "hybrid_ensemble_configuration": {
-    "tuned_alpha": 0.0,
+    "tuned_alpha": 0.15,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
-    "abstention_disagreement_threshold": 0.5885
+    "abstention_disagreement_threshold": 0.5539
   },
   "calibration": {
     "method": "Platt Scaling (Sigmoid fitted on unaugmented validation split)",
     "calibrated_models": [
+      "RandomForest",
+      "SVM",
+      "LogisticRegression",
+      "GradientBoosting",
+      "XGBoost",
       "QuantumVQC"
     ]
   },
@@ -268,11 +273,11 @@
       "accuracy": 1.0,
       "roc_auc": 1.0,
       "pr_auc": 1.0,
-      "brier_score": 0.0069,
+      "brier_score": 0.0015,
       "sensitivity": 1.0,
       "specificity": 1.0,
       "f1_score": 1.0,
-      "is_calibrated": false,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
@@ -284,8 +289,8 @@
           1.0
         ],
         "brier_95_ci": [
-          0.0025,
-          0.013
+          0.0008,
+          0.0024
         ],
         "accuracy_95_ci": [
           1.0,
@@ -299,11 +304,11 @@
       "accuracy": 0.9875,
       "roc_auc": 0.9987,
       "pr_auc": 0.9992,
-      "brier_score": 0.0109,
+      "brier_score": 0.0121,
       "sensitivity": 0.98,
       "specificity": 1.0,
       "f1_score": 0.9899,
-      "is_calibrated": false,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
@@ -315,8 +320,8 @@
           1.0
         ],
         "brier_95_ci": [
-          0.0004,
-          0.0307
+          0.0021,
+          0.0293
         ],
         "accuracy_95_ci": [
           0.9625,
@@ -330,11 +335,11 @@
       "accuracy": 0.975,
       "roc_auc": 1.0,
       "pr_auc": 1.0,
-      "brier_score": 0.0148,
+      "brier_score": 0.0204,
       "sensitivity": 0.96,
       "specificity": 1.0,
       "f1_score": 0.9796,
-      "is_calibrated": false,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
@@ -346,8 +351,8 @@
           1.0
         ],
         "brier_95_ci": [
-          0.0017,
-          0.0312
+          0.0072,
+          0.0364
         ],
         "accuracy_95_ci": [
           0.9375,
@@ -358,18 +363,18 @@
     {
       "model": "GradientBoosting",
       "type": "classical",
-      "accuracy": 0.9625,
+      "accuracy": 0.975,
       "roc_auc": 1.0,
       "pr_auc": 1.0,
-      "brier_score": 0.0238,
-      "sensitivity": 0.94,
+      "brier_score": 0.0122,
+      "sensitivity": 0.96,
       "specificity": 1.0,
-      "f1_score": 0.9691,
-      "is_calibrated": false,
+      "f1_score": 0.9796,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.9318,
+          0.9524,
           1.0
         ],
         "roc_auc_95_ci": [
@@ -377,11 +382,11 @@
           1.0
         ],
         "brier_95_ci": [
-          0.0019,
-          0.05
+          0.0029,
+          0.0227
         ],
         "accuracy_95_ci": [
-          0.9125,
+          0.9375,
           1.0
         ]
       }
@@ -389,18 +394,18 @@
     {
       "model": "XGBoost",
       "type": "classical",
-      "accuracy": 0.95,
+      "accuracy": 0.975,
       "roc_auc": 0.9993,
       "pr_auc": 0.9996,
-      "brier_score": 0.0248,
-      "sensitivity": 0.92,
+      "brier_score": 0.0196,
+      "sensitivity": 0.96,
       "specificity": 1.0,
-      "f1_score": 0.9583,
-      "is_calibrated": false,
+      "f1_score": 0.9796,
+      "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.909,
+          0.9473,
           1.0
         ],
         "roc_auc_95_ci": [
@@ -408,11 +413,11 @@
           1.0
         ],
         "brier_95_ci": [
-          0.0071,
-          0.0454
+          0.0037,
+          0.0359
         ],
         "accuracy_95_ci": [
-          0.8997,
+          0.9375,
           1.0
         ]
       }
@@ -454,11 +459,11 @@
       "accuracy": 1.0,
       "roc_auc": 1.0,
       "pr_auc": 1.0,
-      "brier_score": 0.0199,
+      "brier_score": 0.0167,
       "sensitivity": 1.0,
       "specificity": 1.0,
       "f1_score": 1.0,
-      "is_calibrated": true,
+      "is_calibrated": false,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
@@ -470,8 +475,8 @@
           1.0
         ],
         "brier_95_ci": [
-          0.0158,
-          0.0242
+          0.0118,
+          0.0223
         ],
         "accuracy_95_ci": [
           1.0,
@@ -480,5 +485,5 @@
       }
     }
   ],
-  "manifest_sha256": "60826eb02194cbda7f13e82f913e44cfdfa953125f0c6cb4f9ee5b9afdd4f380"
+  "manifest_sha256": "9bc7c3f8e63b3050e1dee551de7239c0de824326e65962e0551e2d89686a1dc9"
 }

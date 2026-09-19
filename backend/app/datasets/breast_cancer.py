@@ -125,7 +125,10 @@ class BreastCancerDataset:
         try:
             from sklearn.datasets import load_breast_cancer
             data = load_breast_cancer()
-            return data.data, data.target, list(data.feature_names)
+            # CRITICAL: sklearn WDBC encodes 0=Malignant, 1=Benign
+            # Our platform needs 1=Disease(Malignant), 0=Healthy(Benign)
+            y = 1 - data.target
+            return data.data, y, list(data.feature_names)
         except Exception:
             if DATA_FILE.exists():
                 df = pd.read_csv(DATA_FILE)
