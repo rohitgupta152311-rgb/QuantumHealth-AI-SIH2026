@@ -20,9 +20,9 @@ class HybridEnsemble:
     calibrated via CalibratedClassifierCV, so the raw blend is well-calibrated.
     """
 
-    # Minimum quantum weight — ensures quantum always contributes visibly
-    ALPHA_MIN = 0.15
-    ALPHA_MAX = 0.50
+    # Fixed quantum weight: 40% quantum, 60% classical
+    ALPHA_MIN = 0.40
+    ALPHA_MAX = 0.40
 
     def __init__(self, alpha: float = 0.30):
         self.alpha = float(alpha)

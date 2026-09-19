@@ -1,6 +1,6 @@
 {
   "disease_id": "kidney",
-  "created_at": "2026-09-19T06:32:39.934557+00:00",
+  "created_at": "2026-09-19T08:48:19.229218+00:00",
   "split_protocol": "Stratified 60/20/20 split (seed=42)",
   "split_sizes": {
     "train_samples": 240,
@@ -12,7 +12,7 @@
     "val_sha256": "4227c7977bfad429c7d08a3dd3af81596a2f7ef9d3085b955a39f48b20d3a34d",
     "test_sha256": "fb340956355fd4a7da07e443dea376c69aa531c7a1dd0313880473c6235bfca9"
   },
-  "preprocessing_artifact_sha256": "0a3359e62216d24e7284af15c3db81c3a77f1ee28cbecd01ebba4ce9a42aef5e",
+  "preprocessing_artifact_sha256": "35909864239448cb086e6b3614d06c422c6242cf2c113f6dbebaf14096f431f2",
   "quantum_configuration": {
     "n_qubits": 6,
     "n_layers": 2,
@@ -24,7 +24,7 @@
     "calibration_transform": "born_probability"
   },
   "hybrid_ensemble_configuration": {
-    "tuned_alpha": 0.15,
+    "tuned_alpha": 0.4,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
     "abstention_disagreement_threshold": 0.5539
@@ -459,7 +459,7 @@
       "accuracy": 1.0,
       "roc_auc": 1.0,
       "pr_auc": 1.0,
-      "brier_score": 0.0167,
+      "brier_score": 0.0465,
       "sensitivity": 1.0,
       "specificity": 1.0,
       "f1_score": 1.0,
@@ -475,8 +475,8 @@
           1.0
         ],
         "brier_95_ci": [
-          0.0118,
-          0.0223
+          0.0401,
+          0.0532
         ],
         "accuracy_95_ci": [
           1.0,
@@ -485,5 +485,5 @@
       }
     }
   ],
-  "manifest_sha256": "9bc7c3f8e63b3050e1dee551de7239c0de824326e65962e0551e2d89686a1dc9"
+  "manifest_sha256": "d86328021f33533985289a107f390cfabb5a7c2b6dbb0639aed87d1243384217"
 }

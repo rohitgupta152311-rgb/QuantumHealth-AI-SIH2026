@@ -1,6 +1,6 @@
 {
   "disease_id": "diabetes",
-  "created_at": "2026-09-19T06:33:32.070841+00:00",
+  "created_at": "2026-09-19T08:49:06.917090+00:00",
   "split_protocol": "Stratified 60/20/20 split (seed=42)",
   "split_sizes": {
     "train_samples": 165142,
@@ -12,7 +12,7 @@
     "val_sha256": "bc83d93a02190b0a35ed7d740b82099238c9d9f97d66228c4ce4641d793b07ee",
     "test_sha256": "e902388d0e36828e2c225e1e304854125870fe483e3923a5a7cec0f68290824e"
   },
-  "preprocessing_artifact_sha256": "5b125fbe05f2e19d761fcbd9fe73078eae296264e8abd63332278e6a0276672d",
+  "preprocessing_artifact_sha256": "96a4a25b3b92baf44b7e303a00252eedf2d825550206b1554ebede0a8ecc0744",
   "quantum_configuration": {
     "n_qubits": 6,
     "n_layers": 2,
@@ -24,7 +24,7 @@
     "calibration_transform": "born_probability"
   },
   "hybrid_ensemble_configuration": {
-    "tuned_alpha": 0.15,
+    "tuned_alpha": 0.4,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
     "abstention_disagreement_threshold": 0.5507
@@ -464,9 +464,9 @@
       "model": "HybridEnsemble",
       "type": "hybrid",
       "accuracy": 0.984,
-      "roc_auc": 0.8438,
-      "pr_auc": 0.1597,
-      "brier_score": 0.0203,
+      "roc_auc": 0.8079,
+      "pr_auc": 0.1701,
+      "brier_score": 0.0533,
       "sensitivity": 0.0,
       "specificity": 1.0,
       "f1_score": 0.0,
@@ -478,12 +478,12 @@
           0.0
         ],
         "roc_auc_95_ci": [
-          0.6481,
-          0.9739
+          0.616,
+          0.9733
         ],
         "brier_95_ci": [
-          0.0136,
-          0.0266
+          0.0484,
+          0.058
         ],
         "accuracy_95_ci": [
           0.974,
@@ -492,5 +492,5 @@
       }
     }
   ],
-  "manifest_sha256": "e4c5a83854783b26f79922b5870fcf90528e0663283d0530dea285c34a898a21"
+  "manifest_sha256": "dae4b2e8f7277e4c1ca9a7bcdd0cadb976f5f7ce665dd26b1cd4313871deac37"
 }
