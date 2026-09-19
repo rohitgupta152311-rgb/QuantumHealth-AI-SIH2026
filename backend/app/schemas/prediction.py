@@ -26,6 +26,8 @@ class PredictionRequest(BaseModel):
     schema_version: Optional[str] = Field("v1.0", description="Schema version of client inputs")
     features: Dict[str, float] = Field(..., description="Dictionary of biomarker feature names and their numerical values")
     mode: Literal["hybrid", "classical", "quantum"] = Field("hybrid", description="Execution mode: 'hybrid' (default), 'classical', or 'quantum'")
+    quantum_weight: Optional[float] = Field(None, ge=0.0, le=1.0, description="Optional custom quantum weight in hybrid mode (0.0 to 1.0). Default is 0.40 (40% Quantum / 60% Classical)")
+    quantum_backend: Optional[str] = Field(None, description="Optional choice of quantum simulator backend ('numpy:statevector', 'pennylane:default.qubit', 'pennylane:lightning.qubit', 'pennylane:qiskit.aer', 'pennylane:braket.local.qubit', 'pennylane:default.mixed')")
 
     @field_validator("features")
     @classmethod
@@ -64,6 +66,9 @@ class HybridResult(BaseModel):
     confidence: Optional[float] = Field(None, description="Deprecated metric; prefer calibrated probability + disagreement_range")
     disagreement_range: Optional[Dict[str, Any]] = Field(None, description="Internal model disagreement spread {lower, upper, spread, label}")
     risk_level: Literal["very_low", "low", "moderate", "high", "very_high"] = Field(..., description="Stratified clinical risk band")
+    quantum_weight: Optional[float] = Field(0.40, description="Fraction of weight assigned to quantum prediction [0.0, 1.0]")
+    classical_weight: Optional[float] = Field(0.60, description="Fraction of weight assigned to classical ensemble [0.0, 1.0]")
+    blend_ratio_label: Optional[str] = Field("60% Classical / 40% Quantum", description="Human-readable hybrid blend ratio description")
 
 class ConsensusResult(BaseModel):
     agreement: Literal["strong_agreement", "moderate_agreement", "disagreement"] = Field(

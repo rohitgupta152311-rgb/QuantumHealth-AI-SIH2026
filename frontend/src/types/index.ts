@@ -49,6 +49,8 @@ export interface PredictionRequest {
   schema_version?: string;
   features: Record<string, number>;
   mode?: 'classical' | 'quantum' | 'hybrid';
+  quantum_weight?: number;
+  quantum_backend?: string;
 }
 
 export interface ClassicalResult {
@@ -79,6 +81,37 @@ export interface HybridResult {
   confidence: number;
   risk_level?: 'low' | 'moderate' | 'high' | 'very_high';
   method?: string;
+  quantum_weight?: number;
+  classical_weight?: number;
+  blend_ratio_label?: string;
+}
+
+export interface TestSplitInsights {
+  disease: string;
+  disease_name: string;
+  total_samples: number;
+  prevalence_pct: number;
+  requested_test_pct: number;
+  split_breakdown: {
+    train: { count: number; percentage: number; role: string };
+    validation: { count: number; percentage: number; role: string };
+    test: { count: number; percentage: number; role: string };
+  };
+  class_distribution_in_test: {
+    estimated_positive_cases: number;
+    estimated_negative_cases: number;
+    stratification_maintained: boolean;
+  };
+  statistical_insights: {
+    confidence_interval_95_margin_pct: number;
+    power_rating: string;
+    power_level: string;
+    split_recommendation: string;
+    split_rating: string;
+    grouping_protocol: string;
+    cohort_insight: string;
+    clinical_takeaway: string;
+  };
 }
 
 export interface ConsensusResult {

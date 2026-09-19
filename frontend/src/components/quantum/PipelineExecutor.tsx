@@ -6,18 +6,31 @@ import { ProcessingPipeline } from '../quantum/ProcessingPipeline';
 interface PipelineExecutorProps {
   mode: 'hybrid' | 'classical' | 'quantum';
   onModeChange: (mode: 'hybrid' | 'classical' | 'quantum') => void;
+  quantumWeight?: number;
+  onQuantumWeightChange?: (weight: number) => void;
+  quantumBackend?: string;
+  onQuantumBackendChange?: (backend: string) => void;
   onExecute: () => void;
   isLoading: boolean;
   errorMessage?: string | null;
   onSimulatedPreview?: () => void;
 }
 
+const QUANTUM_SIMULATORS = [
+  { id: 'numpy:statevector', label: 'NumPy Exact Statevector', tag: 'Fastest', desc: 'Sub-millisecond matrix tensor contraction kernel' },
+  { id: 'pennylane:default.qubit', label: 'PennyLane Default.Qubit', tag: 'Reference', desc: 'Pure-Python official statevector simulator' },
+  { id: 'pennylane:lightning.qubit', label: 'PennyLane Lightning C++', tag: 'HPC', desc: 'C++ multithreaded accelerated simulator' },
+  { id: 'pennylane:qiskit.aer', label: 'IBM Qiskit Aer', tag: 'IBM Q', desc: 'Qiskit simulation engine with OpenQASM export' },
+  { id: 'pennylane:braket.local.qubit', label: 'Amazon Braket Local', tag: 'AWS', desc: 'Amazon Braket quantum circuit execution runtime' },
+  { id: 'pennylane:default.mixed', label: 'PennyLane Default.Mixed', tag: 'Noise', desc: 'Density matrix noise and decoherence simulator' },
+];
+
 const modes = [
   {
     id: 'hybrid' as const,
     label: 'Hybrid Mode',
     tag: 'Recommended',
-    desc: 'Saved classical–quantum ensemble',
+    desc: 'Calibrated classical–quantum ensemble',
     icon: Layers,
     color: 'teal',
     borderActive: 'border-teal-500',
@@ -39,7 +52,7 @@ const modes = [
     id: 'classical' as const,
     label: 'Classical Only',
     tag: 'Ensemble',
-    desc: 'RF + SVM + Logistic Regression',
+    desc: 'RF + SVM + Logistic Regression + XGBoost',
     icon: Cpu,
     color: 'sky',
     borderActive: 'border-sky-500',
@@ -51,6 +64,10 @@ const modes = [
 export const PipelineExecutor: React.FC<PipelineExecutorProps> = ({
   mode,
   onModeChange,
+  quantumWeight = 0.40,
+  onQuantumWeightChange,
+  quantumBackend = 'numpy:statevector',
+  onQuantumBackendChange,
   onExecute,
   isLoading,
   errorMessage,
@@ -63,13 +80,16 @@ export const PipelineExecutor: React.FC<PipelineExecutorProps> = ({
     { name: 'Confidence Fusion & Consensus', status: isLoading ? 'pending' as const : 'completed' as const },
   ];
 
+  const qWeightPct = Math.round(quantumWeight * 100);
+  const cWeightPct = 100 - qWeightPct;
+
   return (
     <div className="space-y-4">
       <div className="flex items-center justify-between">
         <h3 className="text-sm font-semibold text-slate-100 flex items-center gap-2">
-          <Cpu size={16} className="text-teal-400" /> Pipeline Mode
+          <Cpu size={16} className="text-teal-400" /> Pipeline Configuration
         </h3>
-        <span className="text-[11px] font-mono text-slate-400">Quantum Execution</span>
+        <span className="text-[11px] font-mono text-teal-400 font-semibold">6 Simulators Ready</span>
       </div>
 
       {/* Mode selection radio cards */}
@@ -131,6 +151,104 @@ export const PipelineExecutor: React.FC<PipelineExecutorProps> = ({
           );
         })}
       </div>
+
+      {/* Hybrid Weighting Slider (Visible when mode === 'hybrid') */}
+      {mode === 'hybrid' && onQuantumWeightChange && (
+        <motion.div
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="p-3.5 rounded-xl bg-slate-950/70 border border-teal-500/30 space-y-2.5"
+        >
+          <div className="flex items-center justify-between">
+            <div className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+              <Sparkles size={14} className="text-teal-400" />
+              <span>Hybrid Prediction Ratio:</span>
+            </div>
+            <span className="text-xs font-mono font-bold text-teal-300">
+              {cWeightPct}% Classic • {qWeightPct}% Quantum
+            </span>
+          </div>
+
+          <input
+            type="range"
+            min="0"
+            max="100"
+            step="5"
+            value={qWeightPct}
+            onChange={(e) => onQuantumWeightChange(Number(e.target.value) / 100)}
+            className="w-full accent-teal-500 cursor-pointer h-1.5 bg-slate-800 rounded-lg"
+          />
+
+          {/* Dual-color bar */}
+          <div className="h-2 w-full rounded-full overflow-hidden flex bg-slate-800">
+            <div
+              style={{ width: `${cWeightPct}%` }}
+              className="bg-indigo-500 transition-all duration-200"
+              title={`Classical weight: ${cWeightPct}%`}
+            />
+            <div
+              style={{ width: `${qWeightPct}%` }}
+              className="bg-teal-400 transition-all duration-200"
+              title={`Quantum weight: ${qWeightPct}%`}
+            />
+          </div>
+
+          {/* Quick preset buttons */}
+          <div className="flex items-center justify-between gap-1 pt-0.5">
+            {[
+              { q: 0.40, label: '40/60 Standard' },
+              { q: 0.50, label: '50/50 Equal' },
+              { q: 0.70, label: '70/30 Quantum' },
+              { q: 0.20, label: '20/80 Classic' },
+            ].map((p) => (
+              <button
+                key={p.q}
+                type="button"
+                onClick={() => onQuantumWeightChange(p.q)}
+                className={`px-1.5 py-0.5 rounded text-[10px] font-mono transition-colors ${
+                  Math.abs(quantumWeight - p.q) < 0.02
+                    ? 'bg-teal-500/30 text-teal-200 font-bold border border-teal-500/40'
+                    : 'bg-slate-900 text-slate-400 hover:text-slate-200 border border-slate-800'
+                }`}
+              >
+                {p.label}
+              </button>
+            ))}
+          </div>
+        </motion.div>
+      )}
+
+      {/* Quantum Simulator Backend Selection */}
+      {(mode === 'hybrid' || mode === 'quantum') && onQuantumBackendChange && (
+        <div className="p-3.5 rounded-xl bg-slate-950/70 border border-slate-800 space-y-2">
+          <div className="flex items-center justify-between">
+            <label htmlFor="quantum-backend-select" className="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+              <Atom size={14} className="text-cyan-400" />
+              <span>Quantum Simulator:</span>
+            </label>
+            <span className="text-[10px] font-mono text-cyan-400 bg-cyan-950/60 px-2 py-0.5 rounded border border-cyan-800/60">
+              Active Simulation
+            </span>
+          </div>
+
+          <select
+            id="quantum-backend-select"
+            value={quantumBackend}
+            onChange={(e) => onQuantumBackendChange(e.target.value)}
+            className="w-full bg-slate-900 text-xs text-slate-200 border border-slate-700 rounded-lg p-2 font-mono focus:outline-none focus:border-cyan-500"
+          >
+            {QUANTUM_SIMULATORS.map((sim) => (
+              <option key={sim.id} value={sim.id}>
+                {sim.label} [{sim.tag}]
+              </option>
+            ))}
+          </select>
+
+          <p className="text-[10px] text-slate-400 leading-tight">
+            {QUANTUM_SIMULATORS.find((s) => s.id === quantumBackend)?.desc || 'Universal quantum circuit simulator'}
+          </p>
+        </div>
+      )}
 
       {/* Execute button */}
       <motion.button

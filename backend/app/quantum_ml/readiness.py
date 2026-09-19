@@ -230,14 +230,25 @@ def get_available_hardware_backends() -> list:
         "name": "PennyLane Default.Qubit",
         "identifier": "pennylane:default.qubit",
         "type": "Python Reference Simulator",
+        "description": "PennyLane official pure-Python statevector simulator for exact algorithmic validation.",
         "status": "ready"
     })
 
-    # 5. NumPy Native
+    # 5. PennyLane Mixed (Noise & Decoherence)
+    backends.append({
+        "name": "PennyLane Default.Mixed",
+        "identifier": "pennylane:default.mixed",
+        "type": "Density Matrix Noise Simulator",
+        "description": "Simulates open quantum systems with thermal decoherence and depolarizing gate noise.",
+        "status": "ready"
+    })
+
+    # 6. NumPy Native
     backends.append({
         "name": "NumPy Native Statevector",
         "identifier": "numpy:statevector",
         "type": "Exact Standalone Linear Algebra (Zero-Dependency)",
+        "description": "Vectorized statevector tensor contraction kernel with sub-millisecond CPU execution latency.",
         "status": "ready"
     })
 

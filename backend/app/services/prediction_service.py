@@ -60,7 +60,14 @@ class PredictionService:
     async def get_or_train_models_with_uploads(self, disease_id: str, db, *, force_retrain: bool = False) -> dict:
         return await self.training.get_or_train_models_with_uploads(disease_id, db, force_retrain)
 
-    async def predict(self, disease_id: str, features_dict: dict, mode: str = "hybrid") -> dict:
+    async def predict(
+        self,
+        disease_id: str,
+        features_dict: dict,
+        mode: str = "hybrid",
+        quantum_weight: float | None = None,
+        quantum_backend: str | None = None
+    ) -> dict:
         await self.get_or_train_models(disease_id)
         
         trainer = self._trainers[disease_id]
@@ -68,7 +75,18 @@ class PredictionService:
         qc = self._vqc_models.get(disease_id) or getattr(trainer, "vqc_model", None)
         disease_info = self._dataset_loader.get_disease_info(disease_id)
         
-        inf_res = await asyncio.to_thread(self.inference.predict_single, disease_id, features_dict, disease_info, trainer, pipeline, qc, mode)
+        inf_res = await asyncio.to_thread(
+            self.inference.predict_single,
+            disease_id,
+            features_dict,
+            disease_info,
+            trainer,
+            pipeline,
+            qc,
+            mode,
+            quantum_weight,
+            quantum_backend
+        )
         
         if inf_res["status"] == "abstained":
             return {"disease": disease_id, **inf_res}
@@ -76,6 +94,7 @@ class PredictionService:
         q_time = inf_res["q_time"]
         q_prob = inf_res["q_prob"]
         q_pred_str = inf_res["q_pred_str"]
+        q_backend_used = inf_res.get("q_backend") or qc.get_execution_info().get("backend", "numpy:statevector")
         hybrid_prob = inf_res["hybrid_prob"]
         hybrid_pred_str = inf_res["hybrid_pred_str"]
         classical_results = inf_res["classical_results"]
@@ -83,7 +102,7 @@ class PredictionService:
         
         depth = compute_circuit_depth(settings.quantum_n_qubits, settings.quantum_n_layers)
         quantum_result = {
-            "backend": qc.get_execution_info().get("backend", "numpy:statevector"),
+            "backend": f"{q_backend_used} (simulator)" if "simulator" not in q_backend_used.lower() else q_backend_used,
             "qubits_used": settings.quantum_n_qubits,
             "circuit_depth": depth,
             "encoding": "Angle Encoding RY(pi * x_i)",
@@ -100,6 +119,9 @@ class PredictionService:
             "prediction": hybrid_pred_str,
             "disagreement_range": disagreement_range,
             "risk_level": risk_level_from_probability(hybrid_prob),
+            "quantum_weight": inf_res.get("quantum_weight", 0.40),
+            "classical_weight": inf_res.get("classical_weight", 0.60),
+            "blend_ratio_label": inf_res.get("blend_ratio_label", "60% Classical / 40% Quantum"),
         }
         
         classical_votes = {r["model_name"]: r["prediction"] for r in classical_results}

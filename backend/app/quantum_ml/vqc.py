@@ -147,7 +147,7 @@ class QuantumClassifier:
 
         return float(expval)
 
-    def _forward(self, x: np.ndarray) -> float:
+    def _forward(self, x: np.ndarray, backend: str | None = None) -> float:
         """
         Run the VQC circuit for a single sample and return class-1 Born probability.
 
@@ -155,20 +155,31 @@ class QuantumClassifier:
 
         Args:
             x: 1-D np.ndarray of shape (n_qubits,), already normalized in [0, 1].
+            backend: Optional quantum simulator backend override.
 
         Returns:
             float in [0, 1] - estimated Born probability of class 1.
         """
-        if self._circuit is None:
-            self._build_circuit()
         if self.params is None:
             raise RuntimeError("QuantumClassifier parameters are uninitialized.")
 
         angles = self.encoder.encode(x)
-        if self.data_reuploading:
+        active_backend = backend or self.backend
+
+        if active_backend and active_backend not in ("numpy", "numpy:statevector"):
+            try:
+                from app.quantum_ml.circuits import build_vqc_circuit
+                circuit_fn = build_vqc_circuit(self.n_qubits, self.n_layers, backend=active_backend)
+                raw_output = float(circuit_fn(self.params, angles))
+            except Exception:
+                raw_output = self._reuploading_forward(angles)
+        elif self.data_reuploading:
             raw_output = self._reuploading_forward(angles)
         else:
+            if self._circuit is None:
+                self._build_circuit()
             raw_output = float(self._circuit(self.params, angles))
+
         # Exact Born measurement projection for Pauli-Z expectation in [-1, 1]
         born_prob = (1.0 - raw_output) / 2.0
         return float(np.clip(born_prob, 0.0, 1.0))
@@ -313,13 +324,13 @@ class QuantumClassifier:
         probs = np.clip(probs, 0.0, 1.0)
         return np.column_stack([1.0 - probs, probs])
 
-    def predict_proba_single(self, x: np.ndarray, calibrated: bool = True) -> float:
-        """Return class-1 probability for a single sample."""
+    def predict_proba_single(self, x: np.ndarray, calibrated: bool = True, backend: str | None = None) -> float:
+        """Return class-1 probability for a single sample on the specified backend."""
         if not self._fitted or self.params is None:
             raise RuntimeError(
                 "QuantumClassifier has not been fitted. Call fit() or load() first."
             )
-        raw_prob = self._forward(x)
+        raw_prob = self._forward(x, backend=backend)
         if calibrated and self.calibrator is not None:
             cal_prob = float(self.calibrator.predict_proba([[raw_prob]])[0, 1])
             return float(np.clip(cal_prob, 0.0, 1.0))

@@ -102,8 +102,17 @@ async def predict(
             normalized_features[name] = round((min_v + max_v) / 2.0, 4)
 
     try:
-        logger.info(f"Executing prediction for disease '{request.disease}' with mode '{request.mode}'")
-        result = await service.predict(request.disease, normalized_features, mode=request.mode)
+        logger.info(
+            f"Executing prediction for disease '{request.disease}' with mode '{request.mode}' "
+            f"(quantum_weight={request.quantum_weight}, backend={request.quantum_backend})"
+        )
+        result = await service.predict(
+            request.disease,
+            normalized_features,
+            mode=request.mode,
+            quantum_weight=request.quantum_weight,
+            quantum_backend=request.quantum_backend
+        )
         if warnings_list:
             existing_warn = result.get("warnings", [])
             result["warnings"] = list(set(existing_warn + warnings_list))

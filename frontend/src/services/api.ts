@@ -17,6 +17,7 @@ ChatResponse,
 TrainModelsResponse,
 DatasetUploadResponse,
 ModelMetrics,
+TestSplitInsights,
 } from '../types';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
@@ -187,7 +188,10 @@ export const predict = async (request: PredictionRequest): Promise<PredictionRes
     prediction: data.hybrid_result.prediction === 'high_risk' || data.hybrid_result.prediction === 1 ? 1 : 0,
     confidence: data.hybrid_result.confidence,
     risk_level: data.hybrid_result.risk_level,
-    method: 'Saved Hybrid Fusion',
+    method: data.hybrid_result.blend_ratio_label || 'Hybrid Consensus',
+    quantum_weight: data.hybrid_result.quantum_weight,
+    classical_weight: data.hybrid_result.classical_weight,
+    blend_ratio_label: data.hybrid_result.blend_ratio_label,
   } : undefined;
 
   const consensus = data.consensus ? {
@@ -472,6 +476,30 @@ export const sendChatMessage = async (
   request: ChatRequest
 ): Promise<ChatResponse> => {
   const { data } = await api.post<ChatResponse>('/chat', request);
+  return data;
+};
+
+export const getSplitInsights = async (
+  diseaseId: string,
+  testSize: number = 0.20
+): Promise<TestSplitInsights> => {
+  const { data } = await api.get<TestSplitInsights>(
+    `/diseases/${encodeURIComponent(diseaseId)}/split-insights?test_size=${testSize}`
+  );
+  return data;
+};
+
+export const getQuantumBackends = async (): Promise<{
+  active_backend: string;
+  available_backends: Array<{
+    name: string;
+    identifier: string;
+    type: string;
+    description?: string;
+    status: string;
+  }>;
+}> => {
+  const { data } = await api.get<any>('/quantum/backends');
   return data;
 };
 

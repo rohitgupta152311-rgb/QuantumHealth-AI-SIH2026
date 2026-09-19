@@ -16,7 +16,18 @@ class InferenceEngine:
         self.settings = settings
         self._models_cache_dir = models_cache_dir
 
-    def predict_single(self, disease_id, features_dict, disease_info, trainer, pipeline, qc, mode="hybrid") -> dict:
+    def predict_single(
+        self,
+        disease_id,
+        features_dict,
+        disease_info,
+        trainer,
+        pipeline,
+        qc,
+        mode="hybrid",
+        quantum_weight: float | None = None,
+        quantum_backend: str | None = None
+    ) -> dict:
         manifest = trainer.get_manifest() or {}
 
         # Validation
@@ -53,12 +64,17 @@ class InferenceEngine:
         X_classical, X_quantum = pipeline.transform_single(features_dict, feature_names)
         classical_results = trainer.predict_single(X_classical)
 
-        # Quantum VQC Inference
+        # Quantum VQC Inference on requested simulator backend
+        active_backend = quantum_backend or getattr(qc, "backend", "numpy:statevector")
         q_start = time.time()
         try:
             if qc is None:
                 raise RuntimeError(f"Quantum VQC model has not been trained for '{disease_id}'.")
-            q_prob = float(qc.predict_proba_single(X_quantum.flatten()[:self.settings.quantum_n_qubits], calibrated=True))
+            q_prob = float(qc.predict_proba_single(
+                X_quantum.flatten()[:self.settings.quantum_n_qubits],
+                calibrated=True,
+                backend=active_backend
+            ))
         except Exception as exc:
             raise RuntimeError(f"Quantum model evaluation failed for '{disease_id}': {exc}") from exc
 
@@ -83,15 +99,32 @@ class InferenceEngine:
                 "model_manifest_hash": manifest.get("manifest_sha256"),
                 "disclaimer": "Model abstained to prevent delivering a false sense of certainty."
             }
+
+        # Hybrid weight assignment
         if mode == "quantum":
             hybrid_prob = q_prob
+            q_wt = 1.0
+            c_wt = 0.0
+            ratio_label = "100% Pure Quantum"
         elif mode == "classical":
             hybrid_prob = c_mean
+            q_wt = 0.0
+            c_wt = 1.0
+            ratio_label = "100% Pure Classical"
         else:
-            if getattr(trainer, "hybrid_ensemble", None) is not None:
-                hybrid_prob = float(trainer.hybrid_ensemble.predict_proba_single(c_mean, q_prob, calibrated=True))
+            if quantum_weight is not None:
+                q_wt = float(np.clip(quantum_weight, 0.0, 1.0))
+                c_wt = float(round(1.0 - q_wt, 4))
+                hybrid_prob = float(np.clip(c_mean * c_wt + q_prob * q_wt, 0.0, 1.0))
+                ratio_label = f"{round(c_wt * 100)}% Classical / {round(q_wt * 100)}% Quantum"
             else:
-                hybrid_prob = float(min(1.0, max(0.0, c_mean * 0.60 + q_prob * 0.40)))
+                q_wt = 0.40
+                c_wt = 0.60
+                if getattr(trainer, "hybrid_ensemble", None) is not None:
+                    hybrid_prob = float(trainer.hybrid_ensemble.predict_proba_single(c_mean, q_prob, calibrated=True))
+                else:
+                    hybrid_prob = float(min(1.0, max(0.0, c_mean * 0.60 + q_prob * 0.40)))
+                ratio_label = "60% Classical / 40% Quantum (Clinical Default)"
 
         hybrid_pred_str = "high_risk" if hybrid_prob >= 0.5 else "low_risk"
 
@@ -101,8 +134,12 @@ class InferenceEngine:
             "q_prob": q_prob,
             "q_pred_str": q_pred_str,
             "q_time": q_time,
+            "q_backend": active_backend,
             "hybrid_prob": hybrid_prob,
             "hybrid_pred_str": hybrid_pred_str,
+            "quantum_weight": q_wt,
+            "classical_weight": c_wt,
+            "blend_ratio_label": ratio_label,
             "disagreement_range": disagreement_range,
             "X_classical": X_classical,
             "X_quantum": X_quantum

@@ -361,10 +361,15 @@ export const HybridAIDashboard: React.FC = () => {
               </p>
             </div>
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 flex-wrap">
             <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-teal-500/10 text-teal-300 border border-teal-500/20">
-              Saved Hybrid Ensemble
+              {data.hybrid_result?.blend_ratio_label || '60% Classical / 40% Quantum'}
             </span>
+            {data.quantum_result?.backend && (
+              <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-cyan-500/10 text-cyan-300 border border-cyan-500/20">
+                {data.quantum_result.backend}
+              </span>
+            )}
             <span className="px-2.5 py-1 rounded-full text-[10px] font-mono font-bold bg-amber-500/10 text-amber-300 border border-amber-500/20">
               ICMR-INDIAB 2023
             </span>

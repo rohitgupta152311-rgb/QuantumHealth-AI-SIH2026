@@ -26,6 +26,7 @@ import { Skeleton, SkeletonCard } from '../components/ui/SkeletonLoader';
 import { BatchTriageView } from '../components/triage/BatchTriageView';
 import { getDiseaseConfig } from '../features/disease/diseaseConfig';
 import { getDemoMockPrediction } from '../services/api';
+import { TestSplitInsightsCard } from '../components/datasets/TestSplitInsightsCard';
 
 /* ─── Preset fallback data for each disease ─────────────── */
 const PRESETS: Record<string, Record<string, Record<string, number>>> = {
@@ -138,6 +139,8 @@ export const DiseaseAnalysisPage: React.FC<DiseaseAnalysisPageProps> = ({ defaul
 
   const [formData, setFormData] = useState<Record<string, number>>({});
   const [mode, setMode] = useState<'hybrid' | 'classical' | 'quantum'>('hybrid');
+  const [quantumWeight, setQuantumWeight] = useState<number>(0.40);
+  const [quantumBackend, setQuantumBackend] = useState<string>('numpy:statevector');
   const [activePreset, setActivePreset] = useState<string | null>(null);
   const [screeningMode, setScreeningMode] = useState<'individual' | 'batch'>(defaultMode || 'individual');
   const errorRef = useRef<HTMLDivElement>(null);
@@ -264,7 +267,13 @@ export const DiseaseAnalysisPage: React.FC<DiseaseAnalysisPageProps> = ({ defaul
           Object.entries(formData).filter(([k]) => validKeys.has(k))
         );
       }
-      const res = await predict({ disease: selectedDisease, features: payloadFeatures, mode });
+      const res = await predict({
+        disease: selectedDisease,
+        features: payloadFeatures,
+        mode,
+        quantum_weight: mode === 'hybrid' ? quantumWeight : undefined,
+        quantum_backend: quantumBackend,
+      });
       if (res) {
         navigate('/dashboard');
       }
@@ -509,6 +518,12 @@ export const DiseaseAnalysisPage: React.FC<DiseaseAnalysisPageProps> = ({ defaul
         <div className="grid lg:grid-cols-3 gap-6">
           {/* Left 2 Cols: Categorized Clinical Biomarker Form */}
           <div className="lg:col-span-2 space-y-6">
+            {/* Interactive Cohort Test Split & Statistical Insights */}
+            <TestSplitInsightsCard
+              diseaseId={selectedDisease}
+              diseaseName={activeConfig?.name || activeDisease?.name}
+            />
+
             <Card className="border-slate-800 bg-slate-900/80 backdrop-blur-md">
               {/* Presets & Reset Bar */}
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6 pb-4 border-b border-slate-800">
@@ -667,6 +682,10 @@ export const DiseaseAnalysisPage: React.FC<DiseaseAnalysisPageProps> = ({ defaul
               <PipelineExecutor
                 mode={mode}
                 onModeChange={setMode}
+                quantumWeight={quantumWeight}
+                onQuantumWeightChange={setQuantumWeight}
+                quantumBackend={quantumBackend}
+                onQuantumBackendChange={setQuantumBackend}
                 onExecute={handlePredict}
                 isLoading={predictLoading}
                 errorMessage={error}

@@ -154,13 +154,20 @@ def build_reuploading_numpy_circuit(n_qubits: int, n_layers: int):
 
 SUPPORTED_DEVICES = {
     "default": "default.qubit",
+    "default.qubit": "default.qubit",
     "pennylane:default.qubit": "default.qubit",
     "lightning": "lightning.qubit",
+    "lightning.qubit": "lightning.qubit",
     "pennylane:lightning.qubit": "lightning.qubit",
     "braket": "braket.local.qubit",
+    "braket.local.qubit": "braket.local.qubit",
     "pennylane:braket.local.qubit": "braket.local.qubit",
     "qiskit": "qiskit.aer",
+    "qiskit.aer": "qiskit.aer",
     "pennylane:qiskit.aer": "qiskit.aer",
+    "mixed": "default.mixed",
+    "default.mixed": "default.mixed",
+    "pennylane:default.mixed": "default.mixed",
 }
 
 
