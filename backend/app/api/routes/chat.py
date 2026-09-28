@@ -29,7 +29,7 @@ class ChatResponse(BaseModel):
     references: List[str] = []
     suggested_followups: List[str] = []
 
-SYSTEM_INSTRUCTION = """You are Dr. Quanta — the QuantumHealth AI Clinical Decision Support Copilot and SIH 2026 Technical Advisor.
+SYSTEM_INSTRUCTION = """You are Dr. Quanta — the ArogyaDristi Clinical Decision Support Copilot and SIH 2026 Technical Advisor.
 You assist doctors, researchers, medical students, and hackathon judges with:
 1. Clinical Biomarkers & Risk Profiles: Fasting Plasma Glucose (FPG), blood pressure, BMI, lipid panels (cholesterol/triglycerides), ALT, and serum creatinine.
 2. Clinical Guidelines:
@@ -94,7 +94,7 @@ def generate_offline_clinical_reply(message: str, context: Optional[Dict[str, An
             "- **Ensemble Fusion**: The final risk score represents a Platt-calibrated consensus between 5 classical classifiers (Random Forest, SVM, Logistic Regression, XGBoost, HistGBM) weighted at 60% and the 6-qubit VQC weighted at 40%.\n"
             "- **Key Risk Drivers**: Local perturbation analysis identifies Fasting Plasma Glucose (FPG), Blood Pressure, and BMI as the primary drivers shifting the risk distribution upward.\n"
             "- **Clinical Decision Support**: Values in this range warrant secondary confirmation via HbA1c testing and a comprehensive metabolic panel.\n\n"
-            "> *Note: QuantumHealth AI is an educational and research decision-support prototype. It does not replace comprehensive medical evaluation by a licensed healthcare provider.*"
+            "> *Note: ArogyaDristi is an educational and research decision-support prototype. It does not replace comprehensive medical evaluation by a licensed healthcare provider.*"
         )
         refs = ["ADA Standards of Care in Diabetes (2024)", "ICMR-INDIAB Guidelines (2023)"]
         followups = ["What lifestyle modifications are recommended?", "How does the consensus voting between classical and quantum work?", "What causes the model to abstain?"]
@@ -103,7 +103,7 @@ def generate_offline_clinical_reply(message: str, context: Optional[Dict[str, An
     elif any(k in msg_lower for k in ["abstain", "safety", "missing", "sentinel", "ood", "zero", "disagree"]):
         reply = (
             "### 🛡️ Safety Protocols & Selective Abstention Engine\n\n"
-            "Real-world clinical deployments fail when machine learning models blindly predict on bad data. QuantumHealth AI employs an **Autonomous Abstention Protocol**:\n\n"
+            "Real-world clinical deployments fail when machine learning models blindly predict on bad data. ArogyaDristi employs an **Autonomous Abstention Protocol**:\n\n"
             "1. **Missing Sentinel Detection**: In clinical databases, unmeasured lab values are frequently entered as zeroes (e.g. Glucose = 0 or Blood Pressure = 0). While standard models mistakenly classify these as 'low risk', our engine flags them as physiologically impossible sentinels and **abstains**.\n"
             "2. **Out-of-Distribution (OOD) Guardrails**: Extreme values (e.g. Glucose > 700 mg/dL or Age > 130) trigger safety warnings.\n"
             "3. **Model Disagreement Monitoring**: If the disagreement spread between candidate models exceeds **0.45**, the engine issues a **Data Quality Alert** because divergent predictions cannot be trusted.\n\n"
@@ -115,7 +115,7 @@ def generate_offline_clinical_reply(message: str, context: Optional[Dict[str, An
     # General / Default response
     else:
         reply = (
-            f"### 👋 Hello! I am Dr. Quanta, your QuantumHealth AI Copilot\n\n"
+            f"### 👋 Hello! I am Dr. Quanta, your ArogyaDristi Copilot\n\n"
             f"I am here to answer any clinical, technical, or competition defense questions regarding our **Hybrid Quantum Machine Learning Platform** (SIH #26139).\n\n"
             f"**You can ask me about:**\n"
             f"- **Clinical Findings**: Why a patient's risk score is {risk_pct}%, or what their biomarkers indicate.\n"

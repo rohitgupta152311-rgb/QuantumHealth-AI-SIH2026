@@ -117,8 +117,12 @@ export const LandingPage: React.FC = () => {
             </div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-xs font-medium text-teal-300">
               <Award size={13} className="text-teal-400" />
-              Team Code 404 • NIT Nagaland
+              Team Code (404) • NIT Nagaland
             </div>
+          </div>
+
+          <div className="text-teal-400 font-mono text-sm sm:text-base font-bold tracking-widest uppercase mb-1">
+            ArogyaDristi (आरोग्यदृष्टि)
           </div>
 
           <motion.h1
@@ -346,7 +350,7 @@ export const LandingPage: React.FC = () => {
               <h3 className="text-lg font-bold text-slate-100">Scientific Integrity</h3>
             </div>
             <p className="text-sm text-slate-300 leading-relaxed max-w-3xl">
-              QuantumHealth AI operates in <strong className="text-slate-100">Quantum Simulation Mode</strong> using PennyLane's <code className="bg-slate-950/80 px-1.5 py-0.5 rounded text-teal-300 font-mono text-xs border border-slate-800">default.qubit</code>.
+              ArogyaDristi operates in <strong className="text-slate-100">Quantum Simulation Mode</strong> using PennyLane's <code className="bg-slate-950/80 px-1.5 py-0.5 rounded text-teal-300 font-mono text-xs border border-slate-800">default.qubit</code>.
               We present honest, reproducible benchmarks — not unverified quantum supremacy claims.
             </p>
             <div className="flex flex-wrap gap-2.5 pt-1 text-xs font-mono">

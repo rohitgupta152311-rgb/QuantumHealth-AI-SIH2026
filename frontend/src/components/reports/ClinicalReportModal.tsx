@@ -79,10 +79,10 @@ export const ClinicalReportModal: React.FC<ClinicalReportModalProps> = ({
               <div>
                 <div className="flex items-center gap-2 mb-1">
                   <div className="w-8 h-8 rounded-lg bg-teal-600 flex items-center justify-center text-white font-black text-xs tracking-wider">
-                    QH
+                    AD
                   </div>
                   <h1 className="text-xl font-bold tracking-tight text-white print:text-black">
-                    QuantumHealth AI — Clinical Diagnostic Node
+                    ArogyaDristi — Clinical Diagnostic Node
                   </h1>
                 </div>
                 <p className="text-xs text-slate-400 print:text-gray-600">

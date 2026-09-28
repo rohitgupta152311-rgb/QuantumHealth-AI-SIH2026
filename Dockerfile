@@ -1,4 +1,4 @@
-# Multi-stage production build for QuantumHealth AI (Full-Stack 24/7 Cloud Deployment)
+# Multi-stage production build for ArogyaDristi (Full-Stack 24/7 Cloud Deployment)
 # Stage 1: Build React Frontend
 FROM node:20-alpine AS frontend-builder
 WORKDIR /app/frontend

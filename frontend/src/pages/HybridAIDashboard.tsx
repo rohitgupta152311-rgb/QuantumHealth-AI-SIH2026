@@ -213,7 +213,7 @@ export const HybridAIDashboard: React.FC = () => {
                   <HelpCircle size={14} className="text-teal-400" /> Scientific Rationale for Abstention
                 </div>
                 <p>
-                  Rather than returning a false sense of certainty, QuantumHealth AI enforces algorithmic abstention when inputs represent missing sentinel values, fall outside empirical training ranges, or cause conflicting architectural signals.
+                  Rather than returning a false sense of certainty, ArogyaDristi enforces algorithmic abstention when inputs represent missing sentinel values, fall outside empirical training ranges, or cause conflicting architectural signals.
                 </p>
               </div>
 

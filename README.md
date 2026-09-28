@@ -1,97 +1,86 @@
-# QuantumHealth AI
+# ArogyaDristi (आरोग्यदृष्टि)
 
 <div align="center">
 
-![QuantumHealth AI Banner](docs/assets/banner.png)
-
-### Hybrid Quantum-Classical Intelligence for Early Disease Detection
+### Hybrid Quantum-Classical Intelligence for Pre-Symptomatic Chronic Disease Detection
 
 [![SIH 2026](https://img.shields.io/badge/SIH%202026-Problem%2026139-blue?style=for-the-badge)](https://www.sih.gov.in)
-[![Organization](https://img.shields.io/badge/Organization-Egreen%20Quanta-green?style=for-the-badge)](/)
-[![Theme](https://img.shields.io/badge/Theme-MedTech%20%7C%20BioTech-purple?style=for-the-badge)](/)
-[![Quantum](https://img.shields.io/badge/Quantum-PennyLane%20Simulator-orange?style=for-the-badge)](https://pennylane.ai)
+[![Team](https://img.shields.io/badge/Team-Code%20(404)-navy?style=for-the-badge)](/)
+[![Institute](https://img.shields.io/badge/Institute-NIT%20Nagaland-teal?style=for-the-badge)](https://nitnagaland.ac.in)
+[![Quantum](https://img.shields.io/badge/Quantum-PennyLane%20VQC%20(6--Qubit)-purple?style=for-the-badge)](https://pennylane.ai)
+[![Automated Tests](https://img.shields.io/badge/Tests-70%2F70%20Passing-brightgreen?style=for-the-badge)](/)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
-**⚠️ Research & Educational Platform — Not for Clinical Use**
+**⚠️ Research & Clinical Decision-Support Prototype — Developed for Smart India Hackathon 2026**
 
-[Live Demo](#) · [API Docs](http://localhost:8000/docs) · [Architecture](docs/architecture.md) · [Setup](docs/setup.md)
+[🌐 Live Prototype](https://quantumhealth-ai.onrender.com) · [📑 Interactive API Docs](https://quantumhealth-ai.onrender.com/docs) · [📐 Architecture](docs/architecture.md) · [🔬 Quantum Circuits](docs/quantum-workflow.md)
 
 </div>
 
 ---
 
-## 🎯 Problem Statement Alignment
+## 🎯 Smart India Hackathon (SIH) 2026 Alignment
 
-**SIH 2026 | ID: 26139 | Organization: Egreen Quanta | Category: Software | Theme: MedTech/BioTech/HealthTech**
+* **Problem Statement ID**: **#26139**
+* **Title**: Hybrid Quantum Machine Learning Platform for Early Disease Detection
+* **Theme**: MedTech / BioTech / HealthTech | **Category**: Software
+* **Team**: **Code (404)** | **Institute**: National Institute of Technology Nagaland
 
 > *"Develop a Hybrid Quantum-Classical Machine Learning platform for early disease detection, particularly for complex biomedical data where conventional ML faces challenges related to high dimensionality, noise, and complex patterns."*
 
-QuantumHealth AI directly answers this challenge by:
-- Combining classical preprocessing with quantum feature encoding
-- Running on **PennyLane quantum simulators** (no real hardware required)
-- Providing transparent comparison between classical and hybrid quantum-classical models
-- Supporting multiple biomedical disease datasets with extensible architecture
+**ArogyaDristi** answers this challenge with an edge-ready, zero-GPU hybrid quantum-classical architecture validated across **211,833 real-world patient records** from the Dryad/BMJ Open longitudinal cohort.
 
 ---
 
-## 🏗️ Architecture Overview
-
+### 🏗️ Architecture Overview
+ 
 ```
 ┌─────────────────────────────────────────────────────────────────┐
-│                    QUANTUMHEALTH AI PIPELINE                    │
+│                    AROGYADRISTI HYBRID PIPELINE                 │
 ├─────────────────────────────────────────────────────────────────┤
 │                                                                 │
-│  Patient Data / Biomedical Dataset                             │
+│  Patient Clinical Biomarkers (Routine 13 Lab Tests)             │
 │          │                                                      │
 │          ▼                                                      │
-│  ┌───────────────────┐   CLASSICAL LAYER (Team Member 2)       │
-│  │  Data Cleaning    │   • Missing value imputation            │
-│  │  Normalization    │   • Outlier clipping (3σ)               │
-│  │  Feature Select.  │   • StandardScaler normalization        │
-│  └────────┬──────────┘   • SelectKBest (mutual info)          │
-│           │              • PCA dimensionality reduction         │
-│           ▼                                                     │
-│  ┌───────────────────┐   QUANTUM LAYER (Team Member 3)         │
-│  │  Angle Encoding   │   • RY(π·x_i) on qubit i               │
-│  │  VQC Circuit      │   • Parameterized RY + RZ layers        │
-│  │  CNOT Entangle.   │   • Ring topology entanglement          │
-│  │  ⟨Z₀⟩ Measure.   │   • PennyLane default.qubit (SIM)      │
-│  └────────┬──────────┘                                         │
+│  ┌───────────────────┐   PREPROCESSING & SENTINEL LAYER         │
+│  │  Data Cleaning    │   • Median clinical imputation           │
+│  │  Sentinel Gate    │   • Rejection of unphysiological inputs  │
+│  │  StandardScaler   │   • Z-score normalization                │
+│  │  Mutual Info      │   • SelectKBest (k=6 salient features)   │
+│  └────────┬──────────┘                                          │
 │           │                                                     │
-│           ▼                                                     │
-│  ┌───────────────────┐   HYBRID DECISION LAYER                 │
-│  │  Classical Result │   • RF + SVM + LR predictions          │
-│  │  Quantum Result   │   • VQC measurement output             │
-│  │  Hybrid Fusion    │   • Weighted combination (60/40)        │
-│  │  Consensus Engine │   • Agreement/Disagreement analysis     │
-│  └────────┬──────────┘                                         │
-│           │                                                     │
-│           ▼                                                     │
-│  Early Disease Risk Prediction + Explainability                │
+│           ├───────────────────────────────┐                     │
+│           ▼                               ▼                     │
+│  ┌───────────────────┐        ┌───────────────────────┐         │
+│  │  CLASSICAL TRACK  │        │     QUANTUM TRACK     │         │
+│  │  5-Model Ensemble │        │  6-Qubit PennyLane    │         │
+│  │  RF, SVM, LR,     │        │  Angle Encoding [0,π] │         │
+│  │  XGBoost, HistGBM │        │  Ring CNOT Entangled  │         │
+│  │  (6,660 Nodes)    │        │  24 Variational Paras │         │
+│  └────────┬──────────┘        └───────────┬───────────┘         │
+│           │                               │                     │
+│           └───────────────┬───────────────┘                     │
+│                           ▼                                     │
+│  ┌────────────────────────────────────────────────────────┐     │
+│  │              CALIBRATED HYBRID CONSENSUS               │     │
+│  │  • Platt-Calibrated Probability Score                  │     │
+│  │  • Cross-Model Agreement & Disagreement Spread         │     │
+│  │  • Local SHAP Biomarker Attribution Waterfall          │     │
+│  │  • Cryptographic Tamper-Evident SHA-256 PDF Report     │     │
+│  └────────────────────────────────────────────────────────┘     │
 └─────────────────────────────────────────────────────────────────┘
 ```
 
-### 🔬 Quantum Circuit (Simulation Mode)
-
-```
-q₀|0⟩ ─── RY(π·x₀) ─── RY(θ₀₀) ── RZ(φ₀₀) ──●──────── ⟨Z⟩
-q₁|0⟩ ─── RY(π·x₁) ─── RY(θ₀₁) ── RZ(φ₀₁) ──⊕──●───── 
-q₂|0⟩ ─── RY(π·x₂) ─── RY(θ₀₂) ── RZ(φ₀₂) ──────⊕──●─ 
-q₃|0⟩ ─── RY(π·x₃) ─── RY(θ₀₃) ── RZ(φ₀₃) ─────────⊕─ 
-          [Encoding]       [Variational Layer × n_layers]
-```
-
-**Backend: PennyLane `default.qubit` (Quantum Simulator)**
-
 ---
 
-## 🏥 Disease Modules
+## 🏥 Validated Clinical Disease Modules
 
-| Module | Dataset | Samples | Features | Qubits Used |
-|--------|---------|---------|----------|-------------|
-| 🍬 Diabetes | Pima Indians Diabetes | 768 validated rows | 8 | 6 |
-| ❤️ Heart Disease | Cleveland Heart Disease | 297 validated rows | 13 | 6 |
-| 🔬 Breast Cancer | Wisconsin Breast Cancer | 569 | 30 | 6 |
+| Disease Module | Benchmark Dataset Source | Validated Cohort Size | Features Used | Quantum Wire Alloc. |
+|----------------|-------------------------|----------------------|---------------|---------------------|
+| 🍬 **Incident Diabetes** | Dryad / BMJ Open Longitudinal Study | **211,833 patients** | 13 lab features | 6 Qubits (Angle Enc.) |
+| ❤️ **Coronary Heart Disease** | Cleveland Clinic / UCI ML Repository | **297 patients** | 13 clinical tests | 6 Qubits (Angle Enc.) |
+| 🔬 **Breast Cancer (M/B)** | Wisconsin Diagnostic (WDBC) / UCI | **569 biopsies** | 30 morphological | 6 Qubits (Angle Enc.) |
+| 🩺 **Chronic Kidney Disease**| Apollo Hospitals / UCI Repository | **400 patients** | 24 biomarkers | 6 Qubits (Angle Enc.) |
 
 ---
 
@@ -170,8 +159,8 @@ quantum-health-ai/
 ### Option A: Automated Setup (Windows)
 
 ```powershell
-git clone https://github.com/your-org/quantum-health-ai.git
-cd quantum-health-ai
+git clone https://github.com/rohitgupta152311-rgb/ArogyaDristi.git
+cd ArogyaDristi
 Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
 .\scripts\setup.ps1
 ```

@@ -137,7 +137,7 @@ export const QuantumLaboratory: React.FC = () => {
     void handleSimulateNoise(0.02, 0.015);
   }, [handleSimulateNoise]);
 
-  const pennylaneCode = `# QuantumHealth AI — PennyLane Variational Quantum Circuit (VQC)
+  const pennylaneCode = `# ArogyaDristi — PennyLane Variational Quantum Circuit (VQC)
 # High-Performance Execution using PennyLane Lightning C++ & NumPy Statevector
 import pennylane as qml
 import numpy as np

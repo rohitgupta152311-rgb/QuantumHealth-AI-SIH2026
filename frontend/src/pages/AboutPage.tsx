@@ -233,7 +233,7 @@ export const AboutPage: React.FC = () => {
                         Current NISQ hardware is error-prone with limited coherence; barren plateaus make training deep circuits difficult on raw biological data.
                       </div>
                       <div className="p-3 rounded-xl bg-slate-950 border border-teal-500/30">
-                        <span className="font-bold text-teal-300 block mb-1">QuantumHealth AI (Hybrid)</span>
+                        <span className="font-bold text-teal-300 block mb-1">ArogyaDristi (Hybrid)</span>
                         Classical models provide robust baseline confidence and feature reduction; Quantum VQC projects biomarkers into exponential Hilbert spaces to isolate subtle multi-variate risk patterns.
                       </div>
                     </div>

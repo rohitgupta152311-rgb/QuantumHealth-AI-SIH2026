@@ -1,0 +1,179 @@
+
+==================== SLIDE 1 ====================
+[3:0] TITLE PAGE
+[4:0] SMART INDIA HACKATHON 2026
+[7:0] • Problem Statement ID : 26139
+[7:1] • Problem Statement Title : Hybrid Quantum Machine Learning Platform for Early Disease Detection
+[7:2] • Theme : MedTech / BioTech / HealthTech
+[7:3] • PS Category : Software
+[7:4] • Team ID :
+[7:5] • Team Name : Code 404
+
+==================== SLIDE 2 ====================
+[1:0] IDEA TITLE: QUANTUMHEALTH AI — HYBRID QML CLINICAL PLATFORM
+[3:0] 2
+[4:0] @Code 404
+[5:0] Code 404
+[7:0] ▪ PROPOSED SOLUTION : India's First Edge-Deployable Quantum Health Platform: 3–5 years earlier detection for chronic diseases (Diabetes, CVD, Kidney) with 99.88% parameter compression, zero GPU cost, and 100% hallucination-free safety.
+[8:0] ▪ ADDRESSING THE PROBLEM
+[8:1] Late-Stage Detection Crisis : 80% of rural chronic disease is detected at Stage III/IV — when treatment is too late and unaffordable.
+[8:2] Doctor Trust & Hallucinations : Standard AI guesses blindly on corrupted lab data, creating dangerous false predictions.
+[8:3] High Cost & Hardware Barrier : Commercial medical AI requires ₹10 Lakh+ GPU servers — completely out of reach for rural clinics.
+[10:0] ▪ CLINICAL IMPACT : PRE-SYMPTOMATIC DETECTION
+[12:0] ▪ STAGE 1: LAB INGESTION & SAFETY GATE
+[12:1] Biomarkers : Age, BMI, Blood Sugar (FPG), Blood Pressure, Lipids, Creatinine.
+[12:2] Sentinel Guard : Instantly rejects invalid lab inputs (e.g. FPG=0) to prevent false calls.
+[14:0] ▪ STAGE 2: 6-QUBIT QUANTUM ENCODING
+[14:1] Angle Encoding : Translates patient biomarkers into 64-dimensional quantum state.
+[14:2] 99.88% Compression : 24 quantum parameters match 18,000 tree nodes — zero parameter bloat!
+[16:0] ▪ STAGE 3: DUAL-TRACK HYBRID INFERENCE
+[16:1] Classical Track : 5 proven ML models (RandomForest, SVM, XGBoost, etc.) in parallel.
+[16:2] Quantum Track : 6-Qubit VQC with local SHAP biomarker importance attributions.
+[18:0] ▪ STAGE 4: CONSENSUS & SIGNED REPORT
+[18:1] Calibrated Voting : Dynamic 60/40 consensus fuses 5 classical ML models with 6-qubit VQC.
+[18:2] Safety & Proof : 100% refusal on conflict (|Δ|>0.45); instant 1.1s SHA-256 signed PDF report.
+[19:0] ▪ 1. 99.88% HILBERT COMPRESSION
+[19:1] Quantum Compression : 24 parameters in 64-D space match the power of 18,000 tree nodes — enabling advanced AI on basic ₹25k laptops.
+[20:0] ▪ 2. 360° HYBRID CONSENSUS
+[20:1] Dynamic Brier Voting : Fuses 5 classical algorithms with a quantum circuit. Calibrated voting eliminates single-model bias for maximum clinical safety.
+[21:0] ▪ 3. ZERO-HALLUCINATION GUARANTEE
+[21:1] Hardcoded Sentinel : Safely halts prediction on corrupt sensors (FPG=0) or model conflict (Δ>0.45) — zero guesswork on human health.
+[22:0] 211,833 Authentic Patients
+[22:1] Dryad / BMJ Open Cohort (Zero Synthetic)
+[23:0] Doctor-Validated Prototype
+[23:1] Clinical Review + Demo Video Available
+[24:0] 1.1s Sub-Second Latency
+[24:1] Runs on ₹25k Laptops (₹0 GPU Cost)
+[25:0] ICMR-INDIAB Calibrated
+[25:1] Indian Thin-Fat Phenotype (BMI ≥ 23)
+
+==================== SLIDE 3 ====================
+[1:0] TECHNICAL APPROACH: ARCHITECTURE, FLOWCHART & PRODUCTION STACK
+[3:0] 3
+[4:0] @Code 404
+[5:0] Code 404
+[7:0] PATIENT DATA INGESTION & WORKFLOW ROUTER : Real-Time OPD Triage  •  Village Screening Camps (ASHA)  •  Zero-Hallucination Safety Guard
+[11:0] ▪ MODE 1: 1:1 CLINICAL OPD (DOCTOR)
+[11:1] 1. Patient Ingestion : 7 routine blood biomarkers entered from outpatient lab report.
+[11:2] 2. Quantum Mapping : Encodes patient biomarkers into 6-qubit quantum state (Angle Map).
+[11:3] 3. Dual Inference : 5 Classical ML models + PennyLane VQC run simultaneously.
+[11:4] 4. Hybrid Consensus : Dynamic Brier voting fuses classical & quantum predictions (60/40).
+[11:5] 5. Verified Output : Generates signed SHA-256 clinical PDF report in 1.1s sub-second.
+[12:0] ▪ MODE 2: VILLAGE BATCH TRIAGE (ASHA)
+[12:1] 1. Screening Upload : Upload village screening CSV (up to 500 patient records at once).
+[12:2] 2. Auto-Cleaning : Automated median imputation & physiological bounds scaling.
+[12:3] 3. Vectorized Engine : High-speed batch processing screens 500 patients in 12s (~10k/hr).
+[12:4] 4. Risk Stratification : Instant color-coded tags: [Urgent Follow-Up] | [Moderate] | [Routine].
+[12:5] 5. Action Roster : Prioritized follow-up CSV export for doctor (Runs 100% offline).
+[13:0] ▪ MODE 3: SAFETY SENTINEL ABSTENTION
+[13:1] 1. Sentinel Check : Gatekeeper detects impossible or corrupted inputs (e.g. FPG = 0).
+[13:2] 2. Conflict Watch : Monitors divergence between Classical & Quantum models (> 0.45).
+[13:3] 3. Safe Refusal : Automated clinical refusal: system safely refuses to make a blind guess.
+[13:4] 4. Lab Directive : Generates clear directive to re-test specific corrupt biomarkers.
+[13:5] 5. Zero Hallucination : 100% safety guarantee protecting patient well-being (2ms latency).
+[15:0] ▪ PRODUCTION TECH STACK (OFFLINE)
+[16:0] PennyLane Quantum VQC & Angles
+[17:0] Python 3.12 Scientific Core Backend
+[18:0] FastAPI Async REST API & Schemas
+[19:0] scikit-learn RF, SVM, LR, HistGBM
+[20:0] XGBoost Gradient Boosted Trees
+[21:0] React 18 Modern Component UI
+[22:0] TypeScript Strict Typing & Models
+[23:0] Firebase Cloud Firestore & Auth
+[25:0] ▪ AI ARCHITECTURE : DUAL-TRACK QML
+[27:0] [PATIENT DATA → 6-QUBIT VQC + ML → SHA-256]
+[29:0] ▪ REAL PROTOTYPE : QUANTUM NOISE LAB
+[31:0] ⚡ 1.1s Sub-Second Latency   |   ⚡ 12s per 500 Records (~10k/hr)
+[31:1] ⚡ 99.88% Hilbert Compression   |   ⚡ 74.2% State Fidelity (₹0 GPU)
+
+==================== SLIDE 4 ====================
+[1:0] FEASIBILITY AND VIABILITY: CLINICAL, TECHNICAL & ECONOMIC RIGOR
+[3:0] 4
+[4:0] @Code 404
+[5:0] Code 404
+[7:0] ▪ VIABILITY: THE ECONOMIC CASE
+[8:0] PAYBACK PERIOD : < 30 Days
+[8:1] Fastest capital recovery for rural Primary Health Centres (PHCs).
+[9:0] ANNUAL OUT-OF-POCKET SAVINGS : 40% – 60%
+[9:1] Halts chronic progression before expensive dialysis or ICU care.
+[10:0] NATIONAL ANNUAL BENEFIT : ₹50,000+ Cr
+[10:1] Macro-economic healthcare savings from pre-symptomatic triage.
+[11:0] RURAL SCREENING COVERAGE : 15% → 85%
+[11:1] Accelerates Ayushman Arogya Mandir universal screening outreach.
+[12:0] ▪ NATIONAL POLICY & SCHEME ALIGNMENT
+[12:1] • ABDM Schema : Interoperable digital health records
+[12:2] • NHM Universal : Universal NCD screening across Indian states
+[12:3] • PM-JAY Protection : 100% Free Open-Source Architecture (₹0 Tax)
+[15:0] ▪ HIGH-IMPACT VALUE CHAIN : TRAJECTORY
+[16:0] STAGE 1: ₹0 Setup
+[16:1] Laptops
+[17:0] STAGE 2: 99.88% Comp
+[17:1] Hilbert VQC
+[18:0] STAGE 3: ₹50k+ Cr
+[18:1] 3-5 Yrs Early
+[19:0] ▪ MEDICO-LEGAL & SAFETY ASSURANCE
+[19:1] • 100% Zero AI Hallucination Guarantee : Hardcoded sentinels safely halt prediction on corrupted inputs (FPG=0).
+[19:2] • Tamper-Evident SHA-256 Hashes : Every CDS PDF report is cryptographically signed; Doctor-in-the-Loop override.
+[21:0] ▪ 6-QUBIT QPU HARDWARE
+[23:0] [PENNYLANE VQC HARDWARE]
+74.2% Fidelity • ZNE Mitigation
+
+==================== SLIDE 5 ====================
+[1:0] IMPACT AND BENEFITS: STAKEHOLDER TRANSFORMATION & BENCHMARKS
+[3:0] 5
+[4:0] @Code 404
+[5:0] Code 404
+[7:0] ▪ STAKEHOLDER TRANSFORMATION
+[7:1] For Primary Care Doctors : 1.1s calibrated second opinion + SHAP attributions, cutting diagnostic delays.
+[7:2] Doctor Prototype Review : Verified clinical evaluation & feedback (Click to view)
+[7:3] 🎥 Prototype Demo Video : Full working software demo walkthrough (Click to view)
+[7:4] For ASHA Field Workers : 1-click village batch triage (500 records in 12s) with prioritized follow-up rosters.
+[7:5] For National Health Mission : 40%–60% OOP cost reduction, ₹50,000 Cr national savings, full ABDM compliance.
+[7:6] Core Metrics : 3–5 Yrs Early Detection • 40%–60% Savings • SHA-256 Signed
+[10:0] CLINICAL CDS TABLET
+1.1s Real-Time CDS
+● Doctor Review
+● Demo Video
+[14:0] ▪ 1. CLINICAL DECISION SUPPORT [37% RISK GAUGE]
+[14:1] Real-Time Outpatient Triage : 1.1s calibrated risk score with local SHAP biomarker attributions.
+[14:2] Consensus & Audit : Dynamic 60/40 Classical-Quantum agreement + tamper-evident SHA-256 export.
+[17:0] ▪ 2. QUANTUM ADVANTAGE LAB [24 ANGLES • 99.88%]
+[17:1] 99.88% Compression : 24 variational parameters in 64-D space match 18,000 tree nodes.
+[17:2] Gate Simulation : 6-qubit circuit with noise simulation (p=0.05); 74.2% state fidelity.
+[20:0] ▪ 3. VILLAGE POPULATION TRIAGE [500 IN 12S]
+[20:1] Mass Field Screening : Screens 500 patient records in 12s (~10,000+/hr) during village camps.
+[20:2] Actionable Rosters : Instant color-coded priority rosters: [Urgent Follow-Up] | [Moderate].
+
+==================== SLIDE 6 ====================
+[1:0] RESEARCH AND REFERENCES: SCIENTIFIC LITERATURE & LIVE PROTOTYPE
+[3:0] 6
+[4:0] @Code 404
+[5:0] Code 404
+[7:0] ▪ SCIENTIFIC LITERATURE & CLINICAL STANDARDS
+[7:1] ICMR-INDIAB 2023 Study : Lancet Diabetes 101M cohort: established authentic South Asian 'Thin-Fat' cutoffs.
+[7:2] Dryad / BMJ Open Cohort : Chen et al. (2018): 211,833 authentic patient screening records (zero synthetic data).
+[7:3] Quantum Machine Learning : Schuld et al. (2021) 'Supervised Quantum Learning' & PennyLane VQC architecture.
+[7:4] Clinical AI Ethics : Aligned with WHO AI Guidance & ABDM / FHIR Indian digital health standards.
+[8:0] ▪ SOLUTIONS ALREADY EXIST (COMMERCIAL SYSTEMS)
+[8:1] Expensive Enterprise AI : Epic AI, IBM Watson Health, Aidoc require costly annual subscription licenses.
+[8:2] High Compute Demands : Require ₹10 Lakh+ GPU servers — completely unaffordable for rural clinics.
+[8:3] Opaque Black Boxes : Uncalibrated outputs with zero quantum compression or qubit explainability.
+[8:4] Cloud Dependency : Cannot operate offline during frequent rural electricity or internet outages.
+[9:0] ▪ OUR SOLUTION STANDS OUT (QUANTUMHEALTH AI)
+[9:1] 99.88% Parameter Compression : 24 variational parameters replace 18,000 tree nodes in 64-D Hilbert space.
+[9:2] Zero Hardware Expense : Runs 100% offline on standard ₹25,000 laptops at village health centers.
+[9:3] Sentinel Safety Guarantee : Instantly aborts prediction on corrupted sensors (FPG=0) with 100% safe refusal.
+[9:4] Indian Phenotype Calibrated : Specifically recalibrated for South Asian body profiles (BMI ≥ 23 kg/m²).
+[10:0] ▪ PROJECT RESOURCES & CLINICAL VALIDATION
+[10:1] 🎥 Prototype Demo Video : Full working software demo walkthrough (Click to view)
+[10:2] Doctor's Clinical Review : Verified clinical evaluation by practicing physician
+[10:3] Live Cloud Platform : quantumhealth-ai.onrender.com (24/7 Live Full-Stack)
+[10:4] Public REST API & Docs : quantumhealth-ai.onrender.com/docs (OpenAPI / Swagger)
+[10:5] Open-Source GitHub : github.com/rohitgupta152311-rgb/QuantumHealth-AI-SIH2026
+[10:6] Verification Suite : 92 / 92 automated tests passing (67 pytest + 25 vitest, 100%)
+[11:0] ▪ SCAN PHONE • TEST LIVE PROTOTYPE
+[11:1] 📱 Mobile QR Scan : Scan QR with smartphone camera to run live predictions instantly.
+[11:2] Signed SHA-256 Hash : Every generated CDS PDF contains an immutable cryptographic hash.
+[11:3] Doctor-in-the-Loop : Full physician override authority, compliant with WHO Ethics & ABDM.
+[11:4] Zero-Hallucination : Refuses to guess on corrupted sentinels (FPG=0 mg/dL).
+[13:0] ● LIVE CLOUD APP

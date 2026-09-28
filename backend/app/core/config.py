@@ -7,7 +7,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent.parent
 class Settings(BaseSettings):
     model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
 
-    app_name: str = "QuantumHealth AI"
+    app_name: str = "ArogyaDristi"
     app_version: str = "1.0.0"
     debug: bool = True
     host: str = "0.0.0.0"
@@ -34,6 +34,8 @@ class Settings(BaseSettings):
         "https://quantum-health-ai.web.app",
         "https://quantum-health-ai.firebaseapp.com",
         "https://quantumhealth-ai.onrender.com",
+        "https://arogyadristi.onrender.com",
+        "https://arogyadristi-ai.onrender.com",
         "https://dainty-croquembouche-6ee104.netlify.app",
     ]
 

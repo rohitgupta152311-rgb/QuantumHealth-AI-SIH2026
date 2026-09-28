@@ -253,7 +253,7 @@ export const ExplainabilityDashboard: React.FC = () => {
               <div>
                 <h4 className="font-bold text-amber-200 text-sm mb-1">MedTech Safety & Ethics</h4>
                 <p className="text-xs text-amber-200/90 leading-relaxed">
-                  QuantumHealth AI is developed strictly for research, educational, and decision-support purposes under Smart India Hackathon 2026. Machine learning and quantum simulation outputs must always be validated by qualified healthcare clinicians before making diagnostic or treatment decisions.
+                  ArogyaDristi is developed strictly for research, educational, and decision-support purposes under Smart India Hackathon 2026. Machine learning and quantum simulation outputs must always be validated by qualified healthcare clinicians before making diagnostic or treatment decisions.
                 </p>
               </div>
             </div>

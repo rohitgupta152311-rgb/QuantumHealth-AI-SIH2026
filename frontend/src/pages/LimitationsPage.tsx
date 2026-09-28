@@ -23,7 +23,7 @@ export const LimitationsPage: React.FC = () => {
           <span>Research & Educational Prototype Notice</span>
         </div>
         <p className="leading-relaxed text-amber-200/90 text-xs sm:text-sm">
-          QuantumHealth AI is developed as an educational and research decision-support prototype for Smart India Hackathon (SIH) 2026. It is <strong>not a medical device</strong> and is not cleared by regulatory authorities (such as CDSCO or US FDA) for primary clinical diagnosis or prescription. All risk assessments, feature attributions, and consensus decisions must be interpreted by licensed healthcare clinicians in conjunction with standard diagnostic workflows.
+          ArogyaDristi is developed as an educational and research decision-support prototype for Smart India Hackathon (SIH) 2026. It is <strong>not a medical device</strong> and is not cleared by regulatory authorities (such as CDSCO or US FDA) for primary clinical diagnosis or prescription. All risk assessments, feature attributions, and consensus decisions must be interpreted by licensed healthcare clinicians in conjunction with standard diagnostic workflows.
         </p>
       </div>
 
@@ -41,7 +41,7 @@ export const LimitationsPage: React.FC = () => {
             </div>
           </div>
           <p className="text-xs text-slate-300 leading-relaxed">
-            Unlike traditional black-box classifiers that force a prediction on every input, QuantumHealth AI enforces automated model abstention (HTTP 200 with <code className="text-teal-300 font-mono">status: "abstained"</code> and zero risk score returned) when:
+            Unlike traditional black-box classifiers that force a prediction on every input, ArogyaDristi enforces automated model abstention (HTTP 200 with <code className="text-teal-300 font-mono">status: "abstained"</code> and zero risk score returned) when:
           </p>
           <ul className="space-y-2 text-xs text-slate-400 font-mono">
             <li className="flex items-start gap-2">
@@ -101,7 +101,7 @@ export const LimitationsPage: React.FC = () => {
             </div>
           </div>
           <p className="text-xs text-slate-300 leading-relaxed">
-            All quantum circuits in QuantumHealth AI are executed in <strong>Simulation Mode</strong> using PennyLane's <code className="text-teal-300 font-mono">default.qubit</code> simulator on classical CPUs.
+            All quantum circuits in ArogyaDristi are executed in <strong>Simulation Mode</strong> using PennyLane's <code className="text-teal-300 font-mono">default.qubit</code> simulator on classical CPUs.
           </p>
           <p className="text-xs text-slate-400 leading-relaxed">
             While parameterized circuits (RY angle encoding with Ring CNOT entanglement) demonstrate how quantum Hilbert-space embeddings can be evaluated, we do <strong>not</strong> claim quantum supremacy on tabular medical datasets. Real QPU deployment in the NISQ era will require error mitigation and fault-tolerant hardware.

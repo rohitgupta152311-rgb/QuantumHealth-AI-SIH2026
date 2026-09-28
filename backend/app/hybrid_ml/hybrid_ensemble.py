@@ -83,10 +83,15 @@ class HybridEnsemble:
     ) -> float:
         """
         Predict combined hybrid probability for a single sample.
-        Returns raw blend directly (no second-stage calibration).
+        Applies second-stage calibration when available and requested.
         """
         raw_blend = (1.0 - self.alpha) * classical_prob + self.alpha * quantum_prob
-        return float(np.clip(raw_blend, 0.0, 1.0))
+        raw_blend = float(np.clip(raw_blend, 0.0, 1.0))
+        if calibrated and self.calibrator is not None:
+            raw_arr = np.array([[raw_blend]])
+            cal_proba = self.calibrator.predict_proba(raw_arr)
+            return float(np.clip(cal_proba[0, 1], 0.0, 1.0))
+        return raw_blend
 
     def predict_proba(
         self,

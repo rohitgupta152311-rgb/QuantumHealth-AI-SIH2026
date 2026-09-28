@@ -72,29 +72,3 @@ async def model_comparison(
         )
 
 
-@router.post(
-    "/train",
-    summary="Train or Retrain Disease Models",
-    description="Fits preprocessing pipeline, trains classical ensemble, fits Platt probability calibrators on validation split, and generates signed manifest."
-)
-async def train_disease_models(
-    disease: str = "diabetes",
-    service: PredictionService = Depends(get_prediction_service),
-    loader: DatasetLoader = Depends(get_dataset_loader)
-):
-    try:
-        loader.get_disease_info(disease)
-    except ValueError as e:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND,
-            detail=f"Unknown disease module '{disease}': {str(e)}"
-        )
-    try:
-        await service.get_or_train_models(disease, force_retrain=True)
-        return {"status": "trained", "disease": disease}
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Model training failed: {str(e)}"
-        )
-

@@ -34,7 +34,7 @@ class SavedCalibrator:
 
 
 class FixedQuantum:
-    def predict_proba_single(self, x, calibrated=True):
+    def predict_proba_single(self, x, calibrated=True, backend=None):
         return 0.6
 
 

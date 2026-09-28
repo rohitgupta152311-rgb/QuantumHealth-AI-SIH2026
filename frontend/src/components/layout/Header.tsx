@@ -79,8 +79,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar, isMobileS
               <Atom size={18} className="text-teal-400" />
             </div>
             <span className="text-slate-100 font-bold tracking-tight">
-              Quantum<span className="text-teal-400 font-semibold">Health</span>{' '}
-              <span className="text-xs text-slate-400 font-mono font-medium">AI</span>
+              Arogya<span className="text-teal-400 font-semibold">Dristi</span>
             </span>
           </Link>
 

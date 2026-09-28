@@ -79,10 +79,10 @@ async def lifespan(app: FastAPI):
     await engine.dispose()
 
 app = FastAPI(
-    title="QuantumHealth AI Platform API",
+    title="ArogyaDristi Platform API",
     version=settings.app_version,
     description=(
-        "### Hybrid Quantum-Classical Machine Learning Platform for Early Disease Detection\n\n"
+        "### ArogyaDristi: Hybrid Quantum-Classical Machine Learning Platform for Early Disease Detection\n\n"
         "**Smart India Hackathon (SIH) 2026** — Problem Statement **#26139**\n\n"
         "- **Organization:** Egreen Quanta\n"
         "- **Category:** Software / MedTech / BioTech / HealthTech\n"

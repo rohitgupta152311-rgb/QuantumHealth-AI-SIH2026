@@ -1,0 +1,909 @@
+
+============================== SLIDE 1 (total shapes: 8) ==============================
+
+--- Shape [0] id=36, name='Rectangle 24', type=AUTO_SHAPE (1) ---
+    Left: 1524000, Top: 0, Width: 9144000, Height: 6858000
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [1] id=37, name='Freeform: Shape 26', type=FREEFORM (5) ---
+    Left: 5656780, Top: 851521, Width: 4638605, Height: 5154967
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [2] id=5, name='Picture 4', type=PICTURE (13) ---
+    Left: 6854891, Top: 1715881, Width: 3203509, Height: 3426237
+
+--- Shape [3] id=4, name='Subtitle 3', type=PLACEHOLDER (14) ---
+    Left: 329184, Top: 1005840, Width: 9601200, Height: 640080
+    Paragraphs count: 1
+      [P0] text='TITLE PAGE'
+             runs: 'TITLE PAGE'(sz=28.0pt, b=True)
+
+--- Shape [4] id=8, name='Title 7', type=PLACEHOLDER (14) ---
+    Left: 329184, Top: 137160, Width: 9601200, Height: 1005840
+    Paragraphs count: 1
+      [P0] text='SMART INDIA HACKATHON 2026'
+             runs: 'SMART INDIA HACKATHON 2026'(sz=38.0pt, b=True)
+
+--- Shape [5] id=10, name='TextBox 9', type=TEXT_BOX (17) ---
+    Left: 0, Top: 0, Width: 91440, Height: 91440
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [6] id=38, name='Picture 37', type=PICTURE (13) ---
+    Left: 9838944, Top: 9144, Width: 2212848, Height: 1124712
+
+--- Shape [7] id=39, name='TextBox 38', type=TEXT_BOX (17) ---
+    Left: 548640, Top: 1965960, Width: 6217920, Height: 4389120
+    Paragraphs count: 6
+      [P0] text='• Problem Statement ID : 26139'
+             runs: '• Problem Statement ID : '(sz=15.5pt, b=True) | '26139'(sz=15.5pt, b=False)
+      [P1] text='• Problem Statement Title : Hybrid Quantum Machine Learning Platform for Early Disease Detection'
+             runs: '• Problem Statement Title : '(sz=15.5pt, b=True) | 'Hybrid Quantum Machine Learning Platform for Early Disease Detection'(sz=14.0pt, b=False)
+      [P2] text='• Theme : MedTech / BioTech / HealthTech'
+             runs: '• Theme : '(sz=15.5pt, b=True) | 'MedTech / BioTech / HealthTech'(sz=15.5pt, b=False)
+      [P3] text='• PS Category : Software'
+             runs: '• PS Category : '(sz=15.5pt, b=True) | 'Software'(sz=15.5pt, b=False)
+      [P4] text='• Institute : National Institute of Technology Nagaland'
+             runs: '• Institute : '(sz=15.5pt, b=True) | 'National Institute of Technology Nagaland'(sz=15.0pt, b=False)
+      [P5] text='• Team Name : Code 404'
+             runs: '• Team Name : '(sz=15.5pt, b=True) | 'Code 404'(sz=15.5pt, b=False)
+
+============================== SLIDE 2 (total shapes: 26) ==============================
+
+--- Shape [0] id=9, name='Rectangle 8', type=AUTO_SHAPE (1) ---
+    Left: 0, Top: 6354762, Width: 12191999, Height: 503238
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [1] id=15361, name='Title 1', type=PLACEHOLDER (14) ---
+    Left: 1691640, Top: 91440, Width: 8046720, Height: 777240
+    Paragraphs count: 1
+      [P0] text='IDEA TITLE: QUANTUMHEALTH AI — HYBRID QML CLINICAL PLATFORM'
+             runs: 'IDEA TITLE: QUANTUMHEALTH AI — HYBRID QML CLINICAL PLATFORM'(sz=16.5pt, b=True)
+
+--- Shape [2] id=15362, name='TextBox 8', type=TEXT_BOX (17) ---
+    Left: 0, Top: 0, Width: 91440, Height: 91440
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [3] id=6, name='Slide Number Placeholder 5', type=PLACEHOLDER (14) ---
+    Left: 8737600, Top: 6356353, Width: 2844800, Height: 365125
+    Paragraphs count: 1
+      [P0] text='2'
+             runs: 
+
+--- Shape [4] id=7, name='Footer Placeholder 6', type=PLACEHOLDER (14) ---
+    Left: 4648200, Top: 6356353, Width: 3204000, Height: 365125
+    Paragraphs count: 1
+      [P0] text='@Code 404'
+             runs: '@Code 404'(sz=10.0pt, b=None)
+
+--- Shape [5] id=10, name='Oval 9', type=AUTO_SHAPE (1) ---
+    Left: 329773, Top: 252246, Width: 1251857, Height: 807334
+    Paragraphs count: 1
+      [P0] text='Code 404'
+             runs: 'Code 404'(sz=13.0pt, b=True)
+
+--- Shape [6] id=15363, name='Picture 15362', type=PICTURE (13) ---
+    Left: 10378440, Top: 36576, Width: 1618488, Height: 822960
+
+--- Shape [7] id=15364, name='Rounded Rectangle 15363', type=AUTO_SHAPE (1) ---
+    Left: 594360, Top: 932688, Width: 11000232, Height: 457200
+    Paragraphs count: 1
+      [P0] text='▪ PROPOSED SOLUTION : India's First Edge-Deployable Quantum Health Platform: 3–5 years earlier detection for chronic diseases (Diabetes, CVD, Kidney) via 50-30-20 Hybrid Architecture, 99.88% parameter compression, <512MB RAM, zero GPU, and 100% zero-hallucination safety.'
+             runs: '▪ PROPOSED SOLUTION : '(sz=10.5pt, b=True) | 'India's First Edge-Deployable Quantum Health Platform: 3–5 years earlier detection for chronic diseases (Diabetes, CVD, Kidney) via 50-30-20 Hybrid Architecture, 99.88% parameter compression, <512MB RAM, zero GPU, and 100% zero-hallucination safety.'(sz=9.8pt, b=False)
+
+--- Shape [8] id=15365, name='Rounded Rectangle 15364', type=AUTO_SHAPE (1) ---
+    Left: 594360, Top: 1463040, Width: 3246120, Height: 2423160
+    Paragraphs count: 4
+      [P0] text='▪ ADDRESSING THE HEALTHCARE CRISIS'
+             runs: '▪ ADDRESSING THE HEALTHCARE CRISIS'(sz=10.5pt, b=True)
+      [P1] text='• Late-Stage Detection Crisis : 80% of rural chronic diseases are detected at Stage III/IV — when treatment is unaffordable.'
+             runs: '• Late-Stage Detection Crisis : '(sz=9.0pt, b=True) | '80% of rural chronic diseases are detected at Stage III/IV — when treatment is unaffordable.'(sz=9.0pt, b=False)
+      [P2] text='• High Hardware & Cloud Barrier : Commercial medical AI requires ₹10 Lakh+ GPU servers and internet — failing rural PHCs.'
+             runs: '• High Hardware & Cloud Barrier : '(sz=9.0pt, b=True) | 'Commercial medical AI requires ₹10 Lakh+ GPU servers and internet — failing rural PHCs.'(sz=9.0pt, b=False)
+      [P3] text='• Unreliable Blind Guesses : Standard black-box AI models hallucinate on corrupted lab data, destroying doctor trust.'
+             runs: '• Unreliable Blind Guesses : '(sz=9.0pt, b=True) | 'Standard black-box AI models hallucinate on corrupted lab data, destroying doctor trust.'(sz=9.0pt, b=False)
+
+--- Shape [9] id=15366, name='Rounded Rectangle 15365', type=AUTO_SHAPE (1) ---
+    Left: 594360, Top: 3977639, Width: 3246120, Height: 1645920
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [10] id=15367, name='TextBox 15366', type=TEXT_BOX (17) ---
+    Left: 640080, Top: 3995928, Width: 3154680, Height: 219456
+    Paragraphs count: 1
+      [P0] text='▪ CLINICAL IMPACT : PRE-SYMPTOMATIC DETECTION (3–5 YRS EARLIER)'
+             runs: '▪ CLINICAL IMPACT : PRE-SYMPTOMATIC DETECTION (3–5 YRS EARLIER)'(sz=8.5pt, b=True)
+
+--- Shape [11] id=15368, name='Picture 15367', type=PICTURE (13) ---
+    Left: 658368, Top: 4233672, Width: 3118104, Height: 1344168
+
+--- Shape [12] id=15369, name='Rounded Rectangle 15368', type=AUTO_SHAPE (1) ---
+    Left: 3977639, Top: 1463040, Width: 4251960, Height: 896112
+    Paragraphs count: 3
+      [P0] text='▪ PILLAR 1: DATA QUALITY & RELIABILITY GUARD'
+             runs: '▪ PILLAR 1: DATA QUALITY & RELIABILITY GUARD'(sz=10.19pt, b=True)
+      [P1] text='• Biomarker Validation : Routine blood biomarkers (Age, BMI, FPG, BP, Lipids, Creatinine) verified at ingestion.'
+             runs: '• Biomarker Validation : '(sz=9.19pt, b=True) | 'Routine blood biomarkers (Age, BMI, FPG, BP, Lipids, Creatinine) verified at ingestion.'(sz=9.0pt, b=False)
+      [P2] text='• Zero Blind Guesses : Sensors out-of-bounds (e.g. FPG=0) trigger instant 2ms safe directive to re-test corrupt labs.'
+             runs: '• Zero Blind Guesses : '(sz=9.19pt, b=True) | 'Sensors out-of-bounds (e.g. FPG=0) trigger instant 2ms safe directive to re-test corrupt labs.'(sz=9.0pt, b=False)
+
+--- Shape [13] id=15370, name='Down Arrow 15369', type=AUTO_SHAPE (1) ---
+    Left: 5971031, Top: 2395728, Width: 256032, Height: 109728
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [14] id=15371, name='Rounded Rectangle 15370', type=AUTO_SHAPE (1) ---
+    Left: 3977639, Top: 2523744, Width: 4251960, Height: 896112
+    Paragraphs count: 3
+      [P0] text='▪ PILLAR 2: 50-30-20 HYBRID ARCHITECTURE'
+             runs: '▪ PILLAR 2: 50-30-20 HYBRID ARCHITECTURE'(sz=10.19pt, b=True)
+      [P1] text='• Clinical Data Partition : 50% Classical Baseline, 30% Quantum Hilbert Training, 20% Unseen Holdout Testing.'
+             runs: '• Clinical Data Partition : '(sz=9.19pt, b=True) | '50% Classical Baseline, 30% Quantum Hilbert Training, 20% Unseen Holdout Testing.'(sz=9.0pt, b=False)
+      [P2] text='• 99.88% Compression : 24 quantum variational angles in 64-D Hilbert space replace 18,000 tree nodes with zero bloat.'
+             runs: '• 99.88% Compression : '(sz=9.19pt, b=True) | '24 quantum variational angles in 64-D Hilbert space replace 18,000 tree nodes with zero bloat.'(sz=9.0pt, b=False)
+
+--- Shape [15] id=15372, name='Down Arrow 15371', type=AUTO_SHAPE (1) ---
+    Left: 5971031, Top: 3456432, Width: 256032, Height: 109728
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [16] id=15373, name='Rounded Rectangle 15372', type=AUTO_SHAPE (1) ---
+    Left: 3977639, Top: 3584448, Width: 4251960, Height: 896112
+    Paragraphs count: 3
+      [P0] text='▪ PILLAR 3: DUAL-TRACK INFERENCE ENGINE'
+             runs: '▪ PILLAR 3: DUAL-TRACK INFERENCE ENGINE'(sz=10.19pt, b=True)
+      [P1] text='• Classical Track : 5 high-capacity models (RandomForest, SVM, XGBoost, LR, HistGBM) evaluated concurrently.'
+             runs: '• Classical Track : '(sz=9.19pt, b=True) | '5 high-capacity models (RandomForest, SVM, XGBoost, LR, HistGBM) evaluated concurrently.'(sz=9.0pt, b=False)
+      [P2] text='• Quantum Track : 6-Qubit VQC with angle re-uploading, 6-simulator support & local SHAP qubit attributions.'
+             runs: '• Quantum Track : '(sz=9.19pt, b=True) | '6-Qubit VQC with angle re-uploading, 6-simulator support & local SHAP qubit attributions.'(sz=9.0pt, b=False)
+
+--- Shape [17] id=15374, name='Down Arrow 15373', type=AUTO_SHAPE (1) ---
+    Left: 5971031, Top: 4462272, Width: 256032, Height: 109728
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [18] id=15375, name='Rounded Rectangle 15374', type=AUTO_SHAPE (1) ---
+    Left: 3977639, Top: 4590288, Width: 4251960, Height: 987552
+    Paragraphs count: 3
+      [P0] text='▪ PILLAR 4: CALIBRATED CONSENSUS & CDS REPORT'
+             runs: '▪ PILLAR 4: CALIBRATED CONSENSUS & CDS REPORT'(sz=10.19pt, b=True)
+      [P1] text='• Dynamic Brier Fusion : Calibrated weighted voting (default 60C/40Q) with user-configurable quantum weight slider.'
+             runs: '• Dynamic Brier Fusion : '(sz=9.0pt, b=True) | 'Calibrated weighted voting (default 60C/40Q) with user-configurable quantum weight slider.'(sz=8.8pt, b=False)
+      [P2] text='• Cryptographic Proof : 100% refusal on severe conflict (|Δ|>0.45); instant 1.1s SHA-256 tamper-evident signed report.'
+             runs: '• Cryptographic Proof : '(sz=9.0pt, b=True) | '100% refusal on severe conflict (|Δ|>0.45); instant 1.1s SHA-256 tamper-evident signed report.'(sz=8.8pt, b=False)
+
+--- Shape [19] id=15376, name='Rounded Rectangle 15375', type=AUTO_SHAPE (1) ---
+    Left: 8366760, Top: 1463040, Width: 3227832, Height: 1325880
+    Paragraphs count: 2
+      [P0] text='▪ 1. 99.88% HILBERT COMPRESSION'
+             runs: '▪ 1. 99.88% HILBERT COMPRESSION'(sz=10.5pt, b=True)
+      [P1] text='• Quantum Compression : 24 parameters in 64-D Hilbert space match 18,000 tree nodes — runs on ₹25k laptop with <512MB RAM.'
+             runs: '• Quantum Compression : '(sz=9.4pt, b=True) | '24 parameters in 64-D Hilbert space match 18,000 tree nodes — runs on ₹25k laptop with <512MB RAM.'(sz=9.19pt, b=False)
+
+--- Shape [20] id=15377, name='Rounded Rectangle 15376', type=AUTO_SHAPE (1) ---
+    Left: 8366760, Top: 2880360, Width: 3227832, Height: 1325880
+    Paragraphs count: 2
+      [P0] text='▪ 2. 50-30-20 DATA PARTITION NOVELTY'
+             runs: '▪ 2. 50-30-20 DATA PARTITION NOVELTY'(sz=10.5pt, b=True)
+      [P1] text='• Zero Leakage Rigor : 50% Classical + 30% Quantum VQC + 20% Unseen Test Split; prevents barren plateaus & overfitting.'
+             runs: '• Zero Leakage Rigor : '(sz=9.4pt, b=True) | '50% Classical + 30% Quantum VQC + 20% Unseen Test Split; prevents barren plateaus & overfitting.'(sz=9.19pt, b=False)
+
+--- Shape [21] id=15378, name='Rounded Rectangle 15377', type=AUTO_SHAPE (1) ---
+    Left: 8366760, Top: 4297680, Width: 3227832, Height: 1325880
+    Paragraphs count: 2
+      [P0] text='▪ 3. 6-SIMULATOR PORTABILITY & SAFETY'
+             runs: '▪ 3. 6-SIMULATOR PORTABILITY & SAFETY'(sz=10.5pt, b=True)
+      [P1] text='• Universal Portability : Runs across NumPy, PennyLane, Qiskit Aer, Braket & Lightning; 100% safe refusal on conflict (|Δ|>0.45).'
+             runs: '• Universal Portability : '(sz=9.4pt, b=True) | 'Runs across NumPy, PennyLane, Qiskit Aer, Braket & Lightning; 100% safe refusal on conflict (|Δ|>0.45).'(sz=9.19pt, b=False)
+
+--- Shape [22] id=15379, name='Rounded Rectangle 15378', type=AUTO_SHAPE (1) ---
+    Left: 594360, Top: 5705856, Width: 2633472, Height: 530352
+    Paragraphs count: 2
+      [P0] text='211,833 Authentic Patients'
+             runs: '211,833 Authentic Patients'(sz=10.8pt, b=True)
+      [P1] text='Dryad / BMJ Open Cohort (Zero Synthetic)'
+             runs: 'Dryad / BMJ Open Cohort (Zero Synthetic)'(sz=9.8pt, b=None)
+
+--- Shape [23] id=15380, name='Rounded Rectangle 15379', type=AUTO_SHAPE (1) ---
+    Left: 3383280, Top: 5705856, Width: 2633472, Height: 530352
+    Paragraphs count: 2
+      [P0] text='Doctor-Validated Prototype'
+             runs: 'Doctor-Validated Prototype'(sz=10.8pt, b=True)
+      [P1] text='Verified Physician Review + Demo Video'
+             runs: 'Verified Physician Review + Demo Video'(sz=9.8pt, b=None)
+
+--- Shape [24] id=15381, name='Rounded Rectangle 15380', type=AUTO_SHAPE (1) ---
+    Left: 6172200, Top: 5705856, Width: 2633472, Height: 530352
+    Paragraphs count: 2
+      [P0] text='< 512 MB RAM • 1.1s Latency'
+             runs: '< 512 MB RAM • 1.1s Latency'(sz=10.8pt, b=True)
+      [P1] text='Dual-Core CPU • Zero GPU • ₹25k Laptop'
+             runs: 'Dual-Core CPU • Zero GPU • ₹25k Laptop'(sz=9.8pt, b=None)
+
+--- Shape [25] id=15382, name='Rounded Rectangle 15381', type=AUTO_SHAPE (1) ---
+    Left: 8961120, Top: 5705856, Width: 2633472, Height: 530352
+    Paragraphs count: 2
+      [P0] text='ICMR-INDIAB Calibrated'
+             runs: 'ICMR-INDIAB Calibrated'(sz=10.8pt, b=True)
+      [P1] text='South Asian Phenotype Tuning (BMI ≥ 23)'
+             runs: 'South Asian Phenotype Tuning (BMI ≥ 23)'(sz=9.8pt, b=None)
+
+============================== SLIDE 3 (total shapes: 32) ==============================
+
+--- Shape [0] id=10, name='Rectangle 9', type=AUTO_SHAPE (1) ---
+    Left: 0, Top: 6354762, Width: 12191999, Height: 503238
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [1] id=17409, name='Title 1', type=PLACEHOLDER (14) ---
+    Left: 1691640, Top: 91440, Width: 8046720, Height: 777240
+    Paragraphs count: 1
+      [P0] text='TECHNICAL APPROACH: ARCHITECTURE, FLOWCHART & PRODUCTION STACK'
+             runs: 'TECHNICAL APPROACH: ARCHITECTURE, FLOWCHART & PRODUCTION STACK'(sz=16.5pt, b=True)
+
+--- Shape [2] id=17410, name='TextBox 8', type=TEXT_BOX (17) ---
+    Left: 0, Top: 0, Width: 91440, Height: 91440
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [3] id=6, name='Slide Number Placeholder 5', type=PLACEHOLDER (14) ---
+    Left: 8737600, Top: 6356353, Width: 2844800, Height: 365125
+    Paragraphs count: 1
+      [P0] text='3'
+             runs: 
+
+--- Shape [4] id=7, name='Footer Placeholder 6', type=PLACEHOLDER (14) ---
+    Left: 4648200, Top: 6356353, Width: 3204000, Height: 365125
+    Paragraphs count: 1
+      [P0] text='@Code 404'
+             runs: '@Code 404'(sz=10.0pt, b=None)
+
+--- Shape [5] id=11, name='Oval 10', type=AUTO_SHAPE (1) ---
+    Left: 329773, Top: 252246, Width: 1251857, Height: 807334
+    Paragraphs count: 1
+      [P0] text='Code 404'
+             runs: 'Code 404'(sz=13.0pt, b=True)
+
+--- Shape [6] id=17411, name='Picture 17410', type=PICTURE (13) ---
+    Left: 10378440, Top: 36576, Width: 1618488, Height: 822960
+
+--- Shape [7] id=17412, name='Rounded Rectangle 17411', type=AUTO_SHAPE (1) ---
+    Left: 594360, Top: 932688, Width: 11000232, Height: 384048
+    Paragraphs count: 1
+      [P0] text='END-TO-END CLINICAL FLOWCHART : Lab Biomarkers → Quality Sentinel Gate → 50-30-20 Split → Parallel Dual-Track [5 Classical + 6-Qubit VQC] → Brier Fusion → Signed CDS'
+             runs: 'END-TO-END CLINICAL FLOWCHART : '(sz=10.5pt, b=True) | 'Lab Biomarkers → Quality Sentinel Gate → 50-30-20 Split → Parallel Dual-Track [5 Classical + 6-Qubit VQC] → Brier Fusion → Signed CDS'(sz=9.8pt, b=False)
+
+--- Shape [8] id=17413, name='Down Arrow 17412', type=AUTO_SHAPE (1) ---
+    Left: 2221992, Top: 1335024, Width: 292608, Height: 128016
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [9] id=17414, name='Down Arrow 17413', type=AUTO_SHAPE (1) ---
+    Left: 5943600, Top: 1335024, Width: 292608, Height: 128016
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [10] id=17415, name='Down Arrow 17414', type=AUTO_SHAPE (1) ---
+    Left: 9665208, Top: 1335024, Width: 292608, Height: 128016
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [11] id=17416, name='Rounded Rectangle 17415', type=AUTO_SHAPE (1) ---
+    Left: 594360, Top: 1481328, Width: 3547872, Height: 2679192
+    Paragraphs count: 6
+      [P0] text='▪ MODE 1: 1:1 CLINICAL OPD (DOCTOR)'
+             runs: '▪ MODE 1: 1:1 CLINICAL OPD (DOCTOR)'(sz=10.5pt, b=True)
+      [P1] text='• 1. Patient Ingestion : 7 routine blood biomarkers entered from outpatient lab report.'
+             runs: '• 1. Patient Ingestion : '(sz=9.0pt, b=True) | '7 routine blood biomarkers entered from outpatient lab report.'(sz=9.0pt, b=False)
+      [P2] text='• 2. Quantum Mapping : Angle encoding maps biomarkers into 64-D quantum Hilbert state.'
+             runs: '• 2. Quantum Mapping : '(sz=9.0pt, b=True) | 'Angle encoding maps biomarkers into 64-D quantum Hilbert state.'(sz=9.0pt, b=False)
+      [P3] text='• 3. Dual Inference : 5 Classical ML models + PennyLane 6-qubit VQC execute simultaneously.'
+             runs: '• 3. Dual Inference : '(sz=9.0pt, b=True) | '5 Classical ML models + PennyLane 6-qubit VQC execute simultaneously.'(sz=9.0pt, b=False)
+      [P4] text='• 4. Hybrid Consensus : Calibrated Brier voting fuses predictions (default 60C/40Q + ratio slider).'
+             runs: '• 4. Hybrid Consensus : '(sz=9.0pt, b=True) | 'Calibrated Brier voting fuses predictions (default 60C/40Q + ratio slider).'(sz=9.0pt, b=False)
+      [P5] text='• 5. Verified Output : Generates signed SHA-256 clinical PDF report in 1.1s sub-second.'
+             runs: '• 5. Verified Output : '(sz=9.0pt, b=True) | 'Generates signed SHA-256 clinical PDF report in 1.1s sub-second.'(sz=9.0pt, b=False)
+
+--- Shape [12] id=17417, name='Rounded Rectangle 17416', type=AUTO_SHAPE (1) ---
+    Left: 4315968, Top: 1481328, Width: 3547872, Height: 2679192
+    Paragraphs count: 6
+      [P0] text='▪ MODE 2: VILLAGE BATCH TRIAGE (ASHA)'
+             runs: '▪ MODE 2: VILLAGE BATCH TRIAGE (ASHA)'(sz=10.5pt, b=True)
+      [P1] text='• 1. Screening Upload : Upload village screening CSV (up to 500 patient records at once).'
+             runs: '• 1. Screening Upload : '(sz=9.0pt, b=True) | 'Upload village screening CSV (up to 500 patient records at once).'(sz=9.0pt, b=False)
+      [P2] text='• 2. Auto-Cleaning : Automated median imputation & physiological bounds scaling.'
+             runs: '• 2. Auto-Cleaning : '(sz=9.0pt, b=True) | 'Automated median imputation & physiological bounds scaling.'(sz=9.0pt, b=False)
+      [P3] text='• 3. Vectorized Engine : High-speed batch processing screens 500 patients in 12s (~10k/hr).'
+             runs: '• 3. Vectorized Engine : '(sz=9.0pt, b=True) | 'High-speed batch processing screens 500 patients in 12s (~10k/hr).'(sz=9.0pt, b=False)
+      [P4] text='• 4. Stratification : Color-coded triage tags: [Urgent Referral] | [Moderate] | [Routine].'
+             runs: '• 4. Stratification : '(sz=9.0pt, b=True) | 'Color-coded triage tags: [Urgent Referral] | [Moderate] | [Routine].'(sz=9.0pt, b=False)
+      [P5] text='• 5. Action Roster : Prioritized follow-up CSV export for doctors; runs 100% offline.'
+             runs: '• 5. Action Roster : '(sz=9.0pt, b=True) | 'Prioritized follow-up CSV export for doctors; runs 100% offline.'(sz=9.0pt, b=False)
+
+--- Shape [13] id=17418, name='Rounded Rectangle 17417', type=AUTO_SHAPE (1) ---
+    Left: 8037576, Top: 1481328, Width: 3547872, Height: 2679192
+    Paragraphs count: 6
+      [P0] text='▪ MODE 3: QUALITY FILTRATION & RELIABILITY GUARD'
+             runs: '▪ MODE 3: QUALITY FILTRATION & RELIABILITY GUARD'(sz=10.0pt, b=True)
+      [P1] text='• 1. Sentinel Check : Gatekeeper intercepts impossible/corrupted inputs (e.g. FPG=0 mg/dL).'
+             runs: '• 1. Sentinel Check : '(sz=9.0pt, b=True) | 'Gatekeeper intercepts impossible/corrupted inputs (e.g. FPG=0 mg/dL).'(sz=9.0pt, b=False)
+      [P2] text='• 2. Conflict Watch : Monitors inter-track prediction divergence (|Classical - Quantum| > 0.45).'
+             runs: '• 2. Conflict Watch : '(sz=9.0pt, b=True) | 'Monitors inter-track prediction divergence (|Classical - Quantum| > 0.45).'(sz=9.0pt, b=False)
+      [P3] text='• 3. Safe Refusal : Proactively halts prediction: system safely refuses to make blind guesses.'
+             runs: '• 3. Safe Refusal : '(sz=9.0pt, b=True) | 'Proactively halts prediction: system safely refuses to make blind guesses.'(sz=9.0pt, b=False)
+      [P4] text='• 4. Lab Directive : Issues clear clinical directive to re-test specific corrupt biomarkers.'
+             runs: '• 4. Lab Directive : '(sz=9.0pt, b=True) | 'Issues clear clinical directive to re-test specific corrupt biomarkers.'(sz=9.0pt, b=False)
+      [P5] text='• 5. Zero Hallucination : 100% clinical safety guarantee protecting doctor trust (2ms latency).'
+             runs: '• 5. Zero Hallucination : '(sz=9.0pt, b=True) | '100% clinical safety guarantee protecting doctor trust (2ms latency).'(sz=9.0pt, b=False)
+
+--- Shape [14] id=17419, name='Rounded Rectangle 17418', type=AUTO_SHAPE (1) ---
+    Left: 594360, Top: 4279392, Width: 4069080, Height: 1920240
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [15] id=17420, name='TextBox 17419', type=TEXT_BOX (17) ---
+    Left: 685800, Top: 4315968, Width: 3886200, Height: 256032
+    Paragraphs count: 1
+      [P0] text='▪ PRODUCTION TECH STACK & SPECIFICATIONS'
+             runs: '▪ PRODUCTION TECH STACK & SPECIFICATIONS'(sz=9.8pt, b=True)
+
+--- Shape [16] id=17421, name='Rounded Rectangle 17420', type=AUTO_SHAPE (1) ---
+    Left: 685800, Top: 4608576, Width: 1865376, Height: 320040
+    Paragraphs count: 1
+      [P0] text='PennyLane 6-Qubit VQC 24 Angles • 64-D Space'
+             runs: 'PennyLane 6-Qubit VQC '(sz=8.19pt, b=True) | '24 Angles • 64-D Space'(sz=7.4pt, b=False)
+
+--- Shape [17] id=17422, name='Rounded Rectangle 17421', type=AUTO_SHAPE (1) ---
+    Left: 685800, Top: 4983480, Width: 1865376, Height: 320040
+    Paragraphs count: 1
+      [P0] text='Memory: < 512 MB RAM Zero GPU (Dual-Core CPU)'
+             runs: 'Memory: < 512 MB RAM '(sz=8.19pt, b=True) | 'Zero GPU (Dual-Core CPU)'(sz=7.4pt, b=False)
+
+--- Shape [18] id=17423, name='Rounded Rectangle 17422', type=AUTO_SHAPE (1) ---
+    Left: 685800, Top: 5358384, Width: 1865376, Height: 320040
+    Paragraphs count: 1
+      [P0] text='Python 3.12 Scientific FastAPI Async Engine'
+             runs: 'Python 3.12 Scientific '(sz=8.19pt, b=True) | 'FastAPI Async Engine'(sz=7.4pt, b=False)
+
+--- Shape [19] id=17424, name='Rounded Rectangle 17423', type=AUTO_SHAPE (1) ---
+    Left: 685800, Top: 5733288, Width: 1865376, Height: 320040
+    Paragraphs count: 1
+      [P0] text='Classical Ensembles RF(300), SVM, XGB, HistGBM'
+             runs: 'Classical Ensembles '(sz=8.19pt, b=True) | 'RF(300), SVM, XGB, HistGBM'(sz=7.4pt, b=False)
+
+--- Shape [20] id=17425, name='Rounded Rectangle 17424', type=AUTO_SHAPE (1) ---
+    Left: 2660904, Top: 4608576, Width: 1865376, Height: 320040
+    Paragraphs count: 1
+      [P0] text='6 Simulators Supported NumPy, Aer, Braket, Lightning'
+             runs: '6 Simulators Supported '(sz=8.19pt, b=True) | 'NumPy, Aer, Braket, Lightning'(sz=7.4pt, b=False)
+
+--- Shape [21] id=17426, name='Rounded Rectangle 17425', type=AUTO_SHAPE (1) ---
+    Left: 2660904, Top: 4983480, Width: 1865376, Height: 320040
+    Paragraphs count: 1
+      [P0] text='React 18 + TypeScript Dynamic Consensus Sliders'
+             runs: 'React 18 + TypeScript '(sz=8.19pt, b=True) | 'Dynamic Consensus Sliders'(sz=7.4pt, b=False)
+
+--- Shape [22] id=17427, name='Rounded Rectangle 17426', type=AUTO_SHAPE (1) ---
+    Left: 2660904, Top: 5358384, Width: 1865376, Height: 320040
+    Paragraphs count: 1
+      [P0] text='Disk Footprint: < 120 MB 100% Offline Edge Deploy'
+             runs: 'Disk Footprint: < 120 MB '(sz=8.19pt, b=True) | '100% Offline Edge Deploy'(sz=7.4pt, b=False)
+
+--- Shape [23] id=17428, name='Rounded Rectangle 17427', type=AUTO_SHAPE (1) ---
+    Left: 2660904, Top: 5733288, Width: 1865376, Height: 320040
+    Paragraphs count: 1
+      [P0] text='50-30-20 Split & CIs 95% Bootstrap Confidence'
+             runs: '50-30-20 Split & CIs '(sz=8.19pt, b=True) | '95% Bootstrap Confidence'(sz=7.4pt, b=False)
+
+--- Shape [24] id=17429, name='Rounded Rectangle 17428', type=AUTO_SHAPE (1) ---
+    Left: 4791456, Top: 4279392, Width: 3291840, Height: 1920240
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [25] id=17430, name='TextBox 17429', type=TEXT_BOX (17) ---
+    Left: 4864608, Top: 4297680, Width: 3145536, Height: 219456
+    Paragraphs count: 1
+      [P0] text='▪ AI ARCHITECTURE: HYBRID QML VS DEEP LEARNING'
+             runs: '▪ AI ARCHITECTURE: HYBRID QML VS DEEP LEARNING'(sz=9.0pt, b=True)
+
+--- Shape [26] id=17431, name='Picture 17430', type=PICTURE (13) ---
+    Left: 4864608, Top: 4535424, Width: 3145536, Height: 1353312
+
+--- Shape [27] id=17432, name='TextBox 17431', type=TEXT_BOX (17) ---
+    Left: 4864608, Top: 5907024, Width: 3145536, Height: 237744
+    Paragraphs count: 2
+      [P0] text='• Deep Learning : >10M params, needs 8GB+ GPU (₹10L+ server), opaque black box, fails offline.'
+             runs: '• Deep Learning : '(sz=7.6pt, b=True) | '>10M params, needs 8GB+ GPU (₹10L+ server), opaque black box, fails offline.'(sz=7.5pt, b=False)
+      [P1] text='• Hybrid QML : 24 params in 64-D space (99.88% compression), 0 GPU (<512MB RAM), calibrated Brier fusion.'
+             runs: '• Hybrid QML : '(sz=7.6pt, b=True) | '24 params in 64-D space (99.88% compression), 0 GPU (<512MB RAM), calibrated Brier fusion.'(sz=7.5pt, b=False)
+
+--- Shape [28] id=17433, name='Rounded Rectangle 17432', type=AUTO_SHAPE (1) ---
+    Left: 8211312, Top: 4279392, Width: 3383280, Height: 1920240
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [29] id=17434, name='TextBox 17433', type=TEXT_BOX (17) ---
+    Left: 8284464, Top: 4297680, Width: 3236976, Height: 219456
+    Paragraphs count: 1
+      [P0] text='▪ SYSTEM SPECIFICATIONS & BENCHMARKS'
+             runs: '▪ SYSTEM SPECIFICATIONS & BENCHMARKS'(sz=9.0pt, b=True)
+
+--- Shape [30] id=17435, name='Picture 17434', type=PICTURE (13) ---
+    Left: 8284464, Top: 4535424, Width: 3236976, Height: 960120
+
+--- Shape [31] id=17436, name='TextBox 17435', type=TEXT_BOX (17) ---
+    Left: 8266175, Top: 5532120, Width: 3273552, Height: 603504
+    Paragraphs count: 2
+      [P0] text='⚡ Latency & Speed : 1.1s Single OPD  |  12s per 500 Records (~10,000/hr Batch Triage)'
+             runs: '⚡ Latency & Speed : '(sz=7.8pt, b=True) | '1.1s Single OPD  |  12s per 500 Records (~10,000/hr Batch Triage)'(sz=7.8pt, b=False)
+      [P1] text='⚡ Hardware & Specs : < 512 MB RAM  |  Zero GPU  |  < 120 MB Disk  |  74.2% QPU Fidelity'
+             runs: '⚡ Hardware & Specs : '(sz=7.8pt, b=True) | '< 512 MB RAM  |  Zero GPU  |  < 120 MB Disk  |  74.2% QPU Fidelity'(sz=7.8pt, b=False)
+
+============================== SLIDE 4 (total shapes: 24) ==============================
+
+--- Shape [0] id=10, name='Rectangle 9', type=AUTO_SHAPE (1) ---
+    Left: 0, Top: 6354762, Width: 12191999, Height: 503238
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [1] id=17409, name='Title 1', type=PLACEHOLDER (14) ---
+    Left: 1691640, Top: 91440, Width: 8046720, Height: 777240
+    Paragraphs count: 1
+      [P0] text='FEASIBILITY AND VIABILITY: CLINICAL, TECHNICAL & ECONOMIC RIGOR'
+             runs: 'FEASIBILITY AND VIABILITY: CLINICAL, TECHNICAL & ECONOMIC RIGOR'(sz=16.5pt, b=True)
+
+--- Shape [2] id=17410, name='TextBox 8', type=TEXT_BOX (17) ---
+    Left: 0, Top: 0, Width: 91440, Height: 91440
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [3] id=6, name='Slide Number Placeholder 5', type=PLACEHOLDER (14) ---
+    Left: 8737600, Top: 6356353, Width: 2844800, Height: 365125
+    Paragraphs count: 1
+      [P0] text='4'
+             runs: 
+
+--- Shape [4] id=7, name='Footer Placeholder 6', type=PLACEHOLDER (14) ---
+    Left: 4648200, Top: 6356353, Width: 3204000, Height: 365125
+    Paragraphs count: 1
+      [P0] text='@Code 404'
+             runs: '@Code 404'(sz=10.0pt, b=None)
+
+--- Shape [5] id=12, name='Oval 11', type=AUTO_SHAPE (1) ---
+    Left: 329773, Top: 252246, Width: 1251857, Height: 807334
+    Paragraphs count: 1
+      [P0] text='Code 404'
+             runs: 'Code 404'(sz=13.0pt, b=True)
+
+--- Shape [6] id=17411, name='Picture 17410', type=PICTURE (13) ---
+    Left: 10378440, Top: 36576, Width: 1618488, Height: 822960
+
+--- Shape [7] id=17412, name='Rounded Rectangle 17411', type=AUTO_SHAPE (1) ---
+    Left: 594360, Top: 960120, Width: 4023360, Height: 5230368
+    Paragraphs count: 1
+      [P0] text='▪ VIABILITY: THE ECONOMIC CASE'
+             runs: '▪ '(sz=11.5pt, b=True) | 'VIABILITY: THE ECONOMIC CASE'(sz=11.5pt, b=True)
+
+--- Shape [8] id=17413, name='Rounded Rectangle 17412', type=AUTO_SHAPE (1) ---
+    Left: 713232, Top: 1353312, Width: 3785615, Height: 841248
+    Paragraphs count: 2
+      [P0] text='PAYBACK PERIOD : < 30 Days'
+             runs: 'PAYBACK PERIOD : '(sz=10.0pt, b=True) | '< 30 Days'(sz=13.0pt, b=True)
+      [P1] text='Fastest capital recovery for rural Primary Health Centres (PHCs).'
+             runs: 'Fastest capital recovery for rural Primary Health Centres (PHCs).'(sz=9.5pt, b=None)
+
+--- Shape [9] id=17414, name='Rounded Rectangle 17413', type=AUTO_SHAPE (1) ---
+    Left: 713232, Top: 2267712, Width: 3785615, Height: 841248
+    Paragraphs count: 2
+      [P0] text='ANNUAL OUT-OF-POCKET SAVINGS : 40% – 60%'
+             runs: 'ANNUAL OUT-OF-POCKET SAVINGS : '(sz=10.0pt, b=True) | '40% – 60%'(sz=13.0pt, b=True)
+      [P1] text='Halts chronic progression before expensive dialysis or ICU care.'
+             runs: 'Halts chronic progression before expensive dialysis or ICU care.'(sz=9.5pt, b=None)
+
+--- Shape [10] id=17415, name='Rounded Rectangle 17414', type=AUTO_SHAPE (1) ---
+    Left: 713232, Top: 3182112, Width: 3785615, Height: 841248
+    Paragraphs count: 2
+      [P0] text='NATIONAL ANNUAL BENEFIT : ₹50,000+ Cr'
+             runs: 'NATIONAL ANNUAL BENEFIT : '(sz=10.0pt, b=True) | '₹50,000+ Cr'(sz=13.0pt, b=True)
+      [P1] text='Macro-economic healthcare savings from pre-symptomatic triage.'
+             runs: 'Macro-economic healthcare savings from pre-symptomatic triage.'(sz=9.5pt, b=None)
+
+--- Shape [11] id=17416, name='Rounded Rectangle 17415', type=AUTO_SHAPE (1) ---
+    Left: 713232, Top: 4096512, Width: 3785615, Height: 841248
+    Paragraphs count: 2
+      [P0] text='RURAL SCREENING COVERAGE : 15% → 85%'
+             runs: 'RURAL SCREENING COVERAGE : '(sz=10.0pt, b=True) | '15% → 85%'(sz=13.0pt, b=True)
+      [P1] text='Accelerates Ayushman Arogya Mandir universal screening outreach.'
+             runs: 'Accelerates Ayushman Arogya Mandir universal screening outreach.'(sz=9.5pt, b=None)
+
+--- Shape [12] id=17417, name='Rounded Rectangle 17416', type=AUTO_SHAPE (1) ---
+    Left: 713232, Top: 5029200, Width: 3785615, Height: 1051560
+    Paragraphs count: 4
+      [P0] text='▪ NATIONAL POLICY & SCHEME ALIGNMENT'
+             runs: '▪ NATIONAL POLICY & SCHEME ALIGNMENT'(sz=9.8pt, b=True)
+      [P1] text='• ABDM Schema : Interoperable digital health records (FHIR / M1-M3 milestones)'
+             runs: '• ABDM Schema : '(sz=8.8pt, b=True) | 'Interoperable digital health records (FHIR / M1-M3 milestones)'(sz=8.8pt, b=False)
+      [P2] text='• NHM Universal : Universal NCD screening across Indian states & rural PHCs'
+             runs: '• NHM Universal : '(sz=8.8pt, b=True) | 'Universal NCD screening across Indian states & rural PHCs'(sz=8.8pt, b=False)
+      [P3] text='• PM-JAY Protection : 100% Free Open-Source Architecture saving public expenditure'
+             runs: '• PM-JAY Protection : '(sz=8.8pt, b=True) | '100% Free Open-Source Architecture saving public expenditure'(sz=8.8pt, b=False)
+
+--- Shape [13] id=17418, name='Table 17417', type=TABLE (19) ---
+    Left: 4782312, Top: 960120, Width: 6812280, Height: 3017520
+    (Table shape)
+      Row 0: ['CHALLENGE / DOMAIN', 'IMPACT & CLINICAL RISK', 'ENGINEERING MITIGATION']
+      Row 1: ['NISQ Qubit Noise', 'Hardware gate errors & qubit decoherence on real QPUs.', 'Depolarizing noise sim (p=0.05) + ZNE mitigation; 74.2% fidelity retained across 6 simulators.']
+      Row 2: ['Doctor Hesitation', 'Clinicians resist uncalibrated, opaque AI black boxes.', 'Platt-calibrated posteriors + SHAP local attributions + Doctor-validated review on record.']
+      Row 3: ['Corrupted Sensor Data', 'Invalid patient inputs (FPG=0) cause fatal miscalls.', 'Data Quality Filtration Sentinel halts prediction; 100% safe refusal guarantee (2ms).']
+      Row 4: ['Rural Infrastructure', 'Mass camp screening queues, power cuts, zero GPU.', 'Vectorized batch engine (500/12s) runs 100% offline in <512MB RAM on ₹25k laptops.']
+
+--- Shape [14] id=17419, name='Rounded Rectangle 17418', type=AUTO_SHAPE (1) ---
+    Left: 4782312, Top: 4069080, Width: 4297680, Height: 1051560
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [15] id=17420, name='TextBox 17419', type=TEXT_BOX (17) ---
+    Left: 4873752, Top: 4096512, Width: 4114800, Height: 256032
+    Paragraphs count: 1
+      [P0] text='▪ 3-PHASE ROLLOUT STRATEGY'
+             runs: '▪ 3-PHASE ROLLOUT STRATEGY'(sz=9.8pt, b=True)
+
+--- Shape [16] id=17421, name='Rounded Rectangle 17420', type=AUTO_SHAPE (1) ---
+    Left: 4873752, Top: 4370832, Width: 1298448, Height: 658368
+    Paragraphs count: 2
+      [P0] text='PHASE 1: ₹0 Setup'
+             runs: 'PHASE 1: '(sz=8.5pt, b=True) | '₹0 Setup'(sz=9.19pt, b=True)
+      [P1] text='PHC Offline Laptops'
+             runs: 'PHC Offline Laptops'(sz=7.8pt, b=None)
+
+--- Shape [17] id=17422, name='Rounded Rectangle 17421', type=AUTO_SHAPE (1) ---
+    Left: 6245352, Top: 4370832, Width: 1298448, Height: 658368
+    Paragraphs count: 2
+      [P0] text='PHASE 2: State Rollout'
+             runs: 'PHASE 2: '(sz=8.5pt, b=True) | 'State Rollout'(sz=9.19pt, b=True)
+      [P1] text='50-30-20 ASHA Triage'
+             runs: '50-30-20 ASHA Triage'(sz=7.8pt, b=None)
+
+--- Shape [18] id=17423, name='Rounded Rectangle 17422', type=AUTO_SHAPE (1) ---
+    Left: 7616952, Top: 4370832, Width: 1298448, Height: 658368
+    Paragraphs count: 2
+      [P0] text='PHASE 3: National Scale'
+             runs: 'PHASE 3: '(sz=8.5pt, b=True) | 'National Scale'(sz=9.19pt, b=True)
+      [P1] text='₹50,000+ Cr Savings'
+             runs: '₹50,000+ Cr Savings'(sz=7.8pt, b=None)
+
+--- Shape [19] id=17424, name='Rounded Rectangle 17423', type=AUTO_SHAPE (1) ---
+    Left: 4782312, Top: 5193792, Width: 4297680, Height: 978408
+    Paragraphs count: 3
+      [P0] text='▪ MEDICO-LEGAL & CLINICAL SAFETY ASSURANCE'
+             runs: '▪ MEDICO-LEGAL & CLINICAL SAFETY ASSURANCE'(sz=9.8pt, b=True)
+      [P1] text='• 100% Zero-Hallucination Guard : Hardcoded sentinels safely halt prediction on corrupted sensor inputs (FPG=0).'
+             runs: '• 100% Zero-Hallucination Guard : '(sz=8.6pt, b=True) | 'Hardcoded sentinels safely halt prediction on corrupted sensor inputs (FPG=0).'(sz=8.6pt, b=False)
+      [P2] text='• Tamper-Evident SHA-256 Hashes : Every CDS PDF report is cryptographically signed; full physician override authority.'
+             runs: '• Tamper-Evident SHA-256 Hashes : '(sz=8.6pt, b=True) | 'Every CDS PDF report is cryptographically signed; full physician override authority.'(sz=8.6pt, b=False)
+
+--- Shape [20] id=17425, name='Rounded Rectangle 17424', type=AUTO_SHAPE (1) ---
+    Left: 9189720, Top: 4069080, Width: 2404872, Height: 2103120
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [21] id=17426, name='TextBox 17425', type=TEXT_BOX (17) ---
+    Left: 9244584, Top: 4096512, Width: 2295144, Height: 219456
+    Paragraphs count: 1
+      [P0] text='▪ 6-QUBIT QPU SPECIFICATIONS'
+             runs: '▪ 6-QUBIT QPU SPECIFICATIONS'(sz=8.6pt, b=True)
+
+--- Shape [22] id=17427, name='Picture 17426', type=PICTURE (13) ---
+    Left: 9244584, Top: 4334256, Width: 2295144, Height: 1353312
+
+--- Shape [23] id=17428, name='TextBox 17427', type=TEXT_BOX (17) ---
+    Left: 9244584, Top: 5705856, Width: 2295144, Height: 420624
+    Paragraphs count: 1
+      [P0] text='[PENNYLANE VQC ARCHITECTURE]
+24 Variational Angles • 74.2% Fidelity • 6 Simulators'
+             runs: '[PENNYLANE VQC ARCHITECTURE]
+'(sz=7.6pt, b=True) | '24 Variational Angles • 74.2% Fidelity • 6 Simulators'(sz=7.8pt, b=True)
+
+============================== SLIDE 5 (total shapes: 21) ==============================
+
+--- Shape [0] id=10, name='Rectangle 9', type=AUTO_SHAPE (1) ---
+    Left: 0, Top: 6354762, Width: 12191999, Height: 503238
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [1] id=17409, name='Title 1', type=PLACEHOLDER (14) ---
+    Left: 1691640, Top: 91440, Width: 8046720, Height: 777240
+    Paragraphs count: 1
+      [P0] text='IMPACT AND BENEFITS: STAKEHOLDER TRANSFORMATION & BENCHMARKS'
+             runs: 'IMPACT AND BENEFITS: STAKEHOLDER TRANSFORMATION & BENCHMARKS'(sz=16.5pt, b=True)
+
+--- Shape [2] id=17410, name='TextBox 8', type=TEXT_BOX (17) ---
+    Left: 0, Top: 0, Width: 91440, Height: 91440
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [3] id=6, name='Slide Number Placeholder 5', type=PLACEHOLDER (14) ---
+    Left: 8737600, Top: 6356353, Width: 2844800, Height: 365125
+    Paragraphs count: 1
+      [P0] text='5'
+             runs: 
+
+--- Shape [4] id=7, name='Footer Placeholder 6', type=PLACEHOLDER (14) ---
+    Left: 4648200, Top: 6356353, Width: 3204000, Height: 365125
+    Paragraphs count: 1
+      [P0] text='@Code 404'
+             runs: '@Code 404'(sz=10.0pt, b=None)
+
+--- Shape [5] id=12, name='Oval 11', type=AUTO_SHAPE (1) ---
+    Left: 329773, Top: 252246, Width: 1251857, Height: 807334
+    Paragraphs count: 1
+      [P0] text='Code 404'
+             runs: 'Code 404'(sz=13.0pt, b=True)
+
+--- Shape [6] id=17411, name='Picture 17410', type=PICTURE (13) ---
+    Left: 10378440, Top: 36576, Width: 1618488, Height: 822960
+
+--- Shape [7] id=17412, name='Rounded Rectangle 17411', type=AUTO_SHAPE (1) ---
+    Left: 594360, Top: 960120, Width: 3429000, Height: 2788920
+    Paragraphs count: 7
+      [P0] text='▪ STAKEHOLDER TRANSFORMATION'
+             runs: '▪ STAKEHOLDER TRANSFORMATION'(sz=10.19pt, b=True)
+      [P1] text='• For Primary Care Doctors : 1.1s calibrated second opinion + SHAP attributions, eliminating diagnostic delays.'
+             runs: '• For Primary Care Doctors : '(sz=8.5pt, b=True) | '1.1s calibrated second opinion + SHAP attributions, eliminating diagnostic delays.'(sz=8.5pt, b=False)
+      [P2] text='• Doctor Prototype Review : Verified clinical evaluation & feedback by practicing physician (Click to view)'
+             runs: '• Doctor Prototype Review : '(sz=8.5pt, b=True) | 'Verified clinical evaluation & feedback by practicing physician (Click to view)'(sz=8.5pt, b=False)
+      [P3] text='• 🎥 Prototype Demo Video : Full working software demo walkthrough & code verification (Click to view)'
+             runs: '• 🎥 Prototype Demo Video : '(sz=8.5pt, b=True) | 'Full working software demo walkthrough & code verification (Click to view)'(sz=8.5pt, b=False)
+      [P4] text='• For ASHA Field Workers : 1-click village batch triage (500 records in 12s) with prioritized follow-up rosters.'
+             runs: '• For ASHA Field Workers : '(sz=8.5pt, b=True) | '1-click village batch triage (500 records in 12s) with prioritized follow-up rosters.'(sz=8.5pt, b=False)
+      [P5] text='• For National Health Mission : 40%–60% OOP cost reduction, ₹50,000+ Cr national savings, full ABDM compliance.'
+             runs: '• For National Health Mission : '(sz=8.5pt, b=True) | '40%–60% OOP cost reduction, ₹50,000+ Cr national savings, full ABDM compliance.'(sz=8.5pt, b=False)
+      [P6] text='• Core Platform Metrics : 3–5 Yrs Early Detection • < 512 MB RAM • Cryptographic SHA-256 Audit Trail'
+             runs: '• Core Platform Metrics : '(sz=8.5pt, b=True) | '3–5 Yrs Early Detection • < 512 MB RAM • Cryptographic SHA-256 Audit Trail'(sz=8.5pt, b=False)
+
+--- Shape [8] id=17413, name='Rounded Rectangle 17412', type=AUTO_SHAPE (1) ---
+    Left: 4160520, Top: 960120, Width: 1600200, Height: 2788920
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [9] id=17414, name='Picture 17413', type=PICTURE (13) ---
+    Left: 4233672, Top: 1024128, Width: 1453896, Height: 1874519
+
+--- Shape [10] id=17415, name='TextBox 17414', type=TEXT_BOX (17) ---
+    Left: 4178808, Top: 2926080, Width: 1563624, Height: 777240
+    Paragraphs count: 1
+      [P0] text='CLINICAL CDS TABLET
+1.1s Real-Time CDS
+● Doctor Review
+● Demo Video'
+             runs: 'CLINICAL CDS TABLET
+'(sz=8.19pt, b=True) | '1.1s Real-Time CDS
+'(sz=7.5pt, b=None) | '● Doctor Review'(sz=7.2pt, b=True) | '
+● Demo Video'(sz=7.2pt, b=True)
+
+--- Shape [11] id=17416, name='Table 17415', type=TABLE (19) ---
+    Left: 5897880, Top: 960120, Width: 5696712, Height: 2788920
+    (Table shape)
+      Row 0: ['BENCHMARK FEATURE', 'COMMERCIAL / EXISTING AI', 'QUANTUMHEALTH AI']
+      Row 1: ['Pre-Symptomatic Detection', 'Late Stage III / IV only [NO]', '3–5 Yrs Pre-Symptomatic [YES]']
+      Row 2: ['Parameter Compression', '0% (18,000 Tree Nodes) [NO]', '99.88% (24 VQC Angles) [YES]']
+      Row 3: ['Data Quality Filtration', 'Blind Overconfident Guess [NO]', 'Reliability Guard (0 Hallucination) [YES]']
+      Row 4: ['50-30-20 Partitioning', 'Random split with leakage [NO]', 'Rigorous 50-30-20 + 95% CIs [YES]']
+      Row 5: ['Indian Phenotype Tuning', 'Western Cutoffs (BMI >= 25) [NO]', 'ICMR-INDIAB Tuned (BMI >= 23) [YES]']
+      Row 6: ['Cohort Provenance', 'Small / Synthetic Toy Data [NO]', '211,833 Authentic Patients [YES]']
+      Row 7: ['Hardware & Edge Cost', '₹10L+ GPU Server Setup [NO]', '₹0 (Runs on ₹25k Laptop, <512MB) [YES]']
+
+--- Shape [12] id=17417, name='Rounded Rectangle 17416', type=AUTO_SHAPE (1) ---
+    Left: 594360, Top: 3840480, Width: 3547872, Height: 2395728
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [13] id=17418, name='Picture 17417', type=PICTURE (13) ---
+    Left: 667512, Top: 3913632, Width: 3401568, Height: 1005840
+
+--- Shape [14] id=17419, name='TextBox 17418', type=TEXT_BOX (17) ---
+    Left: 667512, Top: 4956048, Width: 3401568, Height: 1234440
+    Paragraphs count: 4
+      [P0] text='▪ 1. CLINICAL CDS RESULTS [SIMPLE → COMPLEX HIERARCHY]'
+             runs: '▪ 1. CLINICAL CDS RESULTS [SIMPLE → COMPLEX HIERARCHY]'(sz=8.5pt, b=True)
+      [P1] text='• Simple Terms (Top) : Risk Tier (Low/Mod/High), Recommended Medical Action, Primary Biomarker Driver.'
+             runs: '• Simple Terms (Top) : '(sz=8.0pt, b=True) | 'Risk Tier (Low/Mod/High), Recommended Medical Action, Primary Biomarker Driver.'(sz=7.8pt, b=False)
+      [P2] text='• Complex Terms (Below) : Platt-Calibrated Posterior, Born Probability ⟨Z₀⟩, Inter-Model Disagreement Spread (|Δ|).'
+             runs: '• Complex Terms (Below) : '(sz=8.0pt, b=True) | 'Platt-Calibrated Posterior, Born Probability ⟨Z₀⟩, Inter-Model Disagreement Spread (|Δ|).'(sz=7.8pt, b=False)
+      [P3] text='• 4 Live Charts : Model Comparison Bar, Feature Waterfall (SHAP), Patient Radar, Agreement Spectrum.'
+             runs: '• 4 Live Charts : '(sz=8.0pt, b=True) | 'Model Comparison Bar, Feature Waterfall (SHAP), Patient Radar, Agreement Spectrum.'(sz=7.8pt, b=False)
+
+--- Shape [15] id=17420, name='Rounded Rectangle 17419', type=AUTO_SHAPE (1) ---
+    Left: 4315968, Top: 3840480, Width: 3547872, Height: 2395728
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [16] id=17421, name='Picture 17420', type=PICTURE (13) ---
+    Left: 4389120, Top: 3913632, Width: 3401568, Height: 1005840
+
+--- Shape [17] id=17422, name='TextBox 17421', type=TEXT_BOX (17) ---
+    Left: 4389120, Top: 4956048, Width: 3401568, Height: 1234440
+    Paragraphs count: 4
+      [P0] text='▪ 2. QUANTUM NOVELTY & TEST SPLIT INSIGHTS'
+             runs: '▪ 2. QUANTUM NOVELTY & TEST SPLIT INSIGHTS'(sz=8.5pt, b=True)
+      [P1] text='• 50-30-20 Data Split : 50% Classical (5 models), 30% Quantum (6 qubits), 20% Unseen Holdout Testing.'
+             runs: '• 50-30-20 Data Split : '(sz=8.0pt, b=True) | '50% Classical (5 models), 30% Quantum (6 qubits), 20% Unseen Holdout Testing.'(sz=7.8pt, b=False)
+      [P2] text='• Statistical Rigor : 95% bootstrap confidence intervals, precision error bands, zero data leakage.'
+             runs: '• Statistical Rigor : '(sz=8.0pt, b=True) | '95% bootstrap confidence intervals, precision error bands, zero data leakage.'(sz=7.8pt, b=False)
+      [P3] text='• Dynamic Ratio Slider : Interactive consensus control (0%–100% quantum weight, default 60C/40Q).'
+             runs: '• Dynamic Ratio Slider : '(sz=8.0pt, b=True) | 'Interactive consensus control (0%–100% quantum weight, default 60C/40Q).'(sz=7.8pt, b=False)
+
+--- Shape [18] id=17423, name='Rounded Rectangle 17422', type=AUTO_SHAPE (1) ---
+    Left: 8037576, Top: 3840480, Width: 3547872, Height: 2395728
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [19] id=17424, name='Picture 17423', type=PICTURE (13) ---
+    Left: 8110728, Top: 3913632, Width: 3401568, Height: 1005840
+
+--- Shape [20] id=17425, name='TextBox 17424', type=TEXT_BOX (17) ---
+    Left: 8110728, Top: 4956048, Width: 3401568, Height: 1234440
+    Paragraphs count: 4
+      [P0] text='▪ 3. OPERATIONAL USE CASES [MASS POPULATION TRIAGE]'
+             runs: '▪ 3. OPERATIONAL USE CASES [MASS POPULATION TRIAGE]'(sz=8.5pt, b=True)
+      [P1] text='• Use Case 1 (1:1 OPD) : Sub-second (1.1s) second opinion for rural medical officers with signed PDF.'
+             runs: '• Use Case 1 (1:1 OPD) : '(sz=8.0pt, b=True) | 'Sub-second (1.1s) second opinion for rural medical officers with signed PDF.'(sz=7.8pt, b=False)
+      [P2] text='• Use Case 2 (ASHA Camp) : 500 patient records in 12s (~10,000/hr) with prioritized follow-up rosters.'
+             runs: '• Use Case 2 (ASHA Camp) : '(sz=8.0pt, b=True) | '500 patient records in 12s (~10,000/hr) with prioritized follow-up rosters.'(sz=7.8pt, b=False)
+      [P3] text='• Use Case 3 (Epidemiology) : District-level NCD prevalence mapping for National Health Mission.'
+             runs: '• Use Case 3 (Epidemiology) : '(sz=8.0pt, b=True) | 'District-level NCD prevalence mapping for National Health Mission.'(sz=7.8pt, b=False)
+
+============================== SLIDE 6 (total shapes: 14) ==============================
+
+--- Shape [0] id=10, name='Rectangle 9', type=AUTO_SHAPE (1) ---
+    Left: 0, Top: 6354762, Width: 12191999, Height: 503238
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [1] id=17409, name='Title 1', type=PLACEHOLDER (14) ---
+    Left: 1691640, Top: 91440, Width: 8046720, Height: 777240
+    Paragraphs count: 1
+      [P0] text='RESEARCH AND REFERENCES: SCIENTIFIC LITERATURE & LIVE PROTOTYPE'
+             runs: 'RESEARCH AND REFERENCES: SCIENTIFIC LITERATURE & LIVE PROTOTYPE'(sz=16.5pt, b=True)
+
+--- Shape [2] id=17410, name='TextBox 8', type=TEXT_BOX (17) ---
+    Left: 0, Top: 0, Width: 91440, Height: 91440
+    Paragraphs count: 1
+      [P0] text=''
+             runs: 
+
+--- Shape [3] id=6, name='Slide Number Placeholder 5', type=PLACEHOLDER (14) ---
+    Left: 8737600, Top: 6356353, Width: 2844800, Height: 365125
+    Paragraphs count: 1
+      [P0] text='6'
+             runs: 
+
+--- Shape [4] id=7, name='Footer Placeholder 6', type=PLACEHOLDER (14) ---
+    Left: 4648200, Top: 6356353, Width: 3204000, Height: 365125
+    Paragraphs count: 1
+      [P0] text='@Code 404'
+             runs: '@Code 404'(sz=10.0pt, b=None)
+
+--- Shape [5] id=9, name='Oval 8', type=AUTO_SHAPE (1) ---
+    Left: 329773, Top: 252246, Width: 1251857, Height: 807334
+    Paragraphs count: 1
+      [P0] text='Code 404'
+             runs: 'Code 404'(sz=13.0pt, b=True)
+
+--- Shape [6] id=17411, name='Picture 17410', type=PICTURE (13) ---
+    Left: 10378440, Top: 36576, Width: 1618488, Height: 822960
+
+--- Shape [7] id=17412, name='Rounded Rectangle 17411', type=AUTO_SHAPE (1) ---
+    Left: 594360, Top: 960120, Width: 11000232, Height: 1536192
+    Paragraphs count: 5
+      [P0] text='▪ SCIENTIFIC LITERATURE & CLINICAL STANDARDS'
+             runs: '▪ SCIENTIFIC LITERATURE & CLINICAL STANDARDS'(sz=10.8pt, b=True)
+      [P1] text='• ICMR-INDIAB 2023 Study : Lancet Diabetes 101M cohort: established authentic South Asian 'Thin-Fat' cutoffs.'
+             runs: '• ICMR-INDIAB 2023 Study : '(sz=9.5pt, b=True) | 'Lancet Diabetes 101M cohort: established authentic South Asian 'Thin-Fat' cutoffs.'(sz=9.5pt, b=False)
+      [P2] text='• Dryad / BMJ Open Cohort : Chen et al. (2018): 211,833 authentic patient screening records (zero synthetic data).'
+             runs: '• Dryad / BMJ Open Cohort : '(sz=9.5pt, b=True) | 'Chen et al. (2018): 211,833 authentic patient screening records (zero synthetic data).'(sz=9.5pt, b=False)
+      [P3] text='• Quantum Machine Learning : Schuld et al. (2021) 'Supervised Quantum Learning' & PennyLane VQC architecture.'
+             runs: '• Quantum Machine Learning : '(sz=9.5pt, b=True) | 'Schuld et al. (2021) 'Supervised Quantum Learning' & PennyLane VQC architecture.'(sz=9.5pt, b=False)
+      [P4] text='• Clinical AI Ethics & Standards : Aligned with WHO AI Guidance, FHIR digital standards, and ABDM interoperability.'
+             runs: '• Clinical AI Ethics & Standards : '(sz=9.5pt, b=True) | 'Aligned with WHO AI Guidance, FHIR digital standards, and ABDM interoperability.'(sz=9.5pt, b=False)
+
+--- Shape [8] id=17413, name='Rounded Rectangle 17412', type=AUTO_SHAPE (1) ---
+    Left: 594360, Top: 2606040, Width: 5413248, Height: 1627632
+    Paragraphs count: 5
+      [P0] text='▪ SOLUTIONS ALREADY EXIST (COMMERCIAL SYSTEMS)'
+             runs: '▪ SOLUTIONS ALREADY EXIST (COMMERCIAL SYSTEMS)'(sz=10.5pt, b=True)
+      [P1] text='• Expensive Enterprise AI : Epic AI, IBM Watson Health, Aidoc require recurring multi-lakh annual licenses.'
+             runs: '• Expensive Enterprise AI : '(sz=9.19pt, b=True) | 'Epic AI, IBM Watson Health, Aidoc require recurring multi-lakh annual licenses.'(sz=9.19pt, b=False)
+      [P2] text='• Massive Compute Demands : Demand ₹10 Lakh+ GPU servers (8GB+ VRAM) — unviable for rural health centers.'
+             runs: '• Massive Compute Demands : '(sz=9.19pt, b=True) | 'Demand ₹10 Lakh+ GPU servers (8GB+ VRAM) — unviable for rural health centers.'(sz=9.19pt, b=False)
+      [P3] text='• Uncalibrated Black Boxes : Deep learning opacity with zero quantum compression or qubit Born explainability.'
+             runs: '• Uncalibrated Black Boxes : '(sz=9.19pt, b=True) | 'Deep learning opacity with zero quantum compression or qubit Born explainability.'(sz=9.19pt, b=False)
+      [P4] text='• Cloud & Internet Dependency : Fails completely during frequent rural electrical and broadband outages.'
+             runs: '• Cloud & Internet Dependency : '(sz=9.19pt, b=True) | 'Fails completely during frequent rural electrical and broadband outages.'(sz=9.19pt, b=False)
+
+--- Shape [9] id=17414, name='Rounded Rectangle 17413', type=AUTO_SHAPE (1) ---
+    Left: 6172200, Top: 2606040, Width: 5422392, Height: 1627632
+    Paragraphs count: 5
+      [P0] text='▪ OUR SOLUTION STANDS OUT (QUANTUMHEALTH AI NOVELTY)'
+             runs: '▪ OUR SOLUTION STANDS OUT (QUANTUMHEALTH AI NOVELTY)'(sz=10.5pt, b=True)
+      [P1] text='• 99.88% Parameter Compression : 24 variational angles replace 18,000 tree nodes in 64-D Hilbert space.'
+             runs: '• 99.88% Parameter Compression : '(sz=9.19pt, b=True) | '24 variational angles replace 18,000 tree nodes in 64-D Hilbert space.'(sz=9.19pt, b=False)
+      [P2] text='• Zero GPU & Minimal Memory : Runs 100% offline in < 512 MB RAM on standard ₹25,000 laptops.'
+             runs: '• Zero GPU & Minimal Memory : '(sz=9.19pt, b=True) | 'Runs 100% offline in < 512 MB RAM on standard ₹25,000 laptops.'(sz=9.19pt, b=False)
+      [P3] text='• 50-30-20 Partitioning & CIs : 50% Classical + 30% Quantum + 20% Unseen Test Split with 95% bootstrap CIs.'
+             runs: '• 50-30-20 Partitioning & CIs : '(sz=9.19pt, b=True) | '50% Classical + 30% Quantum + 20% Unseen Test Split with 95% bootstrap CIs.'(sz=9.19pt, b=False)
+      [P4] text='• 6-Simulator Portability : Seamlessly switches across NumPy, PennyLane, Qiskit Aer, Braket, Lightning.'
+             runs: '• 6-Simulator Portability : '(sz=9.19pt, b=True) | 'Seamlessly switches across NumPy, PennyLane, Qiskit Aer, Braket, Lightning.'(sz=9.19pt, b=False)
+
+--- Shape [10] id=17415, name='Rounded Rectangle 17414', type=AUTO_SHAPE (1) ---
+    Left: 594360, Top: 4343400, Width: 6035040, Height: 1874519
+    Paragraphs count: 7
+      [P0] text='▪ PROJECT RESOURCES & CLINICAL VALIDATION'
+             runs: '▪ PROJECT RESOURCES & CLINICAL VALIDATION'(sz=10.0pt, b=True)
+      [P1] text='• 🎥 Prototype Demo Video : Full working software demo walkthrough (Click to view)'
+             runs: '• 🎥 Prototype Demo Video : '(sz=8.4pt, b=True) | 'Full working software demo walkthrough (Click to view)'(sz=8.4pt, b=False)
+      [P2] text='• Doctor's Clinical Review : Verified clinical evaluation by practicing physician (Click to view)'
+             runs: '• Doctor's Clinical Review : '(sz=8.4pt, b=True) | 'Verified clinical evaluation by practicing physician (Click to view)'(sz=8.4pt, b=False)
+      [P3] text='• Live Cloud Platform : quantumhealth-ai.onrender.com (24/7 Live Full-Stack System)'
+             runs: '• Live Cloud Platform : '(sz=8.4pt, b=True) | 'quantumhealth-ai.onrender.com (24/7 Live Full-Stack System)'(sz=8.4pt, b=False)
+      [P4] text='• Public REST API & Docs : quantumhealth-ai.onrender.com/docs (OpenAPI / Swagger Specs)'
+             runs: '• Public REST API & Docs : '(sz=8.4pt, b=True) | 'quantumhealth-ai.onrender.com/docs (OpenAPI / Swagger Specs)'(sz=8.4pt, b=False)
+      [P5] text='• Open-Source GitHub : github.com/rohitgupta152311-rgb/QuantumHealth-AI-SIH2026'
+             runs: '• Open-Source GitHub : '(sz=8.4pt, b=True) | 'github.com/rohitgupta152311-rgb/QuantumHealth-AI-SIH2026'(sz=8.4pt, b=False)
+      [P6] text='• Verification Suite : 92 / 92 automated tests passing (67 pytest + 25 vitest, 100% clean)'
+             runs: '• Verification Suite : '(sz=8.4pt, b=True) | '92 / 92 automated tests passing (67 pytest + 25 vitest, 100% clean)'(sz=8.4pt, b=False)
+
+--- Shape [11] id=17416, name='Rounded Rectangle 17415', type=AUTO_SHAPE (1) ---
+    Left: 6766560, Top: 4343400, Width: 4828032, Height: 1874519
+    Paragraphs count: 5
+      [P0] text='▪ SCAN PHONE • TEST LIVE PROTOTYPE'
+             runs: '▪ SCAN PHONE • TEST LIVE PROTOTYPE'(sz=10.19pt, b=True)
+      [P1] text='• 📱 Mobile QR Scan : Scan QR with smartphone camera to run live predictions instantly.'
+             runs: '• 📱 Mobile QR Scan : '(sz=8.5pt, b=True) | 'Scan QR with smartphone camera to run live predictions instantly.'(sz=8.5pt, b=False)
+      [P2] text='• Tamper-Evident SHA-256 : Every generated clinical CDS PDF contains an immutable hash.'
+             runs: '• Tamper-Evident SHA-256 : '(sz=8.5pt, b=True) | 'Every generated clinical CDS PDF contains an immutable hash.'(sz=8.5pt, b=False)
+      [P3] text='• Doctor-in-the-Loop : Full physician override authority, compliant with WHO AI Ethics.'
+             runs: '• Doctor-in-the-Loop : '(sz=8.5pt, b=True) | 'Full physician override authority, compliant with WHO AI Ethics.'(sz=8.5pt, b=False)
+      [P4] text='• Zero-Hallucination : Reliably rejects corrupted sensors (FPG=0) with safe re-test directive.'
+             runs: '• Zero-Hallucination : '(sz=8.5pt, b=True) | 'Reliably rejects corrupted sensors (FPG=0) with safe re-test directive.'(sz=8.5pt, b=False)
+
+--- Shape [12] id=17417, name='Picture 17416', type=PICTURE (13) ---
+    Left: 9893808, Top: 4462272, Width: 1554480, Height: 1554480
+
+--- Shape [13] id=17418, name='TextBox 17417', type=TEXT_BOX (17) ---
+    Left: 9784080, Top: 6016752, Width: 1773936, Height: 182880
+    Paragraphs count: 1
+      [P0] text='● LIVE CLOUD APP'
+             runs: '● LIVE CLOUD APP'(sz=8.0pt, b=True)
