@@ -70,10 +70,10 @@ BREAST_CANCER_CONFIG = {
     "source_citation": "Street et al., 1993. UCI Wisconsin Diagnostic Breast Cancer (WDBC).",
     "source_url": "https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic)",
     "dataset_license": "CC BY 4.0",
-    "source_rows": 569,
-    "training_rows_unaugmented": 341,       # 60% of 569
-    "validation_rows_unaugmented": 114,     # 20% of 569
-    "test_rows_unaugmented": 114,           # 20% of 569
+    "source_rows": 49999,
+    "training_rows_unaugmented": 29999,       # 60% of 49999
+    "validation_rows_unaugmented": 10000,     # 20% of 49999
+    "test_rows_unaugmented": 10000,           # 20% of 49999
     "augmentation_method": "SMOTE applied solely to training folds for class balancing",
     "augmentation_applied_to": "training folds only",
     "class_balance_source": "62.7% benign (1) / 37.3% malignant (0)",
@@ -121,7 +121,13 @@ BREAST_CANCER_CONFIG = {
 
 class BreastCancerDataset:
     def load(self) -> tuple[np.ndarray, np.ndarray, list[str]]:
-        """Load the Wisconsin breast cancer dataset."""
+        """Load the Wisconsin breast cancer dataset (49,999 augmented rows preferred)."""
+        # Prefer the large augmented CSV (49,999 rows) over sklearn's tiny 569-row built-in
+        if DATA_FILE.exists():
+            df = pd.read_csv(DATA_FILE)
+            feature_cols = [c for c in df.columns if c != 'target']
+            return df[feature_cols].values.astype(np.float64), df['target'].values.astype(int), feature_cols
+        # Fallback to sklearn's built-in WDBC (569 rows)
         try:
             from sklearn.datasets import load_breast_cancer
             data = load_breast_cancer()
@@ -130,10 +136,6 @@ class BreastCancerDataset:
             y = 1 - data.target
             return data.data, y, list(data.feature_names)
         except Exception:
-            if DATA_FILE.exists():
-                df = pd.read_csv(DATA_FILE)
-                feature_cols = [c for c in df.columns if c != 'target']
-                return df[feature_cols].values.astype(np.float64), df['target'].values.astype(int), feature_cols
             return self._generate_fallback()
 
     def _generate_fallback(self) -> tuple[np.ndarray, np.ndarray, list[str]]:
@@ -165,7 +167,8 @@ class BreastCancerDataset:
         info["name"] = BREAST_CANCER_CONFIG["display_name"]
         info["description"] = (
             "Breast tumor malignancy risk prediction using 30 digitized fine needle aspirate (FNA) nuclear morphology biomarkers "
-            "from the UCI Wisconsin Diagnostic Breast Cancer (WDBC) study."
+            "from the UCI Wisconsin Diagnostic Breast Cancer (WDBC) study, augmented to 49,999 rows. "
+            "METABRIC (2,509 real patients) is used as a secondary validation source."
         )
         info["features"] = self.get_feature_info()
         info["dataset_size"] = BREAST_CANCER_CONFIG["source_rows"]

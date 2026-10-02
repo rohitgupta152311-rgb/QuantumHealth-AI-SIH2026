@@ -1,18 +1,18 @@
 {
   "disease_id": "breast_cancer",
-  "created_at": "2026-09-19T08:48:09.546663+00:00",
+  "created_at": "2026-10-02T17:05:02.508989+00:00",
   "split_protocol": "Stratified 60/20/20 split (seed=42)",
   "split_sizes": {
-    "train_samples": 341,
-    "validation_samples": 114,
-    "test_samples": 114
+    "train_samples": 29999,
+    "validation_samples": 10000,
+    "test_samples": 10000
   },
   "split_hashes": {
-    "train_sha256": "ea8319aa0dcbf4f79ef1a572bcb40f5e2c5340efb97afc7641130ca138f74522",
-    "val_sha256": "7c1718482a628a737af9077e0a438e31177673186e5db5a99ccff59d6d7baffa",
-    "test_sha256": "02f83e7cef08ef433b930ef73f4fb8b90363b6ea46788d847461c1df48dbd21a"
+    "train_sha256": "752fed5081948ac31e0f8921297362f9e4a97e7b221e6e195d0b22db37cf13e3",
+    "val_sha256": "6c0ffe27860eab23728632ba90a4aefb8608e0adc6fd8c7b7ff3efeee908d58e",
+    "test_sha256": "a4d8bf9b03694ba6e6e3ddcea8e0aa97b0e6020cc951b29602784bb1b53d87fa"
   },
-  "preprocessing_artifact_sha256": "7c3b626a313f7cdcbb284e833e6d2adb946b2ec6df87b1c05dac11df16655174",
+  "preprocessing_artifact_sha256": "5d70784904da5b13f0bc65765ada54d90d089726c7c3edd3848746fd22822333",
   "quantum_configuration": {
     "n_qubits": 6,
     "n_layers": 2,
@@ -27,7 +27,7 @@
     "tuned_alpha": 0.4,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
-    "abstention_disagreement_threshold": 0.5118
+    "abstention_disagreement_threshold": 0.4191
   },
   "calibration": {
     "method": "Platt Scaling (Sigmoid fitted on unaugmented validation split)",
@@ -56,10 +56,10 @@
     "source_citation": "Street et al., 1993. UCI Wisconsin Diagnostic Breast Cancer (WDBC).",
     "source_url": "https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic)",
     "dataset_license": "CC BY 4.0",
-    "source_rows": 569,
-    "training_rows_unaugmented": 341,
-    "validation_rows_unaugmented": 114,
-    "test_rows_unaugmented": 114,
+    "source_rows": 49999,
+    "training_rows_unaugmented": 29999,
+    "validation_rows_unaugmented": 10000,
+    "test_rows_unaugmented": 10000,
     "augmentation_method": "SMOTE applied solely to training folds for class balancing",
     "augmentation_applied_to": "training folds only",
     "class_balance_source": "62.7% benign (1) / 37.3% malignant (0)",
@@ -422,228 +422,228 @@
     },
     "id": "breast_cancer",
     "name": "Breast Tumor Cytopathology Risk",
-    "description": "Breast tumor malignancy risk prediction using 30 digitized fine needle aspirate (FNA) nuclear morphology biomarkers from the UCI Wisconsin Diagnostic Breast Cancer (WDBC) study.",
-    "dataset_size": 569,
+    "description": "Breast tumor malignancy risk prediction using 30 digitized fine needle aspirate (FNA) nuclear morphology biomarkers from the UCI Wisconsin Diagnostic Breast Cancer (WDBC) study, augmented to 49,999 rows. METABRIC (2,509 real patients) is used as a secondary validation source.",
+    "dataset_size": 49999,
     "status": "ready"
   },
   "test_metrics_summary": [
     {
       "model": "RandomForest",
       "type": "classical",
-      "accuracy": 0.9561,
-      "roc_auc": 0.998,
-      "pr_auc": 0.9967,
-      "brier_score": 0.0252,
-      "sensitivity": 0.9048,
-      "specificity": 0.9861,
-      "f1_score": 0.9383,
+      "accuracy": 0.9973,
+      "roc_auc": 0.9999,
+      "pr_auc": 0.9999,
+      "brier_score": 0.0024,
+      "sensitivity": 0.9984,
+      "specificity": 0.9962,
+      "f1_score": 0.9973,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8787,
-          0.9805
+          0.9961,
+          0.9984
         ],
         "roc_auc_95_ci": [
-          0.9927,
+          0.9999,
           1.0
         ],
         "brier_95_ci": [
-          0.0117,
-          0.044
+          0.0014,
+          0.0034
         ],
         "accuracy_95_ci": [
-          0.9211,
-          0.9827
+          0.9961,
+          0.9984
         ]
       }
     },
     {
       "model": "SVM",
       "type": "classical",
-      "accuracy": 0.9825,
-      "roc_auc": 0.9944,
-      "pr_auc": 0.9929,
-      "brier_score": 0.0195,
-      "sensitivity": 0.9524,
-      "specificity": 1.0,
-      "f1_score": 0.9756,
+      "accuracy": 0.9985,
+      "roc_auc": 1.0,
+      "pr_auc": 1.0,
+      "brier_score": 0.0013,
+      "sensitivity": 0.9992,
+      "specificity": 0.9978,
+      "f1_score": 0.9985,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.9333,
-          1.0
+          0.9978,
+          0.9993
         ],
         "roc_auc_95_ci": [
-          0.9792,
+          1.0,
           1.0
         ],
         "brier_95_ci": [
-          0.0068,
-          0.043
+          0.0007,
+          0.002
         ],
         "accuracy_95_ci": [
-          0.9561,
-          1.0
+          0.9978,
+          0.9993
         ]
       }
     },
     {
       "model": "LogisticRegression",
       "type": "classical",
-      "accuracy": 0.9649,
-      "roc_auc": 0.9954,
-      "pr_auc": 0.9936,
-      "brier_score": 0.032,
-      "sensitivity": 0.9048,
-      "specificity": 1.0,
-      "f1_score": 0.95,
+      "accuracy": 0.998,
+      "roc_auc": 1.0,
+      "pr_auc": 1.0,
+      "brier_score": 0.0017,
+      "sensitivity": 0.9994,
+      "specificity": 0.9966,
+      "f1_score": 0.998,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8916,
-          0.988
+          0.9971,
+          0.9989
         ],
         "roc_auc_95_ci": [
-          0.9841,
+          1.0,
           1.0
         ],
         "brier_95_ci": [
-          0.0167,
-          0.0548
+          0.0012,
+          0.0022
         ],
         "accuracy_95_ci": [
-          0.9211,
-          0.9912
+          0.9971,
+          0.9989
         ]
       }
     },
     {
       "model": "GradientBoosting",
       "type": "classical",
-      "accuracy": 0.9649,
-      "roc_auc": 0.9934,
-      "pr_auc": 0.9908,
-      "brier_score": 0.0292,
-      "sensitivity": 0.9286,
-      "specificity": 0.9861,
-      "f1_score": 0.9512,
+      "accuracy": 0.9991,
+      "roc_auc": 1.0,
+      "pr_auc": 1.0,
+      "brier_score": 0.0007,
+      "sensitivity": 0.9996,
+      "specificity": 0.9986,
+      "f1_score": 0.9991,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8823,
-          0.9888
+          0.9985,
+          0.9996
         ],
         "roc_auc_95_ci": [
-          0.9779,
+          1.0,
           1.0
         ],
         "brier_95_ci": [
-          0.0106,
-          0.0562
+          0.0004,
+          0.0012
         ],
         "accuracy_95_ci": [
-          0.9211,
-          0.9912
+          0.9985,
+          0.9996
         ]
       }
     },
     {
       "model": "XGBoost",
       "type": "classical",
-      "accuracy": 0.9737,
-      "roc_auc": 0.9911,
-      "pr_auc": 0.9891,
-      "brier_score": 0.0255,
-      "sensitivity": 0.9286,
-      "specificity": 1.0,
-      "f1_score": 0.963,
+      "accuracy": 0.9987,
+      "roc_auc": 1.0,
+      "pr_auc": 1.0,
+      "brier_score": 0.001,
+      "sensitivity": 0.9992,
+      "specificity": 0.9982,
+      "f1_score": 0.9987,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.914,
-          1.0
+          0.9979,
+          0.9994
         ],
         "roc_auc_95_ci": [
-          0.9711,
+          1.0,
           1.0
         ],
         "brier_95_ci": [
-          0.004,
-          0.0569
+          0.0004,
+          0.0017
         ],
         "accuracy_95_ci": [
-          0.9386,
-          1.0
+          0.9979,
+          0.9994
         ]
       }
     },
     {
       "model": "QuantumVQC",
       "type": "quantum",
-      "accuracy": 0.8772,
-      "roc_auc": 0.9818,
-      "pr_auc": 0.9655,
-      "brier_score": 0.1146,
-      "sensitivity": 0.7143,
-      "specificity": 0.9722,
-      "f1_score": 0.8108,
+      "accuracy": 0.978,
+      "roc_auc": 0.9979,
+      "pr_auc": 0.9978,
+      "brier_score": 0.0446,
+      "sensitivity": 0.9721,
+      "specificity": 0.9839,
+      "f1_score": 0.978,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.6774,
-          0.8916
+          0.9628,
+          0.9883
         ],
         "roc_auc_95_ci": [
-          0.9534,
-          0.9978
+          0.9957,
+          0.9994
         ],
         "brier_95_ci": [
-          0.1024,
-          0.1304
+          0.0391,
+          0.0507
         ],
         "accuracy_95_ci": [
-          0.8158,
-          0.9213
+          0.964,
+          0.988
         ]
       }
     },
     {
       "model": "HybridEnsemble",
       "type": "hybrid",
-      "accuracy": 0.9737,
-      "roc_auc": 0.9983,
-      "pr_auc": 0.9974,
-      "brier_score": 0.0409,
-      "sensitivity": 0.9286,
+      "accuracy": 1.0,
+      "roc_auc": 1.0,
+      "pr_auc": 1.0,
+      "brier_score": 0.0075,
+      "sensitivity": 1.0,
       "specificity": 1.0,
-      "f1_score": 0.963,
+      "f1_score": 1.0,
       "is_calibrated": false,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.914,
+          1.0,
           1.0
         ],
         "roc_auc_95_ci": [
-          0.9926,
+          1.0,
           1.0
         ],
         "brier_95_ci": [
-          0.0301,
-          0.056
+          0.0066,
+          0.0086
         ],
         "accuracy_95_ci": [
-          0.9386,
+          1.0,
           1.0
         ]
       }
     }
   ],
-  "manifest_sha256": "b298b3d6c5fd83c7f42c92b2e6b99c45f21d1120a80214b82f96fbd3869319b8"
+  "manifest_sha256": "88af63b1d724bca79bca1ce044f47ebf5ca87599f81abb9e801091be7905cb87"
 }

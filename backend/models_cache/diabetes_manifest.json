@@ -1,6 +1,6 @@
 {
   "disease_id": "diabetes",
-  "created_at": "2026-09-25T16:57:06.499465+00:00",
+  "created_at": "2026-10-02T17:04:33.113477+00:00",
   "split_protocol": "Stratified 60/20/20 split (seed=42)",
   "split_sizes": {
     "train_samples": 165142,
@@ -12,7 +12,7 @@
     "val_sha256": "bc83d93a02190b0a35ed7d740b82099238c9d9f97d66228c4ce4641d793b07ee",
     "test_sha256": "e902388d0e36828e2c225e1e304854125870fe483e3923a5a7cec0f68290824e"
   },
-  "preprocessing_artifact_sha256": "5604ea0c86bd94c3a7a152623a3f4dfa50f08b23f78143a8ee6904b63c1fb53c",
+  "preprocessing_artifact_sha256": "66ff41c386af7ee6ba74beffaef0c28681a8bf7efc6a6909e853fa70bbf33934",
   "quantum_configuration": {
     "n_qubits": 6,
     "n_layers": 2,
@@ -27,7 +27,7 @@
     "tuned_alpha": 0.4,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
-    "abstention_disagreement_threshold": 0.5493
+    "abstention_disagreement_threshold": 0.5507
   },
   "calibration": {
     "method": "Platt Scaling (Sigmoid fitted on unaugmented validation split)",
@@ -432,31 +432,31 @@
     {
       "model": "QuantumVQC",
       "type": "quantum",
-      "accuracy": 0.532,
-      "roc_auc": 0.5348,
-      "pr_auc": 0.0192,
-      "brier_score": 0.2578,
-      "sensitivity": 0.625,
-      "specificity": 0.5305,
-      "f1_score": 0.041,
+      "accuracy": 0.514,
+      "roc_auc": 0.6529,
+      "pr_auc": 0.0583,
+      "brier_score": 0.2518,
+      "sensitivity": 0.75,
+      "specificity": 0.5102,
+      "f1_score": 0.0471,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.0081,
-          0.0772
+          0.0161,
+          0.0827
         ],
         "roc_auc_95_ci": [
-          0.342,
-          0.7224
+          0.4772,
+          0.8567
         ],
         "brier_95_ci": [
-          0.2522,
-          0.2637
+          0.2467,
+          0.256
         ],
         "accuracy_95_ci": [
-          0.4859,
-          0.576
+          0.4759,
+          0.56
         ]
       }
     },
@@ -464,9 +464,9 @@
       "model": "HybridEnsemble",
       "type": "hybrid",
       "accuracy": 0.984,
-      "roc_auc": 0.7276,
-      "pr_auc": 0.1269,
-      "brier_score": 0.0543,
+      "roc_auc": 0.8079,
+      "pr_auc": 0.1701,
+      "brier_score": 0.0533,
       "sensitivity": 0.0,
       "specificity": 1.0,
       "f1_score": 0.0,
@@ -478,12 +478,12 @@
           0.0
         ],
         "roc_auc_95_ci": [
-          0.4552,
-          0.9407
+          0.616,
+          0.9733
         ],
         "brier_95_ci": [
-          0.0491,
-          0.0589
+          0.0484,
+          0.058
         ],
         "accuracy_95_ci": [
           0.974,
@@ -492,5 +492,5 @@
       }
     }
   ],
-  "manifest_sha256": "0a064a5855e6538a309fb3b71a54176739657accbf4edaef417e9b271dc7a655"
+  "manifest_sha256": "a5b1020907df5f274ec1e34c311918fa3dab6a47573bbfb237c352fa380bec6f"
 }
