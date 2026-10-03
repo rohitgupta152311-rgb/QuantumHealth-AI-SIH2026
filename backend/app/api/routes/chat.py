@@ -134,9 +134,11 @@ def generate_offline_clinical_reply(message: str, context: Optional[Dict[str, An
         suggested_followups=followups
     )
 
-def get_bedrock_api_key() -> Optional[str]:
-    """Retrieve AWS Bedrock API key from environment variable or Windows User environment."""
-    key = os.environ.get("AWS_BEDROCK_API_KEY")
+def get_bedrock_api_key(client_key: Optional[str] = None) -> Optional[str]:
+    """Retrieve AWS Bedrock API key from client request, environment variable, or Windows User environment."""
+    if client_key and (client_key.startswith("ABSK") or "bedrock" in client_key.lower()):
+        return client_key.strip()
+    key = os.environ.get("AWS_BEDROCK_API_KEY") or os.environ.get("AWS_BEARER_TOKEN_BEDROCK") or os.environ.get("BEDROCK_API_KEY")
     if key:
         return key.strip()
     try:
@@ -150,18 +152,86 @@ def get_bedrock_api_key() -> Optional[str]:
     return None
 
 
-def call_bedrock_claude(full_prompt: str, model_id: str = "anthropic.claude-opus-5-5", region: str = "ap-south-1") -> Optional[str]:
-    """Invoke Claude model on Amazon Bedrock using Bearer API Key authentication."""
+def get_anthropic_api_key(client_key: Optional[str] = None) -> Optional[str]:
+    """Retrieve direct Anthropic API key from client request, environment, or Windows registry."""
+    if client_key and client_key.startswith("sk-ant-"):
+        return client_key.strip()
+    key = os.environ.get("ANTHROPIC_API_KEY") or os.environ.get("CLAUDE_API_KEY")
+    if key:
+        return key.strip()
+    try:
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Environment") as reg_key:
+            val, _ = winreg.QueryValueEx(reg_key, "ANTHROPIC_API_KEY")
+            if val:
+                return str(val).strip()
+    except Exception:
+        pass
+    return None
+
+
+def call_anthropic_direct(full_prompt: str, key: str) -> Optional[str]:
+    """Invoke Claude model via direct Anthropic Messages API."""
     import urllib.request
     import ssl
     import json
 
-    key = get_bedrock_api_key()
+    ctx = ssl.create_default_context()
+    url = "https://api.anthropic.com/v1/messages"
+    body = {
+        "model": "claude-3-5-sonnet-latest",
+        "max_tokens": 1200,
+        "messages": [{"role": "user", "content": full_prompt}]
+    }
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(body).encode("utf-8"),
+        headers={
+            "x-api-key": key,
+            "anthropic-version": "2023-06-01",
+            "content-type": "application/json"
+        }
+    )
+    try:
+        with urllib.request.urlopen(req, context=ctx, timeout=20) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            for block in data.get("content", []):
+                if block.get("type") == "text":
+                    return block.get("text", "").strip()
+    except Exception as e:
+        logger.info(f"Direct Anthropic API notice: {e}")
+    return None
+
+
+def call_bedrock_claude(full_prompt: str, model_id: str = "anthropic.claude-opus-5-5", region: str = "us-east-1", api_key: Optional[str] = None) -> Optional[str]:
+    """Invoke Claude model on Amazon Bedrock using Bearer API Key authentication with multi-model fallback."""
+    import urllib.request
+    import ssl
+    import json
+
+    key = api_key or get_bedrock_api_key()
     if not key:
         return None
 
-    # Try preferred region first, then fallback to us-east-1
-    regions_to_try = [region] if region == "us-east-1" else [region, "us-east-1"]
+    # Priority regions: us-east-1 has the active Anthropic model catalogue
+    regions_to_try = ["us-east-1", region, "us-west-2", "ap-south-1"]
+    seen_regions = []
+    for r in regions_to_try:
+        if r not in seen_regions:
+            seen_regions.append(r)
+
+    candidate_models = [
+        model_id,
+        "anthropic.claude-opus-5-5",
+        "anthropic.claude-sonnet-4-5-20250929-v1:0",
+        "anthropic.claude-sonnet-4-20250514-v1:0",
+        "anthropic.claude-haiku-4-5-20251001-v1:0",
+        "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
+    ]
+    seen_models = []
+    for m in candidate_models:
+        if m not in seen_models:
+            seen_models.append(m)
 
     body = {
         "messages": [
@@ -178,36 +248,37 @@ def call_bedrock_claude(full_prompt: str, model_id: str = "anthropic.claude-opus
 
     ctx = ssl.create_default_context()
 
-    for r in regions_to_try:
-        url = f"https://bedrock-runtime.{r}.amazonaws.com/model/{model_id}/converse"
-        req = urllib.request.Request(
-            url,
-            data=json.dumps(body).encode("utf-8"),
-            headers={
-                "Authorization": f"Bearer {key}",
-                "Content-Type": "application/json"
-            }
-        )
-        try:
-            with urllib.request.urlopen(req, context=ctx, timeout=20) as resp:
-                data = json.loads(resp.read().decode("utf-8"))
-                output_msg = data.get("output", {}).get("message", {})
-                contents = output_msg.get("content", [])
-                for block in contents:
-                    if "text" in block and block["text"]:
-                        return block["text"].strip()
-        except urllib.error.HTTPError as e:
-            err_msg = e.read().decode("utf-8", errors="replace")
-            logger.info("Bedrock %s [%s] notice: %s", r, model_id, err_msg[:120])
-        except Exception as e:
-            logger.info("Bedrock %s [%s] request error: %s", r, model_id, str(e)[:100])
+    for r in seen_regions:
+        for m in seen_models:
+            url = f"https://bedrock-runtime.{r}.amazonaws.com/model/{m}/converse"
+            req = urllib.request.Request(
+                url,
+                data=json.dumps(body).encode("utf-8"),
+                headers={
+                    "Authorization": f"Bearer {key}",
+                    "Content-Type": "application/json"
+                }
+            )
+            try:
+                with urllib.request.urlopen(req, context=ctx, timeout=15) as resp:
+                    data = json.loads(resp.read().decode("utf-8"))
+                    output_msg = data.get("output", {}).get("message", {})
+                    contents = output_msg.get("content", [])
+                    for block in contents:
+                        if "text" in block and block["text"]:
+                            return block["text"].strip()
+            except urllib.error.HTTPError as e:
+                err_msg = e.read().decode("utf-8", errors="replace")
+                logger.info("Bedrock %s [%s] notice: %s", r, m, err_msg[:100])
+            except Exception as e:
+                logger.info("Bedrock %s [%s] request error: %s", r, m, str(e)[:100])
 
     return None
 
 
 @router.post("", response_model=ChatResponse)
 async def chat_with_copilot(request: ChatRequest) -> ChatResponse:
-    """Chat endpoint supporting Amazon Bedrock (Claude Opus 5.5 / Sonnet), Gemini 2.5, and built-in Clinical Intelligence."""
+    """Chat endpoint supporting Amazon Bedrock (Claude Opus 5.5 / Sonnet), Anthropic Direct, Gemini 2.5, and built-in Clinical Intelligence."""
     # Build prompt including clinical context if available
     context_prompt = ""
     if request.patient_context:
@@ -230,11 +301,35 @@ async def chat_with_copilot(request: ChatRequest) -> ChatResponse:
     conversation_contents.append(f"User: {current_input}")
     full_prompt = f"{SYSTEM_INSTRUCTION}\n\nConversation History:\n" + "\n".join(conversation_contents)
 
-    # 1. Primary Engine: Amazon Bedrock Claude (if AWS_BEDROCK_API_KEY configured)
-    bedrock_key = get_bedrock_api_key()
+    # 1. Primary Engine: Direct Anthropic Claude API (if ANTHROPIC_API_KEY or sk-ant key provided)
+    anthropic_key = get_anthropic_api_key(request.api_key)
+    if anthropic_key:
+        try:
+            anthropic_reply = call_anthropic_direct(full_prompt, anthropic_key)
+            if anthropic_reply:
+                return ChatResponse(
+                    reply=anthropic_reply,
+                    source="anthropic:claude-3-5-sonnet",
+                    references=[
+                        "Anthropic Claude 3.5 Sonnet / Opus Clinical Reasoning",
+                        "ICMR-INDIAB Guidelines for Type 2 Diabetes Management (2023)",
+                        "ADA Standards of Care in Diabetes (2024)",
+                        "PennyLane Variational Quantum Classifiers (VQC)"
+                    ],
+                    suggested_followups=[
+                        "Explain the quantum parameter compression advantage",
+                        "What clinical actions are recommended for this patient?",
+                        "How does the model handle missing sentinels?"
+                    ]
+                )
+        except Exception as e:
+            logger.warning(f"Anthropic invocation exception: {e}")
+
+    # 2. Secondary Engine: Amazon Bedrock Claude (if AWS_BEDROCK_API_KEY configured)
+    bedrock_key = get_bedrock_api_key(request.api_key)
     if bedrock_key:
         try:
-            bedrock_reply = call_bedrock_claude(full_prompt, model_id="anthropic.claude-opus-5-5")
+            bedrock_reply = call_bedrock_claude(full_prompt, model_id="anthropic.claude-opus-5-5", api_key=bedrock_key)
             if bedrock_reply:
                 return ChatResponse(
                     reply=bedrock_reply,
