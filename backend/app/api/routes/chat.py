@@ -134,73 +134,159 @@ def generate_offline_clinical_reply(message: str, context: Optional[Dict[str, An
         suggested_followups=followups
     )
 
+def get_bedrock_api_key() -> Optional[str]:
+    """Retrieve AWS Bedrock API key from environment variable or Windows User environment."""
+    key = os.environ.get("AWS_BEDROCK_API_KEY")
+    if key:
+        return key.strip()
+    try:
+        import winreg
+        with winreg.OpenKey(winreg.HKEY_CURRENT_USER, r"Environment") as reg_key:
+            val, _ = winreg.QueryValueEx(reg_key, "AWS_BEDROCK_API_KEY")
+            if val:
+                return str(val).strip()
+    except Exception:
+        pass
+    return None
+
+
+def call_bedrock_claude(full_prompt: str, model_id: str = "anthropic.claude-opus-5-5", region: str = "ap-south-1") -> Optional[str]:
+    """Invoke Claude model on Amazon Bedrock using Bearer API Key authentication."""
+    import urllib.request
+    import ssl
+    import json
+
+    key = get_bedrock_api_key()
+    if not key:
+        return None
+
+    # Try preferred region first, then fallback to us-east-1
+    regions_to_try = [region] if region == "us-east-1" else [region, "us-east-1"]
+
+    body = {
+        "messages": [
+            {
+                "role": "user",
+                "content": [{"text": full_prompt}]
+            }
+        ],
+        "inferenceConfig": {
+            "maxTokens": 1200,
+            "temperature": 0.7
+        }
+    }
+
+    ctx = ssl.create_default_context()
+
+    for r in regions_to_try:
+        url = f"https://bedrock-runtime.{r}.amazonaws.com/model/{model_id}/converse"
+        req = urllib.request.Request(
+            url,
+            data=json.dumps(body).encode("utf-8"),
+            headers={
+                "Authorization": f"Bearer {key}",
+                "Content-Type": "application/json"
+            }
+        )
+        try:
+            with urllib.request.urlopen(req, context=ctx, timeout=20) as resp:
+                data = json.loads(resp.read().decode("utf-8"))
+                output_msg = data.get("output", {}).get("message", {})
+                contents = output_msg.get("content", [])
+                for block in contents:
+                    if "text" in block and block["text"]:
+                        return block["text"].strip()
+        except urllib.error.HTTPError as e:
+            err_msg = e.read().decode("utf-8", errors="replace")
+            logger.info("Bedrock %s [%s] notice: %s", r, model_id, err_msg[:120])
+        except Exception as e:
+            logger.info("Bedrock %s [%s] request error: %s", r, model_id, str(e)[:100])
+
+    return None
+
+
 @router.post("", response_model=ChatResponse)
 async def chat_with_copilot(request: ChatRequest) -> ChatResponse:
-    """Chat endpoint connecting to Gemini 2.5 API with offline clinical intelligence fallback."""
-    # Resolve API key: request body > environment variable > settings
-    api_key = (
+    """Chat endpoint supporting Amazon Bedrock (Claude Opus 5.5 / Sonnet), Gemini 2.5, and built-in Clinical Intelligence."""
+    # Build prompt including clinical context if available
+    context_prompt = ""
+    if request.patient_context:
+        ctx = request.patient_context
+        context_prompt = (
+            f"\n\n[ACTIVE PATIENT PROFILE & PREDICTION CONTEXT]:\n"
+            f"- Disease Module: {ctx.get('disease', 'diabetes')}\n"
+            f"- Predicted Risk Level: {ctx.get('risk_level', 'N/A')} ({ctx.get('risk_percentage', 'N/A')} / 100%)\n"
+            f"- Multi-Model Consensus: {ctx.get('consensus_agreement', 'N/A')}\n"
+            f"- Model Disagreement Spread: {ctx.get('disagreement_spread', 'N/A')}\n"
+            f"- Biomarkers: {ctx.get('features', {})}\n"
+            f"- Top Drivers: {ctx.get('top_drivers', [])}\n"
+        )
+
+    conversation_contents = []
+    for m in request.history[-6:]:
+        conversation_contents.append(f"{'User' if m.role == 'user' else 'Dr. Quanta'}: {m.text}")
+
+    current_input = f"{context_prompt}\n\nUser Question: {request.message}"
+    conversation_contents.append(f"User: {current_input}")
+    full_prompt = f"{SYSTEM_INSTRUCTION}\n\nConversation History:\n" + "\n".join(conversation_contents)
+
+    # 1. Primary Engine: Amazon Bedrock Claude (if AWS_BEDROCK_API_KEY configured)
+    bedrock_key = get_bedrock_api_key()
+    if bedrock_key:
+        try:
+            bedrock_reply = call_bedrock_claude(full_prompt, model_id="anthropic.claude-opus-5-5")
+            if bedrock_reply:
+                return ChatResponse(
+                    reply=bedrock_reply,
+                    source="aws-bedrock:claude-opus-5-5",
+                    references=[
+                        "Amazon Bedrock Anthropic Claude Opus 5.5",
+                        "ICMR-INDIAB Guidelines for Type 2 Diabetes Management (2023)",
+                        "ADA Standards of Care in Diabetes (2024)",
+                        "PennyLane Variational Quantum Classifiers (VQC)"
+                    ],
+                    suggested_followups=[
+                        "Explain the quantum parameter compression advantage",
+                        "What clinical actions are recommended for this patient?",
+                        "How does the model handle missing sentinels?"
+                    ]
+                )
+        except Exception as e:
+            logger.warning(f"Bedrock invocation exception: {e}")
+
+    # 2. Secondary Engine: Google Gemini API (if GEMINI_API_KEY configured)
+    gemini_key = (
         request.api_key or 
         os.environ.get("GEMINI_API_KEY") or 
         getattr(settings, "gemini_api_key", None)
     )
 
-    if not api_key:
-        logger.info("No GEMINI_API_KEY found; responding with built-in clinical intelligence engine.")
-        return generate_offline_clinical_reply(request.message, request.patient_context)
-
-    try:
-        from google import genai
-        client = genai.Client(api_key=api_key)
-
-        # Build prompt including clinical context if available
-        context_prompt = ""
-        if request.patient_context:
-            ctx = request.patient_context
-            context_prompt = (
-                f"\n\n[ACTIVE PATIENT PROFILE & PREDICTION CONTEXT]:\n"
-                f"- Disease Module: {ctx.get('disease', 'diabetes')}\n"
-                f"- Predicted Risk Level: {ctx.get('risk_level', 'N/A')} ({ctx.get('risk_percentage', 'N/A')} / 100%)\n"
-                f"- Multi-Model Consensus: {ctx.get('consensus_agreement', 'N/A')}\n"
-                f"- Model Disagreement Spread: {ctx.get('disagreement_spread', 'N/A')}\n"
-                f"- Biomarkers: {ctx.get('features', {})}\n"
-                f"- Top Drivers: {ctx.get('top_drivers', [])}\n"
+    if gemini_key:
+        try:
+            from google import genai
+            client = genai.Client(api_key=gemini_key)
+            response = client.models.generate_content(
+                model="gemini-2.5-flash",
+                contents=full_prompt
             )
+            reply_text = response.text or "I processed your question, but received an empty response. Please try rephrasing."
 
-        conversation_contents = []
-        # Add past user/model turns
-        for m in request.history[-6:]:
-            conversation_contents.append(f"{'User' if m.role == 'user' else 'Dr. Quanta'}: {m.text}")
+            return ChatResponse(
+                reply=reply_text,
+                source="gemini-2.5-flash",
+                references=[
+                    "ICMR-INDIAB Guidelines for Type 2 Diabetes Management (2023)",
+                    "ADA Standards of Care in Diabetes (2024)",
+                    "PennyLane Variational Quantum Classifiers (VQC)"
+                ],
+                suggested_followups=[
+                    "Explain the quantum parameter compression advantage",
+                    "What clinical actions are recommended for this patient?",
+                    "How does the model handle missing sentinels?"
+                ]
+            )
+        except Exception as e:
+            logger.error(f"Gemini API invocation error: {e}. Falling back to offline clinical intelligence.")
 
-        # Current message
-        current_input = f"{context_prompt}\n\nUser Question: {request.message}"
-        conversation_contents.append(f"User: {current_input}")
-
-        full_prompt = f"{SYSTEM_INSTRUCTION}\n\nConversation History:\n" + "\n".join(conversation_contents)
-
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=full_prompt
-        )
-
-        reply_text = response.text or "I processed your question, but received an empty response. Please try rephrasing."
-
-        return ChatResponse(
-            reply=reply_text,
-            source="gemini-2.5-flash",
-            references=[
-                "ICMR-INDIAB Guidelines for Type 2 Diabetes Management (2023)",
-                "ADA Standards of Care in Diabetes (2024)",
-                "PennyLane Variational Quantum Classifiers (VQC)"
-            ],
-            suggested_followups=[
-                "Explain the quantum parameter compression advantage",
-                "What clinical actions are recommended for this patient?",
-                "How does the model handle missing sentinels?"
-            ]
-        )
-
-    except Exception as e:
-        logger.error(f"Gemini API invocation error: {e}. Falling back to offline clinical intelligence.")
-        fallback = generate_offline_clinical_reply(request.message, request.patient_context)
-        fallback.reply = f"> *Note: Gemini API notice ({str(e)[:80]}...). Using built-in clinical intelligence.*\n\n" + fallback.reply
-        return fallback
+    # 3. Always-Available Fallback: Built-in Clinical Intelligence Engine
+    return generate_offline_clinical_reply(request.message, request.patient_context)

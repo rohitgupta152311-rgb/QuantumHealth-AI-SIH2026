@@ -359,9 +359,16 @@ export const ClinicalCopilotChat: React.FC = () => {
                       )}
                     </div>
                     <span className="text-[9px] font-mono text-slate-500 mt-1 px-1 flex items-center gap-1.5">
-                      {msg.timestamp}
+                      {msg.source?.startsWith('aws-bedrock') && (
+                        <span className="text-amber-400 font-semibold flex items-center gap-1">
+                          ⚡ via Claude Opus 5.5 (AWS Bedrock)
+                        </span>
+                      )}
                       {msg.source === 'gemini-2.5-flash' && (
                         <span className="text-teal-400 font-semibold">via Gemini 2.5 Flash</span>
+                      )}
+                      {msg.source === 'built-in-clinical-intelligence' && (
+                        <span className="text-cyan-400 font-semibold">via Clinical Intelligence Engine</span>
                       )}
                     </span>
                   </div>
