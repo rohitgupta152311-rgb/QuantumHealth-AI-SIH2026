@@ -1,18 +1,18 @@
 {
   "disease_id": "heart",
-  "created_at": "2026-10-02T17:03:41.244255+00:00",
+  "created_at": "2026-10-02T18:03:28.180684+00:00",
   "split_protocol": "Stratified 60/20/20 split (seed=42)",
   "split_sizes": {
-    "train_samples": 120000,
-    "validation_samples": 40000,
-    "test_samples": 40000
+    "train_samples": 181,
+    "validation_samples": 61,
+    "test_samples": 61
   },
   "split_hashes": {
-    "train_sha256": "0a45edb63e1017e1ab4959aa9e2cba26d04858a2baf02f11fa2c1fafa66bab38",
-    "val_sha256": "07557282e3979556b5ca76c2be2effc7f1b0fb825ed8cfa7be40315723f7b4da",
-    "test_sha256": "603877521486f01a5a645d710c4ac126cd12ab713f8afa03f018ac78d396ee3f"
+    "train_sha256": "4958c34c1f6d33b67894440fd702ded03fb2622363c6510c44fcef6c9374ebe4",
+    "val_sha256": "a8f099abe8eb11d9d06b8cae9400ec64b9a5c8da5ac03ab8f441c3cfa31e770f",
+    "test_sha256": "a8181d8d41b48b5b0d07880038ee58d84bafd59a6ed3d1656ee5d2e15c269dbc"
   },
-  "preprocessing_artifact_sha256": "9334854006b8d4621ae0f1926d34998a2e87f1e330c2c417417aabc619ad2b61",
+  "preprocessing_artifact_sha256": "99afb08d2372cf694aec726b5d3f6fa389909f10bad218db0c9a455b8d7dc335",
   "quantum_configuration": {
     "n_qubits": 6,
     "n_layers": 2,
@@ -27,7 +27,7 @@
     "tuned_alpha": 0.4,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
-    "abstention_disagreement_threshold": 0.4884
+    "abstention_disagreement_threshold": 0.4684
   },
   "calibration": {
     "method": "Platt Scaling (Sigmoid fitted on unaugmented validation split)",
@@ -53,16 +53,16 @@
     "disease_id": "heart",
     "display_name": "Cardiovascular Disease Risk",
     "is_synthetic_demonstration": false,
-    "source_citation": "Multi-center UCI Heart Disease (Cleveland, Hungarian, Switzerland, VA) + CDC BRFSS augmented cohort",
+    "source_citation": "Janosi et al., 1989. UCI Heart Disease (Cleveland Clinic Foundation).",
     "source_url": "https://archive.ics.uci.edu/ml/datasets/heart+disease",
     "dataset_license": "CC BY 4.0",
-    "source_rows": 200000,
-    "training_rows_unaugmented": 120000,
-    "validation_rows_unaugmented": 40000,
-    "test_rows_unaugmented": 40000,
+    "source_rows": 303,
+    "training_rows_unaugmented": 181,
+    "validation_rows_unaugmented": 61,
+    "test_rows_unaugmented": 61,
     "augmentation_method": "SMOTE applied solely to training folds for class balancing",
     "augmentation_applied_to": "training folds only",
-    "class_balance_source": "Unknown class balance",
+    "class_balance_source": "54.5% negative / 45.5% positive",
     "evaluation_protocol": "Stratified 60/20/20 split (seed=42). Preprocessing fit strictly on training split. SMOTE used only on training folds. Platt probability calibration fit on unaugmented validation split. Final reported metrics computed once on locked, unaugmented test split.",
     "split_seed": 42,
     "features": [
@@ -267,228 +267,228 @@
     },
     "id": "heart",
     "name": "Cardiovascular Disease Risk",
-    "description": "Cardiovascular angiographic disease risk prediction based on a Multi-center UCI + CDC combined dataset (200,000 clinical records). Evaluates resting hemodynamics, fluoroscopy, exercise-induced angina, and ST-segment depression.",
-    "dataset_size": 200000,
+    "description": "Cardiovascular angiographic disease risk prediction based on the UCI Cleveland Clinic Foundation cohort (303 clinical records). Evaluates resting hemodynamics, fluoroscopy, exercise-induced angina, and ST-segment depression.",
+    "dataset_size": 303,
     "status": "ready"
   },
   "test_metrics_summary": [
     {
       "model": "RandomForest",
       "type": "classical",
-      "accuracy": 0.8746,
-      "roc_auc": 0.9463,
-      "pr_auc": 0.9411,
-      "brier_score": 0.0911,
-      "sensitivity": 0.8575,
-      "specificity": 0.8891,
-      "f1_score": 0.8628,
+      "accuracy": 0.9016,
+      "roc_auc": 0.947,
+      "pr_auc": 0.9065,
+      "brier_score": 0.0889,
+      "sensitivity": 0.9643,
+      "specificity": 0.8485,
+      "f1_score": 0.9,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8595,
-          0.867
+          0.8,
+          0.9688
         ],
         "roc_auc_95_ci": [
-          0.9445,
-          0.9483
+          0.8806,
+          0.9902
         ],
         "brier_95_ci": [
-          0.089,
-          0.0928
+          0.0477,
+          0.1281
         ],
         "accuracy_95_ci": [
-          0.8718,
-          0.8783
+          0.8197,
+          0.9672
         ]
       }
     },
     {
       "model": "SVM",
       "type": "classical",
-      "accuracy": 0.874,
-      "roc_auc": 0.9465,
-      "pr_auc": 0.943,
-      "brier_score": 0.0925,
-      "sensitivity": 0.853,
-      "specificity": 0.8919,
-      "f1_score": 0.8617,
+      "accuracy": 0.8361,
+      "roc_auc": 0.9264,
+      "pr_auc": 0.8772,
+      "brier_score": 0.1129,
+      "sensitivity": 0.9286,
+      "specificity": 0.7576,
+      "f1_score": 0.8387,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8576,
-          0.8656
+          0.7169,
+          0.9296
         ],
         "roc_auc_95_ci": [
-          0.9445,
-          0.9486
+          0.8547,
+          0.9798
         ],
         "brier_95_ci": [
-          0.0906,
-          0.0946
+          0.0695,
+          0.1571
         ],
         "accuracy_95_ci": [
-          0.8706,
-          0.8769
+          0.7377,
+          0.918
         ]
       }
     },
     {
       "model": "LogisticRegression",
       "type": "classical",
-      "accuracy": 0.8744,
-      "roc_auc": 0.9465,
-      "pr_auc": 0.943,
-      "brier_score": 0.0904,
-      "sensitivity": 0.8516,
-      "specificity": 0.8939,
-      "f1_score": 0.8619,
+      "accuracy": 0.8852,
+      "roc_auc": 0.9502,
+      "pr_auc": 0.9238,
+      "brier_score": 0.0898,
+      "sensitivity": 0.9286,
+      "specificity": 0.8485,
+      "f1_score": 0.8814,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8578,
-          0.8658
+          0.7867,
+          0.9509
         ],
         "roc_auc_95_ci": [
-          0.9445,
-          0.9486
+          0.8903,
+          0.9923
         ],
         "brier_95_ci": [
-          0.0887,
-          0.0923
+          0.0544,
+          0.1285
         ],
         "accuracy_95_ci": [
-          0.8712,
-          0.8773
+          0.8033,
+          0.9508
         ]
       }
     },
     {
       "model": "GradientBoosting",
       "type": "classical",
-      "accuracy": 0.8869,
-      "roc_auc": 0.9562,
-      "pr_auc": 0.9532,
-      "brier_score": 0.0816,
-      "sensitivity": 0.8663,
-      "specificity": 0.9044,
-      "f1_score": 0.8757,
+      "accuracy": 0.8689,
+      "roc_auc": 0.9459,
+      "pr_auc": 0.9368,
+      "brier_score": 0.0972,
+      "sensitivity": 0.9643,
+      "specificity": 0.7879,
+      "f1_score": 0.871,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8723,
-          0.879
+          0.7689,
+          0.9539
         ],
         "roc_auc_95_ci": [
-          0.9546,
-          0.958
+          0.8891,
+          0.9903
         ],
         "brier_95_ci": [
-          0.0796,
-          0.0833
+          0.0531,
+          0.135
         ],
         "accuracy_95_ci": [
-          0.8838,
-          0.8899
+          0.7869,
+          0.9508
         ]
       }
     },
     {
       "model": "XGBoost",
       "type": "classical",
-      "accuracy": 0.8872,
-      "roc_auc": 0.9569,
-      "pr_auc": 0.9539,
-      "brier_score": 0.0833,
-      "sensitivity": 0.8733,
-      "specificity": 0.8991,
-      "f1_score": 0.8769,
+      "accuracy": 0.8689,
+      "roc_auc": 0.9545,
+      "pr_auc": 0.9335,
+      "brier_score": 0.0892,
+      "sensitivity": 0.9286,
+      "specificity": 0.8182,
+      "f1_score": 0.8667,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8737,
-          0.8806
+          0.7777,
+          0.9524
         ],
         "roc_auc_95_ci": [
-          0.9553,
-          0.9586
+          0.8923,
+          0.9935
         ],
         "brier_95_ci": [
-          0.0814,
-          0.0851
+          0.0444,
+          0.1308
         ],
         "accuracy_95_ci": [
-          0.8842,
-          0.8904
+          0.7869,
+          0.9508
         ]
       }
     },
     {
       "model": "QuantumVQC",
       "type": "quantum",
-      "accuracy": 0.604,
-      "roc_auc": 0.6523,
-      "pr_auc": 0.6251,
-      "brier_score": 0.2424,
-      "sensitivity": 0.5261,
-      "specificity": 0.6704,
-      "f1_score": 0.55,
+      "accuracy": 0.541,
+      "roc_auc": 0.79,
+      "pr_auc": 0.8392,
+      "brier_score": 0.2405,
+      "sensitivity": 0.0,
+      "specificity": 1.0,
+      "f1_score": 0.0,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.4887,
-          0.6045
+          0.0,
+          0.0
         ],
         "roc_auc_95_ci": [
-          0.606,
-          0.7015
+          0.6509,
+          0.8914
         ],
         "brier_95_ci": [
-          0.2398,
-          0.2448
+          0.232,
+          0.2506
         ],
         "accuracy_95_ci": [
-          0.564,
-          0.646
+          0.4258,
+          0.6557
         ]
       }
     },
     {
       "model": "HybridEnsemble",
       "type": "hybrid",
-      "accuracy": 0.906,
-      "roc_auc": 0.9692,
-      "pr_auc": 0.9649,
-      "brier_score": 0.1007,
-      "sensitivity": 0.9043,
-      "specificity": 0.9074,
-      "f1_score": 0.8985,
+      "accuracy": 0.918,
+      "roc_auc": 0.9535,
+      "pr_auc": 0.9067,
+      "brier_score": 0.121,
+      "sensitivity": 0.9643,
+      "specificity": 0.8788,
+      "f1_score": 0.9153,
       "is_calibrated": false,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8727,
-          0.9265
+          0.8275,
+          0.9811
         ],
         "roc_auc_95_ci": [
-          0.9546,
-          0.98
+          0.8868,
+          0.9947
         ],
         "brier_95_ci": [
-          0.0917,
-          0.1109
+          0.0972,
+          0.1436
         ],
         "accuracy_95_ci": [
-          0.878,
-          0.934
+          0.8525,
+          0.9836
         ]
       }
     }
   ],
-  "manifest_sha256": "f5f95ea159b3b01c71d1c8ef2dc7ccaedcfc045d267172fa2c6e822c615d17fd"
+  "manifest_sha256": "6c085fbea7526c64b6533c1ad7676276b181bcfc22607337714391e9d3db8067"
 }

@@ -1,18 +1,18 @@
 {
   "disease_id": "kidney",
-  "created_at": "2026-10-02T17:05:32.508364+00:00",
+  "created_at": "2026-10-02T18:04:32.836138+00:00",
   "split_protocol": "Stratified 60/20/20 split (seed=42)",
   "split_sizes": {
-    "train_samples": 60000,
-    "validation_samples": 20000,
-    "test_samples": 20000
+    "train_samples": 240,
+    "validation_samples": 80,
+    "test_samples": 80
   },
   "split_hashes": {
-    "train_sha256": "ac52c74192be5beb38beb7696296cb138a0313aeb72fe88ded29b8dc156b9a77",
-    "val_sha256": "6cfef7799d115dd92683f29354191205c5b8d884dbb2ef6855275ea6c274a58d",
-    "test_sha256": "f5f89adb30e67314d60dbb115998cad37272747d3b487a2b828ade1c047c5b57"
+    "train_sha256": "ae146cb4daa46200cf9b9c818930a6709a2fe32ac0581233766678fc61089306",
+    "val_sha256": "4227c7977bfad429c7d08a3dd3af81596a2f7ef9d3085b955a39f48b20d3a34d",
+    "test_sha256": "fb340956355fd4a7da07e443dea376c69aa531c7a1dd0313880473c6235bfca9"
   },
-  "preprocessing_artifact_sha256": "44c7998426e6ab82e9dc42cba68ba850e38f108405c19d6710cbbf990c2bc68e",
+  "preprocessing_artifact_sha256": "256c34d8704fbc886860dfb2f135685c5a9a677aee882ee8ff9ed6c2e30c6035",
   "quantum_configuration": {
     "n_qubits": 6,
     "n_layers": 2,
@@ -27,7 +27,7 @@
     "tuned_alpha": 0.4,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
-    "abstention_disagreement_threshold": 0.5655
+    "abstention_disagreement_threshold": 0.5539
   },
   "calibration": {
     "method": "Platt Scaling (Sigmoid fitted on unaugmented validation split)",
@@ -53,13 +53,13 @@
     "disease_id": "kidney",
     "display_name": "Chronic Kidney Disease Risk",
     "is_synthetic_demonstration": false,
-    "source_citation": "Rubini et al., 2015. Chronic Kidney Disease Dataset. Apollo Hospitals India + CDC.",
+    "source_citation": "Rubini et al., 2015. Chronic Kidney Disease Dataset. Apollo Hospitals India / UCI ML Repository.",
     "source_url": "https://archive.ics.uci.edu/dataset/338/chronic_kidney_disease",
     "dataset_license": "CC BY 4.0",
-    "source_rows": 100000,
-    "training_rows_unaugmented": 60000,
-    "validation_rows_unaugmented": 20000,
-    "test_rows_unaugmented": 20000,
+    "source_rows": 400,
+    "training_rows_unaugmented": 240,
+    "validation_rows_unaugmented": 80,
+    "test_rows_unaugmented": 80,
     "augmentation_method": "None (authentic unaugmented clinical cohort)",
     "augmentation_applied_to": "none",
     "class_balance_source": "62.5% CKD positive / 37.5% negative",
@@ -262,8 +262,8 @@
     },
     "id": "kidney",
     "name": "Chronic Kidney Disease Risk",
-    "description": "Chronic Kidney Disease (CKD) risk evaluation using 12 authentic clinical renal biomarkers from the Apollo Hospitals India + CDC cohort (100,000 clinical records).",
-    "dataset_size": 100000,
+    "description": "Chronic Kidney Disease (CKD) risk evaluation using 12 authentic clinical renal biomarkers from the Apollo Hospitals India cohort (400 clinical records, Rubini et al., 2015; UCI ML Repository).",
+    "dataset_size": 400,
     "status": "ready"
   },
   "test_metrics_summary": [
@@ -273,7 +273,7 @@
       "accuracy": 1.0,
       "roc_auc": 1.0,
       "pr_auc": 1.0,
-      "brier_score": 0.0,
+      "brier_score": 0.0015,
       "sensitivity": 1.0,
       "specificity": 1.0,
       "f1_score": 1.0,
@@ -289,8 +289,8 @@
           1.0
         ],
         "brier_95_ci": [
-          0.0,
-          0.0
+          0.0008,
+          0.0024
         ],
         "accuracy_95_ci": [
           1.0,
@@ -301,80 +301,80 @@
     {
       "model": "SVM",
       "type": "classical",
-      "accuracy": 0.9995,
-      "roc_auc": 1.0,
-      "pr_auc": 1.0,
-      "brier_score": 0.0004,
-      "sensitivity": 0.9988,
+      "accuracy": 0.9875,
+      "roc_auc": 0.9987,
+      "pr_auc": 0.9992,
+      "brier_score": 0.0121,
+      "sensitivity": 0.98,
       "specificity": 1.0,
-      "f1_score": 0.9994,
+      "f1_score": 0.9899,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.9989,
-          0.9997
+          0.9684,
+          1.0
         ],
         "roc_auc_95_ci": [
-          1.0,
+          0.9939,
           1.0
         ],
         "brier_95_ci": [
-          0.0002,
-          0.0007
+          0.0021,
+          0.0293
         ],
         "accuracy_95_ci": [
-          0.9991,
-          0.9998
+          0.9625,
+          1.0
         ]
       }
     },
     {
       "model": "LogisticRegression",
       "type": "classical",
-      "accuracy": 0.9992,
+      "accuracy": 0.975,
       "roc_auc": 1.0,
       "pr_auc": 1.0,
-      "brier_score": 0.0006,
-      "sensitivity": 0.9982,
-      "specificity": 0.9999,
-      "f1_score": 0.9991,
+      "brier_score": 0.0204,
+      "sensitivity": 0.96,
+      "specificity": 1.0,
+      "f1_score": 0.9796,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.9986,
-          0.9995
+          0.9505,
+          1.0
         ],
         "roc_auc_95_ci": [
           1.0,
           1.0
         ],
         "brier_95_ci": [
-          0.0003,
-          0.0008
+          0.0072,
+          0.0364
         ],
         "accuracy_95_ci": [
-          0.9989,
-          0.9996
+          0.9375,
+          1.0
         ]
       }
     },
     {
       "model": "GradientBoosting",
       "type": "classical",
-      "accuracy": 1.0,
+      "accuracy": 0.975,
       "roc_auc": 1.0,
       "pr_auc": 1.0,
-      "brier_score": 0.0,
-      "sensitivity": 1.0,
+      "brier_score": 0.0122,
+      "sensitivity": 0.96,
       "specificity": 1.0,
-      "f1_score": 1.0,
+      "f1_score": 0.9796,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          1.0,
+          0.9524,
           1.0
         ],
         "roc_auc_95_ci": [
@@ -382,11 +382,11 @@
           1.0
         ],
         "brier_95_ci": [
-          0.0,
-          0.0
+          0.0029,
+          0.0227
         ],
         "accuracy_95_ci": [
-          1.0,
+          0.9375,
           1.0
         ]
       }
@@ -394,30 +394,30 @@
     {
       "model": "XGBoost",
       "type": "classical",
-      "accuracy": 1.0,
-      "roc_auc": 1.0,
-      "pr_auc": 1.0,
-      "brier_score": 0.0,
-      "sensitivity": 1.0,
+      "accuracy": 0.975,
+      "roc_auc": 0.9993,
+      "pr_auc": 0.9996,
+      "brier_score": 0.0196,
+      "sensitivity": 0.96,
       "specificity": 1.0,
-      "f1_score": 1.0,
+      "f1_score": 0.9796,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          1.0,
+          0.9473,
           1.0
         ],
         "roc_auc_95_ci": [
-          1.0,
+          0.9962,
           1.0
         ],
         "brier_95_ci": [
-          0.0,
-          0.0
+          0.0037,
+          0.0359
         ],
         "accuracy_95_ci": [
-          1.0,
+          0.9375,
           1.0
         ]
       }
@@ -425,31 +425,31 @@
     {
       "model": "QuantumVQC",
       "type": "quantum",
-      "accuracy": 0.776,
-      "roc_auc": 0.7915,
-      "pr_auc": 0.8102,
-      "brier_score": 0.2116,
-      "sensitivity": 0.55,
-      "specificity": 0.9267,
-      "f1_score": 0.6627,
+      "accuracy": 0.625,
+      "roc_auc": 0.968,
+      "pr_auc": 0.9809,
+      "brier_score": 0.1998,
+      "sensitivity": 1.0,
+      "specificity": 0.0,
+      "f1_score": 0.7692,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.5987,
-          0.7176
+          0.6885,
+          0.8489
         ],
         "roc_auc_95_ci": [
-          0.7434,
-          0.8383
+          0.9275,
+          0.9922
         ],
         "brier_95_ci": [
-          0.2064,
-          0.2175
+          0.1753,
+          0.2227
         ],
         "accuracy_95_ci": [
-          0.7419,
-          0.8101
+          0.525,
+          0.7375
         ]
       }
     },
@@ -459,7 +459,7 @@
       "accuracy": 1.0,
       "roc_auc": 1.0,
       "pr_auc": 1.0,
-      "brier_score": 0.0339,
+      "brier_score": 0.0465,
       "sensitivity": 1.0,
       "specificity": 1.0,
       "f1_score": 1.0,
@@ -475,8 +475,8 @@
           1.0
         ],
         "brier_95_ci": [
-          0.0331,
-          0.0348
+          0.0401,
+          0.0532
         ],
         "accuracy_95_ci": [
           1.0,
@@ -485,5 +485,5 @@
       }
     }
   ],
-  "manifest_sha256": "e7550a514ffaf55373d1db41209ca20a2f5af3a8654ab282d4c7aa4ab0a83e8e"
+  "manifest_sha256": "9078244125aa0ce0c922d4e618b2b0dd3e9d502850fb8c5fbef8b6edce51f820"
 }

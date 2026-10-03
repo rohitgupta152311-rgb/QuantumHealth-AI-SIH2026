@@ -12,7 +12,7 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-DATA_FILE = Path(__file__).parent.parent.parent / "data" / "breast_cancer_wisconsin_augmented.csv"
+DATA_FILE = Path(__file__).parent.parent.parent / "data" / "breast_cancer_wisconsin_authentic_569.csv"
 
 # Base morphological feature definitions computed from digitized FNA images
 BASE_MORPHOLOGY = [
@@ -70,12 +70,12 @@ BREAST_CANCER_CONFIG = {
     "source_citation": "Street et al., 1993. UCI Wisconsin Diagnostic Breast Cancer (WDBC).",
     "source_url": "https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic)",
     "dataset_license": "CC BY 4.0",
-    "source_rows": 49999,
-    "training_rows_unaugmented": 29999,       # 60% of 49999
-    "validation_rows_unaugmented": 10000,     # 20% of 49999
-    "test_rows_unaugmented": 10000,           # 20% of 49999
-    "augmentation_method": "SMOTE applied solely to training folds for class balancing",
-    "augmentation_applied_to": "training folds only",
+    "source_rows": 569,
+    "training_rows_unaugmented": 341,       # 60% of 569
+    "validation_rows_unaugmented": 114,     # 20% of 569
+    "test_rows_unaugmented": 114,           # 20% of 569
+    "augmentation_method": "None (authentic unaugmented clinical biopsy cohort)",
+    "augmentation_applied_to": "none",
     "class_balance_source": "62.7% benign (1) / 37.3% malignant (0)",
     "evaluation_protocol": (
         "Stratified 60/20/20 split (seed=42). Preprocessing fit strictly on training split. "
@@ -121,8 +121,7 @@ BREAST_CANCER_CONFIG = {
 
 class BreastCancerDataset:
     def load(self) -> tuple[np.ndarray, np.ndarray, list[str]]:
-        """Load the Wisconsin breast cancer dataset (49,999 augmented rows preferred)."""
-        # Prefer the large augmented CSV (49,999 rows) over sklearn's tiny 569-row built-in
+        """Load the Wisconsin breast cancer dataset (569 authentic clinical FNA observations)."""
         if DATA_FILE.exists():
             df = pd.read_csv(DATA_FILE)
             feature_cols = [c for c in df.columns if c != 'target']
@@ -167,8 +166,7 @@ class BreastCancerDataset:
         info["name"] = BREAST_CANCER_CONFIG["display_name"]
         info["description"] = (
             "Breast tumor malignancy risk prediction using 30 digitized fine needle aspirate (FNA) nuclear morphology biomarkers "
-            "from the UCI Wisconsin Diagnostic Breast Cancer (WDBC) study, augmented to 49,999 rows. "
-            "METABRIC (2,509 real patients) is used as a secondary validation source."
+            "from the UCI Wisconsin Diagnostic Breast Cancer (WDBC) study (569 authentic clinical observations, Street et al., 1993)."
         )
         info["features"] = self.get_feature_info()
         info["dataset_size"] = BREAST_CANCER_CONFIG["source_rows"]

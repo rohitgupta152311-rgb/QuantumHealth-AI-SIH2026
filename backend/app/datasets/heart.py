@@ -1,32 +1,32 @@
 """
 Heart Disease Dataset Loader & Provenance Configuration
-Source: Multi-center UCI + CDC combined dataset (200,000 clinical records)
+Source: UCI Machine Learning Repository (Heart Disease Dataset - Cleveland Clinic Foundation)
 Citation: Janosi, A., Steinbrunn, W., Pfisterer, M., & Detrano, R. (1989).
           Heart Disease Database. Cleveland Clinic Foundation.
 Reference: https://archive.ics.uci.edu/ml/datasets/heart+disease
 License: CC BY 4.0
-Samples: 200,000 real clinical observations | Features: 13 | Target: target (0=Absence, 1=Presence of Angiographic Disease)
+Samples: 303 real clinical observations | Features: 13 | Target: target (0=Absence, 1=Presence of Angiographic Disease)
 """
 import numpy as np
 import pandas as pd
 from pathlib import Path
 
-DATA_FILE = Path(__file__).parent.parent.parent / "data" / "heart_disease_uci_cdc.csv"
+DATA_FILE = Path(__file__).parent.parent.parent / "data" / "heart_disease_cleveland_authentic_303.csv"
 
 HEART_CONFIG = {
     "disease_id": "heart",
     "display_name": "Cardiovascular Disease Risk",
     "is_synthetic_demonstration": False,
-    "source_citation": "Multi-center UCI Heart Disease (Cleveland, Hungarian, Switzerland, VA) + CDC BRFSS augmented cohort",
+    "source_citation": "Janosi et al., 1989. UCI Heart Disease (Cleveland Clinic Foundation).",
     "source_url": "https://archive.ics.uci.edu/ml/datasets/heart+disease",
     "dataset_license": "CC BY 4.0",
-    "source_rows": 200000,
-    "training_rows_unaugmented": 120000,       # 60% of 200000
-    "validation_rows_unaugmented": 40000,      # 20% of 200000
-    "test_rows_unaugmented": 40000,            # 20% of 200000
+    "source_rows": 303,
+    "training_rows_unaugmented": 181,       # 60% of 303
+    "validation_rows_unaugmented": 61,      # 20% of 303
+    "test_rows_unaugmented": 61,            # 20% of 303
     "augmentation_method": "SMOTE applied solely to training folds for class balancing",
     "augmentation_applied_to": "training folds only",
-    "class_balance_source": "Unknown class balance",
+    "class_balance_source": "54.5% negative / 45.5% positive",
     "evaluation_protocol": (
         "Stratified 60/20/20 split (seed=42). Preprocessing fit strictly on training split. "
         "SMOTE used only on training folds. Platt probability calibration fit on unaugmented validation split. "
@@ -239,7 +239,7 @@ class HeartDataset:
         info["id"] = "heart"
         info["name"] = HEART_CONFIG["display_name"]
         info["description"] = (
-            "Cardiovascular angiographic disease risk prediction based on a Multi-center UCI + CDC combined dataset (200,000 clinical records). "
+            "Cardiovascular angiographic disease risk prediction based on the UCI Cleveland Clinic Foundation cohort (303 clinical records). "
             "Evaluates resting hemodynamics, fluoroscopy, exercise-induced angina, and ST-segment depression."
         )
         info["features"] = self.get_feature_info()

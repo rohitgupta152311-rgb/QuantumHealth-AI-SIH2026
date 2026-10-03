@@ -1,30 +1,29 @@
 """
 Chronic Kidney Disease (CKD) Dataset Loader & Provenance Configuration
-Source: Synthetic Clinical Demonstration Data modeled on UCI Chronic Kidney Disease attributes
+Source: Apollo Hospitals India / UCI Machine Learning Repository
 Citation: Rubini, L., Eswaran, P., & Soundarapandian, P. (2015).
           Chronic Kidney Disease Dataset. UCI Machine Learning Repository.
 Reference: https://archive.ics.uci.edu/dataset/338/chronic_kidney_disease
 License: CC BY 4.0
-Status: Explicitly Designated as a Synthetic Demonstration Module for Algorithmic Prototyping
-Samples: 100,000 clinical records | Features: 12 | Target: classification (1=CKD, 0=Not CKD)
+Samples: 400 authentic clinical records | Features: 12 | Target: classification (1=CKD, 0=Not CKD)
 """
 import numpy as np
 import pandas as pd
 from pathlib import Path
 
-DATA_FILE = Path(__file__).resolve().parent.parent.parent / "data" / "kidney_disease_apollo_cdc.csv"
+DATA_FILE = Path(__file__).resolve().parent.parent.parent / "data" / "kidney_disease_apollo_authentic_400.csv"
 
 KIDNEY_CONFIG = {
     "disease_id": "kidney",
     "display_name": "Chronic Kidney Disease Risk",
     "is_synthetic_demonstration": False,
-    "source_citation": "Rubini et al., 2015. Chronic Kidney Disease Dataset. Apollo Hospitals India + CDC.",
+    "source_citation": "Rubini et al., 2015. Chronic Kidney Disease Dataset. Apollo Hospitals India / UCI ML Repository.",
     "source_url": "https://archive.ics.uci.edu/dataset/338/chronic_kidney_disease",
     "dataset_license": "CC BY 4.0",
-    "source_rows": 100000,
-    "training_rows_unaugmented": 60000,       # 60% of 100000
-    "validation_rows_unaugmented": 20000,       # 20% of 100000
-    "test_rows_unaugmented": 20000,             # 20% of 100000
+    "source_rows": 400,
+    "training_rows_unaugmented": 240,       # 60% of 400
+    "validation_rows_unaugmented": 80,        # 20% of 400
+    "test_rows_unaugmented": 80,              # 20% of 400
     "augmentation_method": "None (authentic unaugmented clinical cohort)",
     "augmentation_applied_to": "none",
     "class_balance_source": "62.5% CKD positive / 37.5% negative",
@@ -228,7 +227,7 @@ class KidneyDataset:
         info["name"] = KIDNEY_CONFIG["display_name"]
         info["description"] = (
             "Chronic Kidney Disease (CKD) risk evaluation using 12 authentic clinical renal biomarkers "
-            "from the Apollo Hospitals India + CDC cohort (100,000 clinical records)."
+            "from the Apollo Hospitals India cohort (400 clinical records, Rubini et al., 2015; UCI ML Repository)."
         )
         info["features"] = self.get_feature_info()
         info["dataset_size"] = KIDNEY_CONFIG["source_rows"]
