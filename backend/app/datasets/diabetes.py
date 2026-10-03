@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Tuple, List, Dict, Any
 
 ANALYTIC_DATA_FILE = Path(__file__).resolve().parents[2] / "data" / "diabetes_chinese_cohort_analytic_211k.csv"
+BALANCED_DATA_FILE = Path(__file__).resolve().parents[2] / "data" / "diabetes_chinese_cohort_balanced_8k.csv"
 LEGACY_DATA_FILE = Path(__file__).resolve().parents[2] / "data" / "diabetes_cdc_brfss.csv"
 MANIFEST_FILE = Path(__file__).resolve().parents[2] / "data" / "chinese_cohort_manifest.json"
 

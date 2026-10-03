@@ -165,12 +165,12 @@ class ClassicalMLTrainer:
             qc = QuantumClassifier(
                 n_qubits=n_qubits,
                 n_layers=2,
-                n_epochs=50,
-                max_training_samples=min(100, len(X_train_q)),
+                n_epochs=100,
+                max_training_samples=min(250, len(X_train_q)),
                 backend="numpy:statevector",
                 optimizer="cobyla",
                 data_reuploading=True,
-                loss_fn="focal",
+                loss_fn="bce",
             )
             # Train only on training split
             qc.fit(X_train_q, y_train)
@@ -288,7 +288,7 @@ class ClassicalMLTrainer:
             val_spreads = np.abs(c_val_mean_eval - q_val_probs)
             # 95th percentile of model disagreement spread on validation data
             self.abstention_disagreement_threshold = float(
-                np.clip(np.percentile(val_spreads, 95), 0.35, 0.65)
+                np.clip(np.percentile(val_spreads, 95), 0.65, 0.85)
             )
 
             # Evaluate Hybrid on locked test set

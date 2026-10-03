@@ -12,9 +12,10 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-DATA_FILE = Path(__file__).parent.parent.parent / "data" / "breast_cancer_wisconsin_authentic_569.csv"
+DATA_FILE = Path(__file__).parent.parent.parent / "data" / "breast_cancer_wisconsin_10features_569.csv"
+DATA_FILE_30 = Path(__file__).parent.parent.parent / "data" / "breast_cancer_wisconsin_authentic_569.csv"
 
-# Base morphological feature definitions computed from digitized FNA images
+# 10 Core digitized FNA nuclear morphology features (Street et al., 1993)
 BASE_MORPHOLOGY = [
     ("radius", "Radius", "μm", [6.0, 30.0], "Mean of distances from center to perimeter"),
     ("texture", "Texture", "gray-level SD", [9.0, 40.0], "Standard deviation of gray-scale values"),
@@ -30,34 +31,16 @@ BASE_MORPHOLOGY = [
 
 def _build_breast_cancer_features() -> list[dict]:
     features = []
-    for prefix, prefix_label in [("mean", "Mean"), ("error", "SE"), ("worst", "Worst")]:
-        for name, label, unit, (rmin, rmax), desc in BASE_MORPHOLOGY:
-            if prefix == "error":
-                feat_name = f"{name} error"
-                feat_label = f"{label} SE"
-                # Standard errors are typically smaller scale
-                scale_min = round(rmin * 0.01, 4)
-                scale_max = round(rmax * 0.15, 4)
-            elif prefix == "worst":
-                feat_name = f"worst {name}"
-                feat_label = f"Worst {label}"
-                scale_min = round(rmin * 1.1, 2)
-                scale_max = round(rmax * 1.4, 2)
-            else:
-                feat_name = f"mean {name}"
-                feat_label = f"Mean {label}"
-                scale_min = rmin
-                scale_max = rmax
-
-            features.append({
-                "name": feat_name,
-                "label": feat_label,
-                "unit": unit,
-                "model_input_range": [scale_min, scale_max],
-                "missing_sentinels": [],
-                "required": True if prefix == "mean" else False,
-                "description": f"{desc} ({prefix_label})"
-            })
+    for name, label, unit, (rmin, rmax), desc in BASE_MORPHOLOGY:
+        features.append({
+            "name": f"mean {name}",
+            "label": f"Mean {label}",
+            "unit": unit,
+            "model_input_range": [rmin, rmax],
+            "missing_sentinels": [],
+            "required": True,
+            "description": f"{desc} (Mean)"
+        })
     return features
 
 
@@ -126,6 +109,10 @@ class BreastCancerDataset:
             df = pd.read_csv(DATA_FILE)
             feature_cols = [c for c in df.columns if c != 'target']
             return df[feature_cols].values.astype(np.float64), df['target'].values.astype(int), feature_cols
+        if DATA_FILE_30.exists():
+            df = pd.read_csv(DATA_FILE_30)
+            feature_cols = [c for c in df.columns if c.startswith('mean ')]
+            return df[feature_cols].values.astype(np.float64), df['target'].values.astype(int), feature_cols
         # Fallback to sklearn's built-in WDBC (569 rows)
         try:
             from sklearn.datasets import load_breast_cancer
@@ -133,7 +120,10 @@ class BreastCancerDataset:
             # CRITICAL: sklearn WDBC encodes 0=Malignant, 1=Benign
             # Our platform needs 1=Disease(Malignant), 0=Healthy(Benign)
             y = 1 - data.target
-            return data.data, y, list(data.feature_names)
+            mean_mask = [n.startswith("mean ") for n in data.feature_names]
+            X_10 = data.data[:, mean_mask]
+            feat_10 = [n for n in data.feature_names if n.startswith("mean ")]
+            return X_10, y, feat_10
         except Exception:
             return self._generate_fallback()
 
@@ -165,7 +155,7 @@ class BreastCancerDataset:
         info["id"] = "breast_cancer"
         info["name"] = BREAST_CANCER_CONFIG["display_name"]
         info["description"] = (
-            "Breast tumor malignancy risk prediction using 30 digitized fine needle aspirate (FNA) nuclear morphology biomarkers "
+            "Breast tumor malignancy risk prediction using 10 core digitized fine needle aspirate (FNA) nuclear morphology biomarkers "
             "from the UCI Wisconsin Diagnostic Breast Cancer (WDBC) study (569 authentic clinical observations, Street et al., 1993)."
         )
         info["features"] = self.get_feature_info()

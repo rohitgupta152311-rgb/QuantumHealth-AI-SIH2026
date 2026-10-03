@@ -1,6 +1,6 @@
 {
   "disease_id": "breast_cancer",
-  "created_at": "2026-10-02T18:04:24.396673+00:00",
+  "created_at": "2026-10-03T05:05:50.154490+00:00",
   "split_protocol": "Stratified 60/20/20 split (seed=42)",
   "split_sizes": {
     "train_samples": 341,
@@ -8,11 +8,11 @@
     "test_samples": 114
   },
   "split_hashes": {
-    "train_sha256": "ea8319aa0dcbf4f79ef1a572bcb40f5e2c5340efb97afc7641130ca138f74522",
-    "val_sha256": "7c1718482a628a737af9077e0a438e31177673186e5db5a99ccff59d6d7baffa",
-    "test_sha256": "02f83e7cef08ef433b930ef73f4fb8b90363b6ea46788d847461c1df48dbd21a"
+    "train_sha256": "97314bc16196c123b0e291759d025219328d398809ee9ecf8599814a9dd76fc1",
+    "val_sha256": "ad40d6564def49f49687a5cbd604cdde4550bfa7fd10d17dfc952b3b2c64ebbb",
+    "test_sha256": "7e65498c49366371a287ca894b9a0df89577ce82a493a9d0ce80cbd7fc17308b"
   },
-  "preprocessing_artifact_sha256": "5f06384a74a6cd3b64050e1f582b734867a9578e131e61ee855de6d640207fbe",
+  "preprocessing_artifact_sha256": "c2973c88335cb6bef10e694a432a27392f11333c9922774f1e2fe788e750d52f",
   "quantum_configuration": {
     "n_qubits": 6,
     "n_layers": 2,
@@ -27,7 +27,7 @@
     "tuned_alpha": 0.4,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
-    "abstention_disagreement_threshold": 0.5118
+    "abstention_disagreement_threshold": 0.3843
   },
   "calibration": {
     "method": "Platt Scaling (Sigmoid fitted on unaugmented validation split)",
@@ -165,206 +165,6 @@
         "missing_sentinels": [],
         "required": true,
         "description": "Coastline approximation fractal metric - 1.0 (Mean)"
-      },
-      {
-        "name": "radius error",
-        "label": "Radius SE",
-        "unit": "\u03bcm",
-        "min_val": 0.06,
-        "max_val": 4.5,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Mean of distances from center to perimeter (SE)"
-      },
-      {
-        "name": "texture error",
-        "label": "Texture SE",
-        "unit": "gray-level SD",
-        "min_val": 0.09,
-        "max_val": 6.0,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Standard deviation of gray-scale values (SE)"
-      },
-      {
-        "name": "perimeter error",
-        "label": "Perimeter SE",
-        "unit": "\u03bcm",
-        "min_val": 0.4,
-        "max_val": 28.5,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Perimeter of the cell nucleus contour (SE)"
-      },
-      {
-        "name": "area error",
-        "label": "Area SE",
-        "unit": "\u03bcm\u00b2",
-        "min_val": 1.4,
-        "max_val": 382.5,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Area enclosed by the cell nucleus contour (SE)"
-      },
-      {
-        "name": "smoothness error",
-        "label": "Smoothness SE",
-        "unit": "score",
-        "min_val": 0.0005,
-        "max_val": 0.0255,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Local variation in contour radius lengths (SE)"
-      },
-      {
-        "name": "compactness error",
-        "label": "Compactness SE",
-        "unit": "score",
-        "min_val": 0.0001,
-        "max_val": 0.0525,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Perimeter^2 / Area - 1.0 (SE)"
-      },
-      {
-        "name": "concavity error",
-        "label": "Concavity SE",
-        "unit": "score",
-        "min_val": 0.0,
-        "max_val": 0.0675,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Severity of concave portions of the contour (SE)"
-      },
-      {
-        "name": "concave points error",
-        "label": "Concave Points SE",
-        "unit": "count",
-        "min_val": 0.0,
-        "max_val": 0.0315,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Number of concave portions of the contour (SE)"
-      },
-      {
-        "name": "symmetry error",
-        "label": "Symmetry SE",
-        "unit": "score",
-        "min_val": 0.001,
-        "max_val": 0.0465,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Bilateral symmetry metric of the cell nucleus (SE)"
-      },
-      {
-        "name": "fractal dimension error",
-        "label": "Fractal Dimension SE",
-        "unit": "dim",
-        "min_val": 0.0004,
-        "max_val": 0.015,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Coastline approximation fractal metric - 1.0 (SE)"
-      },
-      {
-        "name": "worst radius",
-        "label": "Worst Radius",
-        "unit": "\u03bcm",
-        "min_val": 6.6,
-        "max_val": 42.0,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Mean of distances from center to perimeter (Worst)"
-      },
-      {
-        "name": "worst texture",
-        "label": "Worst Texture",
-        "unit": "gray-level SD",
-        "min_val": 9.9,
-        "max_val": 56.0,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Standard deviation of gray-scale values (Worst)"
-      },
-      {
-        "name": "worst perimeter",
-        "label": "Worst Perimeter",
-        "unit": "\u03bcm",
-        "min_val": 44.0,
-        "max_val": 266.0,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Perimeter of the cell nucleus contour (Worst)"
-      },
-      {
-        "name": "worst area",
-        "label": "Worst Area",
-        "unit": "\u03bcm\u00b2",
-        "min_val": 154.0,
-        "max_val": 3570.0,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Area enclosed by the cell nucleus contour (Worst)"
-      },
-      {
-        "name": "worst smoothness",
-        "label": "Worst Smoothness",
-        "unit": "score",
-        "min_val": 0.06,
-        "max_val": 0.24,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Local variation in contour radius lengths (Worst)"
-      },
-      {
-        "name": "worst compactness",
-        "label": "Worst Compactness",
-        "unit": "score",
-        "min_val": 0.01,
-        "max_val": 0.49,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Perimeter^2 / Area - 1.0 (Worst)"
-      },
-      {
-        "name": "worst concavity",
-        "label": "Worst Concavity",
-        "unit": "score",
-        "min_val": 0.0,
-        "max_val": 0.63,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Severity of concave portions of the contour (Worst)"
-      },
-      {
-        "name": "worst concave points",
-        "label": "Worst Concave Points",
-        "unit": "count",
-        "min_val": 0.0,
-        "max_val": 0.29,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Number of concave portions of the contour (Worst)"
-      },
-      {
-        "name": "worst symmetry",
-        "label": "Worst Symmetry",
-        "unit": "score",
-        "min_val": 0.11,
-        "max_val": 0.43,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Bilateral symmetry metric of the cell nucleus (Worst)"
-      },
-      {
-        "name": "worst fractal dimension",
-        "label": "Worst Fractal Dimension",
-        "unit": "dim",
-        "min_val": 0.04,
-        "max_val": 0.14,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Coastline approximation fractal metric - 1.0 (Worst)"
       }
     ],
     "presets": {
@@ -422,7 +222,7 @@
     },
     "id": "breast_cancer",
     "name": "Breast Tumor Cytopathology Risk",
-    "description": "Breast tumor malignancy risk prediction using 30 digitized fine needle aspirate (FNA) nuclear morphology biomarkers from the UCI Wisconsin Diagnostic Breast Cancer (WDBC) study (569 authentic clinical observations, Street et al., 1993).",
+    "description": "Breast tumor malignancy risk prediction using 10 core digitized fine needle aspirate (FNA) nuclear morphology biomarkers from the UCI Wisconsin Diagnostic Breast Cancer (WDBC) study (569 authentic clinical observations, Street et al., 1993).",
     "dataset_size": 569,
     "status": "ready"
   },
@@ -430,220 +230,220 @@
     {
       "model": "RandomForest",
       "type": "classical",
-      "accuracy": 0.9561,
-      "roc_auc": 0.998,
-      "pr_auc": 0.9967,
-      "brier_score": 0.0252,
-      "sensitivity": 0.9048,
-      "specificity": 0.9861,
-      "f1_score": 0.9383,
+      "accuracy": 0.9211,
+      "roc_auc": 0.9845,
+      "pr_auc": 0.9739,
+      "brier_score": 0.0494,
+      "sensitivity": 0.881,
+      "specificity": 0.9444,
+      "f1_score": 0.8916,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8787,
-          0.9805
+          0.806,
+          0.9475
         ],
         "roc_auc_95_ci": [
-          0.9927,
-          1.0
+          0.9653,
+          0.9961
         ],
         "brier_95_ci": [
-          0.0117,
-          0.044
+          0.0272,
+          0.0797
         ],
         "accuracy_95_ci": [
-          0.9211,
-          0.9827
+          0.8684,
+          0.9564
         ]
       }
     },
     {
       "model": "SVM",
       "type": "classical",
-      "accuracy": 0.9825,
-      "roc_auc": 0.9944,
-      "pr_auc": 0.9929,
-      "brier_score": 0.0195,
+      "accuracy": 0.9649,
+      "roc_auc": 0.9831,
+      "pr_auc": 0.9751,
+      "brier_score": 0.0406,
       "sensitivity": 0.9524,
-      "specificity": 1.0,
-      "f1_score": 0.9756,
+      "specificity": 0.9722,
+      "f1_score": 0.9524,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.9333,
-          1.0
+          0.8916,
+          0.9877
         ],
         "roc_auc_95_ci": [
-          0.9792,
+          0.9577,
           1.0
         ],
         "brier_95_ci": [
-          0.0068,
-          0.043
+          0.021,
+          0.0729
         ],
         "accuracy_95_ci": [
-          0.9561,
-          1.0
+          0.9211,
+          0.9912
         ]
       }
     },
     {
       "model": "LogisticRegression",
       "type": "classical",
-      "accuracy": 0.9649,
-      "roc_auc": 0.9954,
-      "pr_auc": 0.9936,
-      "brier_score": 0.032,
+      "accuracy": 0.9386,
+      "roc_auc": 0.9841,
+      "pr_auc": 0.9764,
+      "brier_score": 0.0507,
       "sensitivity": 0.9048,
-      "specificity": 1.0,
-      "f1_score": 0.95,
+      "specificity": 0.9583,
+      "f1_score": 0.9157,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8916,
-          0.988
+          0.8406,
+          0.9656
         ],
         "roc_auc_95_ci": [
-          0.9841,
-          1.0
+          0.9649,
+          0.9966
         ],
         "brier_95_ci": [
-          0.0167,
-          0.0548
+          0.0315,
+          0.0733
         ],
         "accuracy_95_ci": [
-          0.9211,
-          0.9912
+          0.8945,
+          0.9737
         ]
       }
     },
     {
       "model": "GradientBoosting",
       "type": "classical",
-      "accuracy": 0.9649,
-      "roc_auc": 0.9934,
-      "pr_auc": 0.9908,
-      "brier_score": 0.0292,
-      "sensitivity": 0.9286,
-      "specificity": 0.9861,
-      "f1_score": 0.9512,
+      "accuracy": 0.9123,
+      "roc_auc": 0.9739,
+      "pr_auc": 0.9663,
+      "brier_score": 0.0547,
+      "sensitivity": 0.8571,
+      "specificity": 0.9444,
+      "f1_score": 0.878,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8823,
-          0.9888
+          0.793,
+          0.9413
         ],
         "roc_auc_95_ci": [
-          0.9779,
-          1.0
+          0.9349,
+          0.996
         ],
         "brier_95_ci": [
-          0.0106,
-          0.0562
+          0.0297,
+          0.0837
         ],
         "accuracy_95_ci": [
-          0.9211,
-          0.9912
+          0.8596,
+          0.9561
         ]
       }
     },
     {
       "model": "XGBoost",
       "type": "classical",
-      "accuracy": 0.9737,
-      "roc_auc": 0.9911,
-      "pr_auc": 0.9891,
-      "brier_score": 0.0255,
+      "accuracy": 0.9298,
+      "roc_auc": 0.9782,
+      "pr_auc": 0.9718,
+      "brier_score": 0.0571,
       "sensitivity": 0.9286,
-      "specificity": 1.0,
-      "f1_score": 0.963,
+      "specificity": 0.9306,
+      "f1_score": 0.907,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.914,
-          1.0
+          0.8292,
+          0.962
         ],
         "roc_auc_95_ci": [
-          0.9711,
-          1.0
+          0.9463,
+          0.9955
         ],
         "brier_95_ci": [
-          0.004,
-          0.0569
+          0.0312,
+          0.0901
         ],
         "accuracy_95_ci": [
-          0.9386,
-          1.0
+          0.8772,
+          0.9651
         ]
       }
     },
     {
       "model": "QuantumVQC",
       "type": "quantum",
-      "accuracy": 0.8772,
-      "roc_auc": 0.9818,
-      "pr_auc": 0.9655,
-      "brier_score": 0.1146,
-      "sensitivity": 0.7143,
-      "specificity": 0.9722,
-      "f1_score": 0.8108,
+      "accuracy": 0.886,
+      "roc_auc": 0.9613,
+      "pr_auc": 0.9347,
+      "brier_score": 0.1108,
+      "sensitivity": 0.7619,
+      "specificity": 0.9583,
+      "f1_score": 0.8312,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.6774,
-          0.8916
+          0.7241,
+          0.8957
         ],
         "roc_auc_95_ci": [
-          0.9534,
-          0.9978
+          0.9278,
+          0.9866
         ],
         "brier_95_ci": [
-          0.1024,
-          0.1304
+          0.0964,
+          0.1294
         ],
         "accuracy_95_ci": [
-          0.8158,
-          0.9213
+          0.8246,
+          0.9298
         ]
       }
     },
     {
       "model": "HybridEnsemble",
       "type": "hybrid",
-      "accuracy": 0.9737,
-      "roc_auc": 0.9983,
-      "pr_auc": 0.9974,
-      "brier_score": 0.0409,
-      "sensitivity": 0.9286,
-      "specificity": 1.0,
-      "f1_score": 0.963,
+      "accuracy": 0.9298,
+      "roc_auc": 0.9841,
+      "pr_auc": 0.9714,
+      "brier_score": 0.0593,
+      "sensitivity": 0.881,
+      "specificity": 0.9583,
+      "f1_score": 0.9024,
       "is_calibrated": false,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.914,
-          1.0
+          0.8158,
+          0.9584
         ],
         "roc_auc_95_ci": [
-          0.9926,
-          1.0
+          0.9643,
+          0.9963
         ],
         "brier_95_ci": [
-          0.0301,
-          0.056
+          0.0435,
+          0.0794
         ],
         "accuracy_95_ci": [
-          0.9386,
-          1.0
+          0.8772,
+          0.9649
         ]
       }
     }
   ],
-  "manifest_sha256": "537782af12c9aedad6db6f11111422d35e319845a3a2c014382aa4576f414536"
+  "manifest_sha256": "77c2ab1ee899f430eae2bef47342abc2780406e8e5dcd90a56e3a6af996952c7"
 }

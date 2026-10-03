@@ -1,6 +1,6 @@
 {
   "disease_id": "heart",
-  "created_at": "2026-10-02T18:03:28.180684+00:00",
+  "created_at": "2026-10-03T05:04:36.802389+00:00",
   "split_protocol": "Stratified 60/20/20 split (seed=42)",
   "split_sizes": {
     "train_samples": 181,
@@ -12,7 +12,7 @@
     "val_sha256": "a8f099abe8eb11d9d06b8cae9400ec64b9a5c8da5ac03ab8f441c3cfa31e770f",
     "test_sha256": "a8181d8d41b48b5b0d07880038ee58d84bafd59a6ed3d1656ee5d2e15c269dbc"
   },
-  "preprocessing_artifact_sha256": "99afb08d2372cf694aec726b5d3f6fa389909f10bad218db0c9a455b8d7dc335",
+  "preprocessing_artifact_sha256": "e58962be04f4d2affa10ac2dfbd3c70c2ac35e6532a8f6fd684e6cc0efd9641d",
   "quantum_configuration": {
     "n_qubits": 6,
     "n_layers": 2,
@@ -27,7 +27,7 @@
     "tuned_alpha": 0.4,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
-    "abstention_disagreement_threshold": 0.4684
+    "abstention_disagreement_threshold": 0.4611
   },
   "calibration": {
     "method": "Platt Scaling (Sigmoid fitted on unaugmented validation split)",
@@ -430,65 +430,65 @@
     {
       "model": "QuantumVQC",
       "type": "quantum",
-      "accuracy": 0.541,
-      "roc_auc": 0.79,
-      "pr_auc": 0.8392,
-      "brier_score": 0.2405,
-      "sensitivity": 0.0,
-      "specificity": 1.0,
-      "f1_score": 0.0,
+      "accuracy": 0.6066,
+      "roc_auc": 0.8052,
+      "pr_auc": 0.6784,
+      "brier_score": 0.2275,
+      "sensitivity": 0.2857,
+      "specificity": 0.8788,
+      "f1_score": 0.4,
       "is_calibrated": true,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.0,
-          0.0
+          0.2141,
+          0.5604
         ],
         "roc_auc_95_ci": [
-          0.6509,
-          0.8914
+          0.6852,
+          0.9065
         ],
         "brier_95_ci": [
-          0.232,
-          0.2506
+          0.2145,
+          0.2392
         ],
         "accuracy_95_ci": [
-          0.4258,
-          0.6557
+          0.4918,
+          0.7049
         ]
       }
     },
     {
       "model": "HybridEnsemble",
       "type": "hybrid",
-      "accuracy": 0.918,
-      "roc_auc": 0.9535,
-      "pr_auc": 0.9067,
-      "brier_score": 0.121,
+      "accuracy": 0.9016,
+      "roc_auc": 0.9481,
+      "pr_auc": 0.8739,
+      "brier_score": 0.1189,
       "sensitivity": 0.9643,
-      "specificity": 0.8788,
-      "f1_score": 0.9153,
+      "specificity": 0.8485,
+      "f1_score": 0.9,
       "is_calibrated": false,
       "confidence_intervals": {
         "valid_bootstrap_samples": 200,
         "f1_95_ci": [
-          0.8275,
-          0.9811
+          0.8,
+          0.9688
         ],
         "roc_auc_95_ci": [
-          0.8868,
-          0.9947
+          0.8814,
+          0.9936
         ],
         "brier_95_ci": [
-          0.0972,
-          0.1436
+          0.094,
+          0.1445
         ],
         "accuracy_95_ci": [
-          0.8525,
-          0.9836
+          0.8197,
+          0.9672
         ]
       }
     }
   ],
-  "manifest_sha256": "6c085fbea7526c64b6533c1ad7676276b181bcfc22607337714391e9d3db8067"
+  "manifest_sha256": "a7fe492b5869b07ff4da346b71808c030d97ad636539ac8fc91739d9603425b8"
 }

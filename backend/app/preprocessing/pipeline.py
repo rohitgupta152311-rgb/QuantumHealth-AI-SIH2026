@@ -41,6 +41,10 @@ class PreprocessingPipeline:
     def fit(self, X: np.ndarray, y: np.ndarray, feature_names: list[str]) -> 'PreprocessingPipeline':
         """Fit all preprocessing components strictly on training data."""
         self.feature_names = list(feature_names)
+        self.feature_medians = {
+            name: float(np.nanmedian(X[:, i]))
+            for i, name in enumerate(feature_names)
+        }
 
         # 1. Clean data (impute with sentinels masked & compute outlier bounds)
         X_clean = self.cleaner.fit_transform(X)
@@ -97,7 +101,8 @@ class PreprocessingPipeline:
     def transform_single(self, features_dict: dict, feature_names: list[str]) -> tuple[np.ndarray, np.ndarray]:
         if not self._fitted:
             raise RuntimeError("PreprocessingPipeline has not been fitted.")
-        x_array = np.array([[features_dict.get(f, 0.0) for f in feature_names]], dtype=float)
+        medians = getattr(self, "feature_medians", {})
+        x_array = np.array([[features_dict.get(f, medians.get(f, 0.0)) for f in feature_names]], dtype=float)
         return self.transform(x_array)
 
     def save(self, path: str | Path) -> None:
@@ -113,6 +118,7 @@ class PreprocessingPipeline:
             "selector": self.selector,
             "_fitted": self._fitted,
             "feature_names": self.feature_names,
+            "feature_medians": getattr(self, "feature_medians", {}),
         }
         joblib.dump(state, str(path))
 
@@ -128,4 +134,5 @@ class PreprocessingPipeline:
         self.selector = state["selector"]
         self._fitted = state["_fitted"]
         self.feature_names = state["feature_names"]
+        self.feature_medians = state.get("feature_medians", {})
         return self

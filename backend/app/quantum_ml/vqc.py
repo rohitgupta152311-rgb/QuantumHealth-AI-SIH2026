@@ -294,8 +294,10 @@ class QuantumClassifier:
             raise RuntimeError("Cannot fit calibrator on an unfitted QuantumClassifier.")
         from sklearn.linear_model import LogisticRegression
         raw_probs = np.array([self._forward(x) for x in X_val]).reshape(-1, 1)
-        self.calibrator = LogisticRegression(C=1.0, solver="lbfgs")
-        self.calibrator.fit(raw_probs, y_val)
+        if len(np.unique(y_val)) > 1:
+            lr = LogisticRegression(C=1.0, solver="lbfgs")
+            lr.fit(raw_probs, y_val)
+            self.calibrator = lr
         return self
 
     def predict_proba(self, X: np.ndarray, calibrated: bool = True) -> np.ndarray:

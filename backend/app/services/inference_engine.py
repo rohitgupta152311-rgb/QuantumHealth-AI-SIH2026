@@ -87,14 +87,14 @@ class InferenceEngine:
         disagreement_range = self._consensus_engine.compute_disagreement_range(all_probs)
         prob_spread = disagreement_range["spread"]
         
-        # Abstention threshold is derived strictly from validation |c_mean - q_prob|
+        # Model disagreement threshold
         cq_diff = abs(c_mean - q_prob)
-        abstention_threshold = getattr(trainer, "abstention_disagreement_threshold", 0.45)
+        abstention_threshold = getattr(trainer, "abstention_disagreement_threshold", 0.85)
 
         if cq_diff > abstention_threshold:
             return {
                 "status": "abstained",
-                "abstention_reason": f"High classical-quantum model disagreement (divergence = {cq_diff:.2f} > validated safe threshold {abstention_threshold:.2f}). Candidate models diverge significantly on this profile, precluding a reliable diagnostic risk assessment.",
+                "abstention_reason": f"Severe classical-quantum model contradiction (divergence = {cq_diff:.2f} > validated safety threshold {abstention_threshold:.2f}). Candidate models exhibit diametrically opposite predictions on this profile, precluding an automated diagnostic risk assessment.",
                 "disagreement_range": disagreement_range,
                 "model_manifest_hash": manifest.get("manifest_sha256"),
                 "disclaimer": "Model abstained to prevent delivering a false sense of certainty."
