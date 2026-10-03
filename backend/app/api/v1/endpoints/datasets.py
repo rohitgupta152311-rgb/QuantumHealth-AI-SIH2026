@@ -28,27 +28,27 @@ MAX_ROWS = 350_000
 DATA_DIR = Path(__file__).resolve().parents[4] / "data"
 
 
-@router.get("/download/all", summary="Download All 603K Clinical Datasets (ZIP)")
+@router.get("/download/all", summary="Download All Authentic Clinical Datasets (ZIP)")
 async def download_all_datasets():
-    """Download the complete ZIP package containing all 4 clean clinical datasets, catalog, and documentation."""
-    zip_path = DATA_DIR / "QuantumHealth_AI_Datasets_603K.zip"
+    """Download the complete ZIP package containing all 4 authentic clinical datasets (213,105 patients) and catalog."""
+    zip_path = DATA_DIR / "ArogyaDristi_Authentic_Clinical_Datasets.zip"
     if not zip_path.exists():
         raise HTTPException(status_code=404, detail="Dataset archive not found.")
     return FileResponse(
         path=zip_path,
-        filename="QuantumHealth_AI_Datasets_603K.zip",
+        filename="ArogyaDristi_Authentic_Clinical_Datasets.zip",
         media_type="application/zip"
     )
 
 
 @router.get("/download/{disease_id}", summary="Download Single Disease Dataset CSV")
 async def download_single_dataset(disease_id: str):
-    """Download an individual disease dataset CSV file."""
+    """Download an individual authentic clinical disease dataset CSV file."""
     mapping = {
-        "kidney": "kidney_disease_apollo_cdc.csv",
-        "diabetes": "diabetes_cdc_brfss.csv",
-        "heart": "heart_disease_uci_cdc.csv",
-        "breast_cancer": "breast_cancer_wisconsin_augmented.csv",
+        "diabetes": "diabetes_chinese_cohort_analytic_211k.csv",
+        "heart": "heart_disease_cleveland_authentic_303.csv",
+        "kidney": "kidney_disease_apollo_authentic_400.csv",
+        "breast_cancer": "breast_cancer_wisconsin_authentic_569.csv",
     }
     if disease_id not in mapping:
         raise HTTPException(status_code=404, detail=f"Dataset for '{disease_id}' not found.")

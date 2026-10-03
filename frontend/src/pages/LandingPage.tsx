@@ -86,7 +86,7 @@ export const LandingPage: React.FC = () => {
   ];
 
   const stats = [
-    { value: 211833, label: 'Patients Across Cohorts', suffix: '+' },
+    { value: 213105, label: 'Patients Across Cohorts', suffix: '+' },
     { value: 6, label: 'Total Models (5 Classical + 1 VQC)', suffix: '' },
     { value: 50, label: 'Automated Tests Passing', suffix: '/50' },
     { value: 99.88, label: 'Quantum Param Compression', suffix: '%' },

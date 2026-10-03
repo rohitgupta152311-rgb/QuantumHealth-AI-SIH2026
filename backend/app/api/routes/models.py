@@ -20,7 +20,7 @@ async def list_models():
         {
             "name": "RandomForest",
             "type": "classical",
-            "description": "Ensemble learning method with balanced class weighting for tabular biomarkers."
+            "description": "Ensemble learning method with 300 estimators and balanced class weighting for tabular biomarkers."
         },
         {
             "name": "SVM",
@@ -33,9 +33,24 @@ async def list_models():
             "description": "L2-regularized linear baseline classifier using L-BFGS optimization."
         },
         {
-            "name": "Hybrid VQC",
+            "name": "GradientBoosting",
+            "type": "classical",
+            "description": "Forward stagewise gradient boosting trees with log-loss optimization."
+        },
+        {
+            "name": "XGBoost",
+            "type": "classical",
+            "description": "Extreme gradient boosting with exact second-order gradient approximation."
+        },
+        {
+            "name": "QuantumVQC",
+            "type": "quantum",
+            "description": "6-Qubit Variational Quantum Classifier with Angle Encoding, Ring CNOT entanglement, and 24 variational parameters."
+        },
+        {
+            "name": "HybridEnsemble",
             "type": "hybrid",
-            "description": "Variational Quantum Classifier with Angle Encoding, Ring CNOT entanglement, and classical fusion."
+            "description": "Brier-score weighted consensus engine fusing all 5 classical classifiers with the Quantum VQC."
         }
     ]
 

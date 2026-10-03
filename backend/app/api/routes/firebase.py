@@ -15,7 +15,7 @@ from pydantic import BaseModel, Field
 from app.core.firebase import firebase_manager
 from app.services.firebase_service import FirebaseService, get_firebase_service
 
-logger = logging.getLogger("quantumhealth.api.firebase")
+logger = logging.getLogger("arogyadristi.api.firebase")
 
 router = APIRouter()
 
@@ -79,7 +79,7 @@ async def get_current_clinician(authorization: Optional[str] = Header(None)) -> 
         # Permissive local mode fallback: provides simulated clinician identity
         return {
             "uid": "clinician-local-anonymous",
-            "email": "local.clinician@quantumhealth.ai",
+            "email": "local.clinician@arogyadristi.in",
             "role": "clinician",
             "name": "Local PHC Clinician",
             "is_mock": True

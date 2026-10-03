@@ -10,7 +10,7 @@ from fastapi import APIRouter
 from pydantic import BaseModel
 from app.core.config import settings
 
-logger = logging.getLogger("quantumhealth.chat")
+logger = logging.getLogger("arogyadristi.chat")
 router = APIRouter()
 
 class ChatMessage(BaseModel):

@@ -33,12 +33,12 @@ logging.basicConfig(
 )
 logging.getLogger("aiosqlite").setLevel(logging.WARNING)
 logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
-logger = logging.getLogger("quantumhealth.main")
+logger = logging.getLogger("arogyadristi.main")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
-    logger.info("Initializing QuantumHealth AI database and models cache...")
+    logger.info("Initializing ArogyaDristi database and models cache...")
     try:
         async with engine.begin() as conn:
             await conn.run_sync(Base.metadata.create_all)
@@ -75,7 +75,7 @@ async def lifespan(app: FastAPI):
 
 
     # Shutdown
-    logger.info("Shutting down QuantumHealth AI services...")
+    logger.info("Shutting down ArogyaDristi services...")
     await engine.dispose()
 
 app = FastAPI(

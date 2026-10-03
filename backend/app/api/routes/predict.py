@@ -9,7 +9,7 @@ from app.services.firebase_service import firebase_service
 from app.datasets.loader import get_dataset_loader, DatasetLoader
 from app.core.config import settings
 
-logger = logging.getLogger("quantumhealth.api.predict")
+logger = logging.getLogger("arogyadristi.api.predict")
 router = APIRouter()
 
 _global_prediction_service = None

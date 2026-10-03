@@ -12,7 +12,7 @@ from app.classical_ml.trainer import ClassicalMLTrainer
 from app.preprocessing.pipeline import PreprocessingPipeline
 from app.quantum_ml.vqc import QuantumClassifier
 
-logger = logging.getLogger("quantumhealth.services.training")
+logger = logging.getLogger("arogyadristi.services.training")
 
 @dataclass
 class TrainedModelBundle:

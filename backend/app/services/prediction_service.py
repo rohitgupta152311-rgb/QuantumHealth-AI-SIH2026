@@ -21,7 +21,7 @@ from app.services.training_orchestrator import TrainingOrchestrator
 from app.services.inference_engine import InferenceEngine, risk_level_from_probability
 from app.services.explanation_service import ExplanationService, _get_feature_importance_report
 
-logger = logging.getLogger("quantumhealth.services.prediction")
+logger = logging.getLogger("arogyadristi.services.prediction")
 
 def build_processing_steps(_info: dict) -> list[dict]:
     return [
