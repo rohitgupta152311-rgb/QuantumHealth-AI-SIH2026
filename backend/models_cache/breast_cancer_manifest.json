@@ -27,7 +27,7 @@
     "tuned_alpha": 0.4,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
-    "abstention_disagreement_threshold": 0.3843
+    "abstention_disagreement_threshold": 0.65
   },
   "calibration": {
     "method": "Platt Scaling (Sigmoid fitted on unaugmented validation split)",
