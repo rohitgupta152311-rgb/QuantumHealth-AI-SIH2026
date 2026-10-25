@@ -49,10 +49,6 @@ export const HybridAIDashboard: React.FC = () => {
         safeStorage.removeItem('qhai_last_prediction');
       }
     }
-    // Auto-populate default verified case so dashboard is never empty on first visit
-    const defaultCase = getDemoMockPrediction('heart');
-    setData(defaultCase);
-    handleLoadDemo();
   }, [location.state]);
 
   const handleLoadDemo = async () => {
@@ -92,6 +88,40 @@ export const HybridAIDashboard: React.FC = () => {
       setIsLoadingDemo(false);
     }
   };
+
+  const classicalDrivers = data?.explanations?.classical?.top_drivers || [];
+  const diseaseConfig = data ? getDiseaseConfig(data.disease) : null;
+  const diseaseTitle = diseaseConfig?.name || data?.disease || '';
+
+  const radarFeatures = React.useMemo(() => {
+    if (!diseaseConfig || !data) return [];
+    let inputFeatures: Record<string, number> = {};
+    const storedFeaturesStr = safeStorage.getItem(`qhai_features_${data.disease}`);
+    if (storedFeaturesStr) {
+      try {
+        inputFeatures = JSON.parse(storedFeaturesStr);
+      } catch (e) {}
+    } else if (classicalDrivers.length > 0) {
+      classicalDrivers.forEach(d => {
+        inputFeatures[d.feature] = d.input_value;
+      });
+    }
+
+    return (diseaseConfig.continuousKeys || []).slice(0, 6).map(key => {
+      const patientValue = inputFeatures[key] || diseaseConfig.medians[key] || 0;
+      const medianValue = diseaseConfig.medians[key] || 0;
+      const max = Math.max(patientValue, medianValue) * 1.5 || 100;
+      const min = 0;
+      return {
+        name: key,
+        label: key,
+        patientValue,
+        medianValue,
+        min,
+        max
+      };
+    });
+  }, [data?.disease, diseaseConfig, classicalDrivers]);
 
   if (!data) {
     return (
@@ -247,39 +277,7 @@ export const HybridAIDashboard: React.FC = () => {
   const isHighRisk = riskPct >= 50;
 
 
-  const classicalDrivers = data.explanations?.classical?.top_drivers || [];
-  const diseaseConfig = getDiseaseConfig(data.disease);
-  const diseaseTitle = diseaseConfig?.name || data.disease;
 
-  const radarFeatures = React.useMemo(() => {
-    if (!diseaseConfig) return [];
-    let inputFeatures: Record<string, number> = {};
-    const storedFeaturesStr = safeStorage.getItem(`qhai_features_${data.disease}`);
-    if (storedFeaturesStr) {
-      try {
-        inputFeatures = JSON.parse(storedFeaturesStr);
-      } catch (e) {}
-    } else if (classicalDrivers.length > 0) {
-      classicalDrivers.forEach(d => {
-        inputFeatures[d.feature] = d.input_value;
-      });
-    }
-
-    return (diseaseConfig.continuousKeys || []).slice(0, 6).map(key => {
-      const patientValue = inputFeatures[key] || diseaseConfig.medians[key] || 0;
-      const medianValue = diseaseConfig.medians[key] || 0;
-      const max = Math.max(patientValue, medianValue) * 1.5 || 100;
-      const min = 0;
-      return {
-        name: key,
-        label: key,
-        patientValue,
-        medianValue,
-        min,
-        max
-      };
-    });
-  }, [data.disease, diseaseConfig, classicalDrivers]);
 
   return (
     <div className="space-y-8 pb-16">

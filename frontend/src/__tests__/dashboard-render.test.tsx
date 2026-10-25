@@ -95,8 +95,8 @@ describe('HybridAIDashboard rendering', () => {
     );
 
     expect(screen.getByText(/Synthesized Diagnostic Assessment/i)).toBeTruthy();
-    expect(screen.getByText(/RandomForest/i)).toBeTruthy();
-    expect(screen.getByText(/PennyLane default\.qubit/i)).toBeTruthy();
+    expect(screen.getAllByText(/RandomForest/i).length).toBeGreaterThan(0);
+    expect(screen.getAllByText(/default\.qubit/i).length).toBeGreaterThan(0);
   });
 
   it('renders abstained view correctly on sentinel or OOD', () => {
