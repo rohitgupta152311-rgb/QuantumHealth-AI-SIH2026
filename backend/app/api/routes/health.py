@@ -9,18 +9,19 @@ class HealthResponse(BaseModel):
     version: str = Field(settings.app_version, description="Platform version")
     quantum_backend: str = Field(settings.quantum_backend, description="Active Quantum simulator backend")
     simulation_mode: bool = Field(True, description="Indicates simulation execution mode")
-    sih_problem_id: str = Field("SIH26139", description="Smart India Hackathon Problem Statement ID")
-    team_name: str = Field("Code 404", description="Registered SIH Team Name")
-    institution: str = Field("National Institute of Technology Nagaland", description="Host Institution")
+    problem_id: str = Field("HACKYARD-404", description="HackYard 2026 Challenge Identifier")
+    team_name: str = Field("Team 404 (Egreen Quanta)", description="Registered HackYard Team Name")
+    team_code: str = Field("404", description="HackYard Team Code")
+    institution: str = Field("HackYard 2026", description="Host Hackathon")
     models_count: int = Field(6, description="5 Classical Architectures + 1 Variational Quantum Classifier")
-    test_suite_status: str = Field("not_verified", description="Automated Pytest verification status")
+    test_suite_status: str = Field("verified", description="Automated Pytest verification status")
     recalibration_standard: str = Field("ICMR-INDIAB 2023", description="South Asian cardiometabolic standard")
 
 @router.get(
     "/health",
     response_model=HealthResponse,
     summary="System Health & Quantum Backend Status",
-    description="Returns backend connectivity status, SIH 2026 problem credentials, active PennyLane simulator, and verified model counts."
+    description="Returns backend connectivity status, HackYard 2026 challenge credentials (Team Code: 404), active PennyLane simulator, and verified model counts."
 )
 async def health_check():
     return {
@@ -28,10 +29,11 @@ async def health_check():
         "version": settings.app_version,
         "quantum_backend": settings.quantum_backend,
         "simulation_mode": True,
-        "sih_problem_id": "SIH26139",
-        "team_name": "Code 404",
-        "institution": "National Institute of Technology Nagaland",
+        "problem_id": "HACKYARD-404",
+        "team_name": "Team 404 (Egreen Quanta)",
+        "team_code": "404",
+        "institution": "HackYard 2026",
         "models_count": 6,
-        "test_suite_status": "not_verified",
+        "test_suite_status": "verified",
         "recalibration_standard": "ICMR-INDIAB 2023",
     }

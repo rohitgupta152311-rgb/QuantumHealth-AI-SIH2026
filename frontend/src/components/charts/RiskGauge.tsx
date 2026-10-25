@@ -1,14 +1,15 @@
 import React from 'react';
 import { PieChart, Pie, Cell, ResponsiveContainer } from 'recharts';
 
-export const RiskGauge: React.FC<{ percentage: number; riskLevel: string }> = ({ percentage, riskLevel }) => {
+export const RiskGauge: React.FC<{ percentage: number; riskLevel?: string }> = ({ percentage, riskLevel = 'low' }) => {
+  const safePercentage = isNaN(percentage) ? 0 : Math.max(0, Math.min(100, percentage));
   const data = [
-    { name: 'Risk', value: percentage },
-    { name: 'Safe', value: 100 - percentage }
+    { name: 'Risk', value: safePercentage },
+    { name: 'Safe', value: 100 - safePercentage }
   ];
 
-  const getColor = (level: string) => {
-    switch (level.toLowerCase()) {
+  const getColor = (level?: string) => {
+    switch (level?.toLowerCase()) {
       case 'low': return '#10b981';
       case 'moderate': return '#f59e0b';
       case 'high': return '#f97316';
@@ -41,8 +42,8 @@ export const RiskGauge: React.FC<{ percentage: number; riskLevel: string }> = ({
         </PieChart>
       </ResponsiveContainer>
       <div className="absolute flex flex-col items-center justify-center text-center pb-8">
-        <span className="text-3xl font-bold font-mono" style={{ color }}>{Math.round(percentage)}%</span>
-        <span className="text-xs uppercase tracking-wider text-gray-400 mt-1">{riskLevel.replace('_', ' ')}</span>
+        <span className="text-3xl font-bold font-mono" style={{ color }}>{Math.round(safePercentage)}%</span>
+        <span className="text-xs uppercase tracking-wider text-gray-400 mt-1">{(riskLevel || 'assessed').replace(/_/g, ' ')}</span>
       </div>
     </div>
   );

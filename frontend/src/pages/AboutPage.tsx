@@ -101,13 +101,13 @@ export const AboutPage: React.FC = () => {
           <div className="space-y-2">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-xs font-bold text-teal-300">
               <Award size={14} className="text-teal-400" />
-              Team Code 404 • National Institute of Technology Nagaland
+              Team HackYard • Quantum Health Research
             </div>
             <h1 className="text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
               Platform Architecture & Clinical Specifications
             </h1>
             <p className="text-sm text-slate-400 max-w-2xl leading-relaxed">
-              Problem Statement <strong className="text-teal-300">#SIH26139</strong>: Hybrid Quantum Machine Learning Platform for Early Disease Detection.
+              HackYard 2026 Track <strong className="text-teal-300">Team Code: 404</strong>: Hybrid Quantum Machine Learning Platform for Early Disease Detection.
               Designed for high-throughput clinical decision support, non-invasive risk screening, and responsible AI governance.
             </p>
           </div>
@@ -206,7 +206,7 @@ export const AboutPage: React.FC = () => {
 
                   <div className="bg-slate-950 border border-teal-500/20 rounded-xl p-4 text-xs space-y-2">
                     <div className="font-bold text-teal-300 flex items-center gap-2">
-                      <Sparkles size={14} className="text-teal-400" /> The Specific Challenge of SIH Problem Statement #SIH26139
+                      <Sparkles size={14} className="text-teal-400" /> The Specific Challenge of QuantumHealth AI • HackYard 2026
                     </div>
                     <p className="text-slate-300 leading-relaxed">
                       "Develop a Hybrid Quantum Machine Learning Platform for Early Disease Detection." Existing ML diagnostic tools suffer from two crippling flaws: they treat predictions as opaque black-boxes without safety abstention, and they fail to capture complex, non-linear high-order biomarker correlations that arise in early pre-symptomatic stages.
@@ -369,19 +369,19 @@ export const AboutPage: React.FC = () => {
                           <tr>
                             <td className="py-2 text-teal-300 font-bold">Incident Diabetes</td>
                             <td className="py-2">Dryad / BMJ Open (Chen et al.)</td>
-                            <td className="py-2 text-emerald-400">211,833 records</td>
+                            <td className="py-2 text-emerald-400">8,348 records (Balanced)</td>
                             <td className="py-2">Multi-center grouped split</td>
                           </tr>
                           <tr>
                             <td className="py-2 text-rose-300 font-bold">Heart Disease</td>
                             <td className="py-2">UCI Cleveland Clinic Foundation</td>
-                            <td className="py-2 text-emerald-400">303 patients</td>
+                            <td className="py-2 text-emerald-400">863 records (Multi-Center)</td>
                             <td className="py-2">Stratified 5-Fold CV</td>
                           </tr>
                           <tr>
                             <td className="py-2 text-cyan-300 font-bold">Breast Cancer</td>
                             <td className="py-2">UCI Wisconsin Diagnostic (WDBC)</td>
-                            <td className="py-2 text-emerald-400">569 biopsies</td>
+                            <td className="py-2 text-emerald-400">569 biopsies (WDBC FNA)</td>
                             <td className="py-2">Stratified 5-Fold CV</td>
                           </tr>
                           <tr>

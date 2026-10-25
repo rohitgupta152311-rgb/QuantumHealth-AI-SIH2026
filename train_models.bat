@@ -2,7 +2,7 @@
 title QuantumHealth AI - Model Training Pipeline
 echo ============================================================
 echo   QuantumHealth AI - Full Model Training Pipeline
-echo   Smart India Hackathon 2026 - Problem Statement #26139
+echo   National Health-Tech Hackathon - Hackathon Challenge
 echo ============================================================
 echo.
 cd /d "C:\Users\rohit\.gemini\antigravity\scratch\quantum-health-ai"

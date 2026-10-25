@@ -1,6 +1,6 @@
-﻿"""
+"""
 hybrid_ml package - Hybrid Quantum-Classical ML pipeline.
-QuantumHealth AI (SIH 2026 Problem Statement 26139).
+QuantumHealth AI (HackYard 2026).
 
 Combines classical ML predictions with the quantum VQC output
 to produce a consensus disease risk assessment.

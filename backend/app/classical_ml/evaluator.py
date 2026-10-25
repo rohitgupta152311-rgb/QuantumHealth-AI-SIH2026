@@ -106,10 +106,10 @@ def compute_metrics(model, X_test, y_test, model_name: str, model_type: str = "c
     # 95% Bootstrap Confidence Intervals with degenerate draw handling
     bootstrap_cis = {}
     if len(y_test) >= 15:
-        ci_res = compute_bootstrap_ci(y_test, y_pred, y_proba, n_bootstrap=200)
+        ci_res = compute_bootstrap_ci(y_test, y_pred, y_proba, n_bootstrap=1000)
         if 'f1_score' in ci_res:
             bootstrap_cis = {
-                "valid_bootstrap_samples": 200, # Approximate
+                "valid_bootstrap_samples": 1000,
                 "f1_95_ci": [round(ci_res['f1_score']['lower'], 4), round(ci_res['f1_score']['upper'], 4)],
                 "roc_auc_95_ci": [round(ci_res['roc_auc']['lower'], 4), round(ci_res['roc_auc']['upper'], 4)],
                 "brier_95_ci": [round(ci_res['brier_score']['lower'], 4), round(ci_res['brier_score']['upper'], 4)],

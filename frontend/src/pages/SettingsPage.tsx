@@ -147,7 +147,7 @@ export const SettingsPage: React.FC = () => {
           </h2>
           <div className="p-4 rounded-xl bg-slate-950 border border-slate-800/80 text-xs text-slate-400 space-y-2 leading-relaxed">
             <p>
-              <strong>Research Prototype Protocol:</strong> ArogyaDristi is developed for the Smart India Hackathon (SIH 2026 #26139).
+              <strong>Research Prototype Protocol:</strong> ArogyaDristi is developed for HackYard 2026 (Healthcare & Quantum ML Track).
               All risk assessments, probabilities, and quantum circuit evaluations are algorithmic decision-support outputs and must not be interpreted as definitive clinical diagnoses.
             </p>
             <p className="text-[11px] text-slate-400">

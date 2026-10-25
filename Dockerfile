@@ -1,13 +1,4 @@
-# Multi-stage production build for ArogyaDristi (Full-Stack 24/7 Cloud Deployment)
-# Stage 1: Build React Frontend
-FROM node:20-alpine AS frontend-builder
-WORKDIR /app/frontend
-COPY frontend/package*.json ./
-RUN npm ci
-COPY frontend/ ./
-RUN npm run build
-
-# Stage 2: Production Python Machine Learning & Quantum Engine
+# Production Python Machine Learning & Quantum Engine for AWS Elastic Beanstalk
 FROM python:3.11-slim
 
 ENV PYTHONUNBUFFERED=1 \
@@ -26,14 +17,22 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 COPY backend/requirements.txt ./backend/
 RUN pip install --no-cache-dir -r backend/requirements.txt
 
-# Copy backend application code and models cache
+# Copy backend application code
 COPY backend/ ./backend/
 
-# Copy built frontend production bundle into backend/dist
-COPY --from=frontend-builder /app/frontend/dist ./frontend/dist
+# Copy pre-built frontend distribution for unified serving
+COPY frontend/dist ./frontend/dist
 
 WORKDIR /app/backend
 
 EXPOSE 8000
+
+# AWS health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
+    CMD curl -f http://localhost:8000/api/v1/health || exit 1
+
+LABEL maintainer="QuantumHealth AI Team" \
+      version="1.0.0" \
+      description="ArogyaDristi Hybrid Quantum-Classical ML Platform"
 
 CMD ["sh", "-c", "python -m uvicorn main:app --host 0.0.0.0 --port ${PORT:-8000}"]

@@ -1,0 +1,18 @@
+version: 0.2
+phases:
+  install:
+    runtime-versions:
+      python: 3.11
+      nodejs: 20
+    commands:
+      - pip install -r backend/requirements.txt
+  pre_build:
+    commands:
+      - cd frontend && npm ci && npm run build && cd ..
+  build:
+    commands:
+      - echo Build completed on `date`
+artifacts:
+  files:
+    - '**/*'
+  discard-paths: no

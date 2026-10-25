@@ -105,7 +105,7 @@ export const ModelComparisonDashboard: React.FC = () => {
           <AlertTriangle size={14} className="text-amber-400 shrink-0" />
           Research & Educational Prototype. Rigorous 60/20/20 evaluation protocol with Platt calibration on held-out test split.
         </span>
-        <span className="font-mono text-slate-500 hidden md:inline">SIH 2026 Problem Statement #26139</span>
+        <span className="font-mono text-slate-500 hidden md:inline">HackYard 2026</span>
       </div>
 
       {/* Page Header */}
@@ -123,7 +123,7 @@ export const ModelComparisonDashboard: React.FC = () => {
         {/* Disease Selector Filter */}
         <div className="flex items-center gap-2 flex-wrap">
           {[
-            { id: 'diabetes', name: 'Diabetes (Chinese Cohort 211k)', icon: Activity },
+            { id: 'diabetes', name: 'Diabetes (ICMR-Aligned 8.3k)', icon: Activity },
             { id: 'heart', name: 'Heart Disease (Cleveland Clinic)', icon: HeartPulse },
             { id: 'breast_cancer', name: 'Breast Cancer (WDBC)', icon: ShieldAlert },
             { id: 'kidney', name: 'Kidney Disease (Apollo Hospital)', icon: Droplets },
@@ -369,7 +369,7 @@ export const ModelComparisonDashboard: React.FC = () => {
         <div className="lg:col-span-2">
           <Card className="bg-slate-900/90 border-slate-800 space-y-4">
             <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <Sparkles size={18} className="text-amber-400" /> Scientific Evaluation Protocol (SIH 2026)
+              <Sparkles size={18} className="text-amber-400" /> Scientific Evaluation Protocol (QuantumHealth AI)
             </h3>
             <p className="text-sm text-slate-300 leading-relaxed">
               Compare the returned held-out metrics and cross-validation results directly. A hybrid or quantum model is never assumed to be superior to classical algorithms; empirical validation requires equal test sets, identical scaling transformations, and leak-free cross-validation.

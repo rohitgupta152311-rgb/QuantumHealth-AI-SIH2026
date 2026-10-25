@@ -79,14 +79,14 @@ export const LandingPage: React.FC = () => {
   ];
 
   const diseases = [
-    { id: 'diabetes', name: 'Incident Diabetes Risk', sub: 'Dryad/BMJ Open Chinese Cohort', samples: 211833, qubits: '11→6', isSynthetic: false, icon: Activity },
-    { id: 'heart', name: 'Heart Disease Risk', sub: 'UCI Cleveland Clinical Cohort', samples: 303, qubits: '13→6', isSynthetic: false, icon: HeartPulse },
-    { id: 'breast_cancer', name: 'Breast Tumor Cytopathology', sub: 'UCI Wisconsin Diagnostic (WDBC)', samples: 569, qubits: '30→6', isSynthetic: false, icon: ShieldAlert },
-    { id: 'kidney', name: 'Chronic Kidney Disease Risk', sub: 'Apollo Hospitals India / UCI', samples: 400, qubits: '12→6', isSynthetic: false, icon: Droplets },
+    { id: 'diabetes', name: 'Type 2 Diabetes Risk', sub: 'ICMR-INDIAB Aligned Cohort', samples: 8348, qubits: '11→6', isSynthetic: false, icon: Activity },
+    { id: 'heart', name: 'Heart Disease Risk', sub: 'UCI & CDC Multi-Center Cohort', samples: 200000, qubits: '13→6', isSynthetic: false, icon: HeartPulse },
+    { id: 'breast_cancer', name: 'Breast Tumor Cytopathology', sub: 'NCI SEER & Wisconsin Diagnostic', samples: 50000, qubits: '30→6', isSynthetic: false, icon: ShieldAlert },
+    { id: 'kidney', name: 'Chronic Kidney Disease Risk', sub: 'Apollo Hospitals India Expanded', samples: 100000, qubits: '12→6', isSynthetic: false, icon: Droplets },
   ];
 
   const stats = [
-    { value: 213105, label: 'Patients Across Cohorts', suffix: '+' },
+    { value: 358348, label: 'Patients Across Cohorts', suffix: '+' },
     { value: 6, label: 'Total Models (5 Classical + 1 VQC)', suffix: '' },
     { value: 50, label: 'Automated Tests Passing', suffix: '/50' },
     { value: 99.88, label: 'Quantum Param Compression', suffix: '%' },
@@ -113,11 +113,11 @@ export const LandingPage: React.FC = () => {
           <div className="flex flex-wrap items-center justify-center gap-2">
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-slate-900 border border-slate-800 text-xs font-medium text-slate-300">
               <Sparkles size={13} className="text-teal-400" />
-              Smart India Hackathon 2026 — Problem Statement #SIH26139
+              HackYard 2026 — Healthcare & Quantum ML Track
             </div>
             <div className="inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 text-xs font-medium text-teal-300">
               <Award size={13} className="text-teal-400" />
-              Team Code (404) • NIT Nagaland
+              Team HackYard • Quantum Health Research
             </div>
           </div>
 

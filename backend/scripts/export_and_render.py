@@ -7,11 +7,11 @@ import pymupdf
 
 sys.stdout.reconfigure(encoding='utf-8')
 
-PPTX_PATH = r"C:\Users\rohit\OneDrive\Attachments\Desktop\SIH_2026_QuantumHealth_AI_NIT_Nagaland.pptx"
-PDF_DESKTOP = r"C:\Users\rohit\OneDrive\Attachments\Desktop\SIH_2026_QuantumHealth_AI_NIT_Nagaland.pdf"
-PDF_ARTIFACTS = r"C:\Users\rohit\.gemini\antigravity\brain\6a059189-7bb0-49cf-996a-e9e3f672ba38\SIH_2026_QuantumHealth_AI_NIT_Nagaland.pdf"
-PDF_DOCS = r"C:\Users\rohit\.gemini\antigravity\scratch\quantum-health-ai\docs\presentation\SIH_2026_QuantumHealth_AI_NIT_Nagaland.pdf"
-PDF_DOWNLOADS = r"C:\Users\rohit\Downloads\SIH_2026_QuantumHealth_AI_NIT_Nagaland.pdf"
+PPTX_PATH = r"C:\Users\rohit\OneDrive\Attachments\Desktop\QuantumHealth AI_QuantumHealth_AI_NIT_Nagaland.pptx"
+PDF_DESKTOP = r"C:\Users\rohit\OneDrive\Attachments\Desktop\QuantumHealth AI_QuantumHealth_AI_NIT_Nagaland.pdf"
+PDF_ARTIFACTS = r"C:\Users\rohit\.gemini\antigravity\brain\6a059189-7bb0-49cf-996a-e9e3f672ba38\QuantumHealth AI_QuantumHealth_AI_NIT_Nagaland.pdf"
+PDF_DOCS = r"C:\Users\rohit\.gemini\antigravity\scratch\quantum-health-ai\docs\presentation\QuantumHealth AI_QuantumHealth_AI_NIT_Nagaland.pdf"
+PDF_DOWNLOADS = r"C:\Users\rohit\Downloads\QuantumHealth AI_QuantumHealth_AI_NIT_Nagaland.pdf"
 
 ARTIFACT_DIR = r"C:\Users\rohit\.gemini\antigravity\brain\6a059189-7bb0-49cf-996a-e9e3f672ba38"
 
@@ -27,16 +27,16 @@ finally:
     powerpoint.Quit()
 
 # Copy to destinations
-PDF_DESKTOP_AROGYA = r"C:\Users\rohit\OneDrive\Attachments\Desktop\SIH_2026_ArogyaDristi_NIT_Nagaland.pdf"
+PDF_DESKTOP_AROGYA = r"C:\Users\rohit\OneDrive\Attachments\Desktop\QuantumHealth AI_ArogyaDristi_NIT_Nagaland.pdf"
 shutil.copy2(PDF_DESKTOP, PDF_DESKTOP_AROGYA)
 
 destinations = [
     PDF_ARTIFACTS,
     PDF_DOCS,
     PDF_DOWNLOADS,
-    r"C:\Users\rohit\.gemini\antigravity\brain\6a059189-7bb0-49cf-996a-e9e3f672ba38\SIH_2026_ArogyaDristi_NIT_Nagaland.pdf",
-    r"C:\Users\rohit\Downloads\SIH_2026_ArogyaDristi_NIT_Nagaland.pdf",
-    r"C:\Users\rohit\.gemini\antigravity\scratch\quantum-health-ai\docs\presentation\SIH_2026_ArogyaDristi_NIT_Nagaland.pdf",
+    r"C:\Users\rohit\.gemini\antigravity\brain\6a059189-7bb0-49cf-996a-e9e3f672ba38\QuantumHealth AI_ArogyaDristi_NIT_Nagaland.pdf",
+    r"C:\Users\rohit\Downloads\QuantumHealth AI_ArogyaDristi_NIT_Nagaland.pdf",
+    r"C:\Users\rohit\.gemini\antigravity\scratch\quantum-health-ai\docs\presentation\QuantumHealth AI_ArogyaDristi_NIT_Nagaland.pdf",
 ]
 for dest in destinations:
     try:

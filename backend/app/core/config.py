@@ -33,9 +33,11 @@ class Settings(BaseSettings):
         "http://127.0.0.1:3000",
         "https://quantum-health-ai.web.app",
         "https://quantum-health-ai.firebaseapp.com",
-        "https://quantumhealth-ai.onrender.com",
-        "https://arogyadristi.onrender.com",
-        "https://arogyadristi-ai.onrender.com",
+
+
+
+        "https://quantumhealth-ai.amazonaws.com",
+        "https://quantumhealth-ai.us-east-1.elb.amazonaws.com",
         "https://dainty-croquembouche-6ee104.netlify.app",
     ]
 

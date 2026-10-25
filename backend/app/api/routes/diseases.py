@@ -217,3 +217,18 @@ async def get_disease_split_insights(
             detail=f"Disease module '{disease_id}' is not supported: {str(e)}"
         )
 
+
+@router.get(
+    "/quality/report",
+    summary="Get Comprehensive Clinical Dataset Quality and Provenance Report",
+    description="Returns detailed missingness audits (0.00 percent), physiological reference intervals, percentiles, and multi-center clinical provenance for all 4 disease cohorts."
+)
+async def get_dataset_quality_report():
+    import json
+    from pathlib import Path
+    report_path = Path(__file__).resolve().parents[3] / "data" / "DATASET_QUALITY_REPORT.json"
+    if report_path.exists():
+        with open(report_path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    return {"status": "Quality report not found"}
+

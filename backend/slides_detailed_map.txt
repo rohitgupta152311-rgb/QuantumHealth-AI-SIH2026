@@ -25,8 +25,8 @@
 --- Shape [4] id=8, name='Title 7', type=PLACEHOLDER (14) ---
     Left: 329184, Top: 137160, Width: 9601200, Height: 1005840
     Paragraphs count: 1
-      [P0] text='SMART INDIA HACKATHON 2026'
-             runs: 'SMART INDIA HACKATHON 2026'(sz=38.0pt, b=True)
+      [P0] text='National Health-Tech Hackathon'
+             runs: 'National Health-Tech Hackathon'(sz=38.0pt, b=True)
 
 --- Shape [5] id=10, name='TextBox 9', type=TEXT_BOX (17) ---
     Left: 0, Top: 0, Width: 91440, Height: 91440
@@ -40,8 +40,8 @@
 --- Shape [7] id=39, name='TextBox 38', type=TEXT_BOX (17) ---
     Left: 548640, Top: 1965960, Width: 6217920, Height: 4389120
     Paragraphs count: 6
-      [P0] text='• Problem Statement ID : 26139'
-             runs: '• Problem Statement ID : '(sz=15.5pt, b=True) | '26139'(sz=15.5pt, b=False)
+      [P0] text='• Hackathon Challenge'
+             runs: '• Problem Statement ID : '(sz=15.5pt, b=True) | 'Hackathon Challenge'(sz=15.5pt, b=False)
       [P1] text='• Problem Statement Title : Hybrid Quantum Machine Learning Platform for Early Disease Detection'
              runs: '• Problem Statement Title : '(sz=15.5pt, b=True) | 'Hybrid Quantum Machine Learning Platform for Early Disease Detection'(sz=14.0pt, b=False)
       [P2] text='• Theme : MedTech / BioTech / HealthTech'
@@ -876,12 +876,12 @@
              runs: '• 🎥 Prototype Demo Video : '(sz=8.4pt, b=True) | 'Full working software demo walkthrough (Click to view)'(sz=8.4pt, b=False)
       [P2] text='• Doctor's Clinical Review : Verified clinical evaluation by practicing physician (Click to view)'
              runs: '• Doctor's Clinical Review : '(sz=8.4pt, b=True) | 'Verified clinical evaluation by practicing physician (Click to view)'(sz=8.4pt, b=False)
-      [P3] text='• Live Cloud Platform : quantumhealth-ai.onrender.com (24/7 Live Full-Stack System)'
-             runs: '• Live Cloud Platform : '(sz=8.4pt, b=True) | 'quantumhealth-ai.onrender.com (24/7 Live Full-Stack System)'(sz=8.4pt, b=False)
-      [P4] text='• Public REST API & Docs : quantumhealth-ai.onrender.com/docs (OpenAPI / Swagger Specs)'
-             runs: '• Public REST API & Docs : '(sz=8.4pt, b=True) | 'quantumhealth-ai.onrender.com/docs (OpenAPI / Swagger Specs)'(sz=8.4pt, b=False)
-      [P5] text='• Open-Source GitHub : github.com/rohitgupta152311-rgb/QuantumHealth-AI-SIH2026'
-             runs: '• Open-Source GitHub : '(sz=8.4pt, b=True) | 'github.com/rohitgupta152311-rgb/QuantumHealth-AI-SIH2026'(sz=8.4pt, b=False)
+      [P3] text='• Live Cloud Platform : quantumhealth-ai.us-east-1.elb.amazonaws.com (24/7 Live Full-Stack System)'
+             runs: '• Live Cloud Platform : '(sz=8.4pt, b=True) | 'quantumhealth-ai.us-east-1.elb.amazonaws.com (24/7 Live Full-Stack System)'(sz=8.4pt, b=False)
+      [P4] text='• Public REST API & Docs : quantumhealth-ai.us-east-1.elb.amazonaws.com/docs (OpenAPI / Swagger Specs)'
+             runs: '• Public REST API & Docs : '(sz=8.4pt, b=True) | 'quantumhealth-ai.us-east-1.elb.amazonaws.com/docs (OpenAPI / Swagger Specs)'(sz=8.4pt, b=False)
+      [P5] text='• Open-Source GitHub : github.com/rohitgupta152311-rgb/QuantumHealth-AI-QuantumHealth AI'
+             runs: '• Open-Source GitHub : '(sz=8.4pt, b=True) | 'github.com/rohitgupta152311-rgb/QuantumHealth-AI-QuantumHealth AI'(sz=8.4pt, b=False)
       [P6] text='• Verification Suite : 92 / 92 automated tests passing (67 pytest + 25 vitest, 100% clean)'
              runs: '• Verification Suite : '(sz=8.4pt, b=True) | '92 / 92 automated tests passing (67 pytest + 25 vitest, 100% clean)'(sz=8.4pt, b=False)
 

@@ -2,7 +2,7 @@
 Quantum Support Vector Machine (QSVM) / Quantum Kernel Classifier for QuantumHealth AI.
 Implements quantum state fidelity kernel: K(x_i, x_j) = |<psi(x_i)|psi(x_j)>|^2
 Based on Havlíček et al., Nature 567, 209-212 (2019).
-Directly satisfies SIH26139 Deliverable 3: 'Variational Quantum Classifier (VQC), Quantum SVM'.
+Directly satisfies QHAI-001 Deliverable 3: 'Variational Quantum Classifier (VQC), Quantum SVM'.
 """
 
 import numpy as np

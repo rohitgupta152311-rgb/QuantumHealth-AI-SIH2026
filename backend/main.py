@@ -83,8 +83,9 @@ app = FastAPI(
     version=settings.app_version,
     description=(
         "### ArogyaDristi: Hybrid Quantum-Classical Machine Learning Platform for Early Disease Detection\n\n"
-        "**Smart India Hackathon (SIH) 2026** — Problem Statement **#26139**\n\n"
+        "**HackYard 2026** ? Healthcare & Quantum Machine Learning Track (Team Code: 404)\n\n"
         "- **Organization:** Egreen Quanta\n"
+        "- **Team Code:** 404\n"
         "- **Category:** Software / MedTech / BioTech / HealthTech\n"
         "- **Architecture:** Classical Ensemble (RF, SVM, LR, XGBoost, HistGradientBoosting) + PennyLane VQC with Data Re-uploading\n"
         "- **Simulator:** `pennylane:default.qubit` (Angle Encoding with Ring CNOT Entanglement)\n\n"
@@ -105,8 +106,8 @@ app = FastAPI(
 # CORS configuration
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins + ["https://quantumhealth-ai.onrender.com"],
-    allow_origin_regex=r"(http://(localhost|127\.0\.0\.1)(:\d+)?|https://.*\.web\.app|https://.*\.firebaseapp\.com|https://.*\.netlify\.app|https://.*\.onrender\.com|https://.*\.trycloudflare\.com|https://.*\.vercel\.app)",
+    allow_origins=settings.cors_origins,
+    allow_origin_regex=r"(http://(localhost|127\.0\.0\.1)(:\d+)?|https://.*\.web\.app|https://.*\.firebaseapp\.com|https://.*\.netlify\.app|https://.*\.amazonaws\.com|https://.*\.elb\.amazonaws\.com|https://.*\.cloudfront\.net|https://.*\.execute-api\..*\.amazonaws\.com|https://.*\.vercel\.app)",
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -127,7 +128,7 @@ async def add_process_time_header(request: Request, call_next):
 
 app.include_router(api_router, prefix="/api/v1")
 
-# Serve built frontend SPA if available (for unified 24/7 cloud deployment on Render, Docker, or Cloud Run)
+# Serve built frontend SPA if available (for unified 24/7 cloud deployment on AWS ECS, Docker, or Elastic Beanstalk)
 frontend_dist = Path(__file__).resolve().parent.parent / "frontend" / "dist"
 if not frontend_dist.exists():
     frontend_dist = Path(__file__).resolve().parent / "dist"

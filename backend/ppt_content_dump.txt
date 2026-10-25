@@ -1,8 +1,8 @@
 
 ==================== SLIDE 1 ====================
 [3:0] TITLE PAGE
-[4:0] SMART INDIA HACKATHON 2026
-[7:0] • Problem Statement ID : 26139
+[4:0] National Health-Tech Hackathon
+[7:0] • Hackathon Challenge
 [7:1] • Problem Statement Title : Hybrid Quantum Machine Learning Platform for Early Disease Detection
 [7:2] • Theme : MedTech / BioTech / HealthTech
 [7:3] • PS Category : Software
@@ -167,9 +167,9 @@
 [10:0] ▪ PROJECT RESOURCES & CLINICAL VALIDATION
 [10:1] 🎥 Prototype Demo Video : Full working software demo walkthrough (Click to view)
 [10:2] Doctor's Clinical Review : Verified clinical evaluation by practicing physician
-[10:3] Live Cloud Platform : quantumhealth-ai.onrender.com (24/7 Live Full-Stack)
-[10:4] Public REST API & Docs : quantumhealth-ai.onrender.com/docs (OpenAPI / Swagger)
-[10:5] Open-Source GitHub : github.com/rohitgupta152311-rgb/QuantumHealth-AI-SIH2026
+[10:3] Live Cloud Platform : quantumhealth-ai.us-east-1.elb.amazonaws.com (24/7 Live Full-Stack)
+[10:4] Public REST API & Docs : quantumhealth-ai.us-east-1.elb.amazonaws.com/docs (OpenAPI / Swagger)
+[10:5] Open-Source GitHub : github.com/rohitgupta152311-rgb/QuantumHealth-AI-QuantumHealth AI
 [10:6] Verification Suite : 92 / 92 automated tests passing (67 pytest + 25 vitest, 100%)
 [11:0] ▪ SCAN PHONE • TEST LIVE PROTOTYPE
 [11:1] 📱 Mobile QR Scan : Scan QR with smartphone camera to run live predictions instantly.

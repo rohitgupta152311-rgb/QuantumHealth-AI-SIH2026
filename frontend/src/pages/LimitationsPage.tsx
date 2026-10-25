@@ -23,7 +23,7 @@ export const LimitationsPage: React.FC = () => {
           <span>Research & Educational Prototype Notice</span>
         </div>
         <p className="leading-relaxed text-amber-200/90 text-xs sm:text-sm">
-          ArogyaDristi is developed as an educational and research decision-support prototype for Smart India Hackathon (SIH) 2026. It is <strong>not a medical device</strong> and is not cleared by regulatory authorities (such as CDSCO or US FDA) for primary clinical diagnosis or prescription. All risk assessments, feature attributions, and consensus decisions must be interpreted by licensed healthcare clinicians in conjunction with standard diagnostic workflows.
+          ArogyaDristi is developed as an educational and research decision-support prototype for HackYard 2026. It is <strong>not a medical device</strong> and is not cleared by regulatory authorities (such as CDSCO or US FDA) for primary clinical diagnosis or prescription. All risk assessments, feature attributions, and consensus decisions must be interpreted by licensed healthcare clinicians in conjunction with standard diagnostic workflows.
         </p>
       </div>
 
@@ -71,7 +71,7 @@ export const LimitationsPage: React.FC = () => {
             </div>
           </div>
           <p className="text-xs text-slate-300 leading-relaxed">
-            To prevent optimistic evaluation bias that often plagues student ML hackathons:
+            To prevent optimistic evaluation bias that often plagues competitive ML hackathons:
           </p>
           <ul className="space-y-2 text-xs text-slate-400 font-mono">
             <li className="flex items-start gap-2">
@@ -152,7 +152,7 @@ export const LimitationsPage: React.FC = () => {
               <tr className="hover:bg-slate-800/40">
                 <td className="px-4 py-3.5 font-bold text-white">Incident Type 2 Diabetes</td>
                 <td className="px-4 py-3.5 text-slate-300">Dryad / BMJ Open (Chen et al., 2018; DOI: 10.1136/bmjopen-2018-021768)</td>
-                <td className="px-4 py-3.5 text-teal-300 font-bold">211,833 rows</td>
+                <td className="px-4 py-3.5 text-teal-300 font-bold">8,348 rows (Balanced)</td>
                 <td className="px-4 py-3.5 text-slate-400">Multi-center grouped hospital split</td>
                 <td className="px-4 py-3.5 text-emerald-400">Authentic Hospital Cohort</td>
               </tr>

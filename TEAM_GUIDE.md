@@ -1,6 +1,6 @@
 # ⚛️ QuantumHealth AI - Team Guide & Division of Labor
 
-Welcome to the **Smart India Hackathon (SIH 2026)** project! This document summarizes the architecture, the "Quantum Advantage," and exactly how the 4 team members should divide the work without overwriting each other's code.
+Welcome to the **National Health-Tech Hackathon (QuantumHealth AI)** project! This document summarizes the architecture, the "Quantum Advantage," and exactly how the 4 team members should divide the work without overwriting each other's code.
 
 ---
 
@@ -26,7 +26,7 @@ To work simultaneously without "Merge Conflicts", everyone must stay in their as
 * **The Job:** Clean the CSV medical data, handle missing values, and train the baseline Random Forest & SVM models.
 * **Goal:** You must shrink the data down using Feature Selection to just the 6 most important features, so it is small enough to feed into TM3's quantum simulator.
 
-### 👤 Team Member 3: Quantum ML & Hybrid Lead (The SIH Star)
+### 👤 Team Member 3: Quantum ML & Hybrid Lead (The QuantumHealth AI Star)
 **Your Folders:** `backend/app/quantum_ml/`, `backend/app/hybrid_ml/`
 * **The Job:** You own the PennyLane Quantum simulation and the Consensus Engine.
 * **Goal:** 
@@ -37,7 +37,7 @@ To work simultaneously without "Merge Conflicts", everyone must stay in their as
 ### 👤 Team Member 4: Backend Architect & Project Manager
 **Your Folders:** `backend/app/api/`, `backend/app/core/`, `backend/app/services/`
 * **The Job:** You are the bridge. You build the FastAPI routes and the master orchestration script (`prediction_service.py`) that ties TM2 and TM3's AI together.
-* **Goal:** Secure the API with Pydantic schemas, deploy the backend to **Render.com**, and lead the Pitch Deck/Video creation.
+* **Goal:** Secure the API with Pydantic schemas, deploy the backend to **AWS**, and lead the Pitch Deck/Video creation.
 
 ---
 

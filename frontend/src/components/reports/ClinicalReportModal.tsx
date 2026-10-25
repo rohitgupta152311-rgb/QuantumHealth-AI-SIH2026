@@ -86,10 +86,10 @@ export const ClinicalReportModal: React.FC<ClinicalReportModalProps> = ({
                   </h1>
                 </div>
                 <p className="text-xs text-slate-400 print:text-gray-600">
-                  Smart India Hackathon 2026 | Problem Statement #SIH26139
+                  HackYard 2026 | Healthcare & AI Diagnostics Track
                 </p>
                 <p className="text-[11px] text-teal-400 print:text-teal-800 font-mono mt-0.5">
-                  Reference Cohort: Chinese Health-Screening Longitudinal Cohort (Dryad CC0, N=211,833)
+                  Reference Cohort: Multi-Center Cardiometabolic Cohort (ICMR-INDIAB 2023 Aligned, N=8,348)
                 </p>
               </div>
               <div className="text-right text-xs space-y-1">
@@ -230,7 +230,7 @@ export const ClinicalReportModal: React.FC<ClinicalReportModalProps> = ({
                 <span>{result.model_manifest_hash || 'ef24cffc16a72ef022cc48353c88cf8b758fba8fe05357bbf9b4f48b008760ef'}</span>
               </div>
               <div>
-                Platform Engine: <span className="text-slate-400 print:text-gray-700 font-medium">Hybrid Classical-Quantum VQC v2.0 (SIH26139)</span>
+                Platform Engine: <span className="text-slate-400 print:text-gray-700 font-medium">Hybrid Classical-Quantum VQC v2.0 (QuantumHealth AI26139)</span>
               </div>
             </div>
 

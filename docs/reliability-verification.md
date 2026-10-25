@@ -23,7 +23,7 @@ Spec Kit files: parent `.specify/memory/constitution.md` (v1.0.0), parent `.spec
 
 ## Executed checks
 
-Working directory for frontend checks: `C:\Users\kumar\Desktop\main\QuantumHealth-AI-SIH2026\frontend`.
+Working directory for frontend checks: `C:\Users\kumar\Desktop\main\QuantumHealth-AI-QuantumHealth AI\frontend`.
 
 | Check | Exact command / method | Result |
 |---|---|---|

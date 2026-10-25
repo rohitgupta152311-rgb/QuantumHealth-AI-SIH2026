@@ -20,7 +20,7 @@ from app.preprocessing.pipeline import PreprocessingPipeline
 from app.quantum_ml.vqc import QuantumClassifier
 
 def measure_all():
-    print("=== Running Empirical Benchmarks for SIH 2026 PPT ===")
+    print("=== Running Empirical Benchmarks for QuantumHealth AI PPT ===")
     loader = DatasetLoader()
     disease_id = "heart"
     disease_info = loader.get_disease_info(disease_id)

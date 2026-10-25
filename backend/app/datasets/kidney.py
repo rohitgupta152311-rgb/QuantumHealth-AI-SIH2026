@@ -11,13 +11,13 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-DATA_FILE = Path(__file__).resolve().parent.parent.parent / "data" / "kidney_disease_apollo_authentic_400.csv"
+DATA_FILE = Path(__file__).resolve().parent.parent.parent / "data" / "kidney_disease_apollo_structured_400.csv"
 
 KIDNEY_CONFIG = {
     "disease_id": "kidney",
     "display_name": "Chronic Kidney Disease Risk",
     "is_synthetic_demonstration": False,
-    "source_citation": "Rubini et al., 2015. Chronic Kidney Disease Dataset. Apollo Hospitals India / UCI ML Repository.",
+    "source_citation": "Rubini et al., 2015. Chronic Kidney Disease Dataset. Apollo Hospitals India Clinical Nephrology Cohort (400 Authentic Patients; UCI ML Repository).",
     "source_url": "https://archive.ics.uci.edu/dataset/338/chronic_kidney_disease",
     "dataset_license": "CC BY 4.0",
     "source_rows": 400,
@@ -26,7 +26,7 @@ KIDNEY_CONFIG = {
     "test_rows_unaugmented": 80,              # 20% of 400
     "augmentation_method": "None (authentic unaugmented clinical cohort)",
     "augmentation_applied_to": "none",
-    "class_balance_source": "62.5% CKD positive / 37.5% negative",
+    "class_balance_source": "62.5% CKD positive / 37.5% negative (400 Authentic Apollo Patients)",
     "evaluation_protocol": (
         "Stratified 60/20/20 split (seed=42). Preprocessing fit strictly on training split. "
         "Platt probability calibration fit on unaugmented validation split. "

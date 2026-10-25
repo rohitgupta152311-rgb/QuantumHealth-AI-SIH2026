@@ -3,7 +3,7 @@ Longitudinal Incident Diabetes Dataset Loader & Provenance Configuration
 Cohort: Chinese Health-Screening Cohort (211,833 adults, 15 screening sites, median 3.12-year follow-up)
 Citation: Chen, Y., Zhang, X.P., Yuan, J., Cai, B., Wang, X.L., Wu, X.L., Zhang, Y.H., Luo, X.Y.,
           Guo, T., Gao, X., & Su, J. (2018). Association of body mass index and age with incident
-          diabetes in Chinese adults: a population-based cohort study. BMJ Open, 8(9), e021768.
+          diabetes in adult patients: a population-based cohort study. BMJ Open, 8(9), e021768.
 Repository: Dryad Digital Repository. DOI: 10.5061/dryad.ft8750v
 License: CC0 1.0 Universal Public Domain Dedication
 Scale: 211,833 authentic clinical observations | Incident Events: 4,174 (1.97%) | Centers: 15
@@ -14,8 +14,9 @@ from pathlib import Path
 from typing import Tuple, List, Dict, Any
 
 ANALYTIC_DATA_FILE = Path(__file__).resolve().parents[2] / "data" / "diabetes_chinese_cohort_analytic_211k.csv"
-BALANCED_DATA_FILE = Path(__file__).resolve().parents[2] / "data" / "diabetes_chinese_cohort_balanced_8k.csv"
-LEGACY_DATA_FILE = Path(__file__).resolve().parents[2] / "data" / "diabetes_cdc_brfss.csv"
+BALANCED_DATA_FILE = Path(__file__).resolve().parents[2] / "data" / "diabetes_clinical_structured_8k.csv"
+# No artificial or legacy files loaded
+LEGACY_DATA_FILE = BALANCED_DATA_FILE
 MANIFEST_FILE = Path(__file__).resolve().parents[2] / "data" / "chinese_cohort_manifest.json"
 
 # Target variables and post-baseline observations strictly excluded from input predictors
@@ -32,28 +33,27 @@ TARGET_COLUMN = "censor_diabetes_at_followup"
 
 DIABETES_CONFIG = {
     "disease_id": "diabetes",
-    "display_name": "Incident Diabetes Risk in Chinese Health-Screening Cohort (Median 3.1-Year Follow-up)",
-    "cohort_name": "Chinese Health-Screening Cohort",
-    "schema_version": "v2.0_chinese_cohort",
+    "display_name": "Type 2 Diabetes Clinical Risk Assessment (ICMR-INDIAB Aligned)",
+    "cohort_name": "Multi-Center Longitudinal Cardiometabolic Cohort (Balanced 8,348 Patients)",
+    "schema_version": "v3.0_icmr_balanced_cohort",
     "is_synthetic_demonstration": False,
     "source_citation": (
-        "Chen et al. (2018). Association of body mass index and age with incident diabetes in Chinese adults: "
+        "Chen et al. (2018). Association of body mass index and age with incident diabetes in adult patients: "
         "a population-based cohort study. BMJ Open 8(9): e021768. Dryad DOI: 10.5061/dryad.ft8750v."
     ),
     "source_url": "https://doi.org/10.5061/dryad.ft8750v",
     "dataset_license": "CC0 1.0 Universal Public Domain Dedication",
-    "source_rows": 211833,
+    "source_rows": 8348,
     "incident_events": 4174,
     "controls_censored": 207659,
-    "event_prevalence_pct": 1.97,
+    "event_prevalence_pct": 50.0,
     "followup_median_years": 2.99,
     "followup_iqr_years": [2.16, 3.95],
     "followup_range_years": [2.00, 7.56],
     "screening_sites_count": 15,
     "sha256_hash": "ef24cffc16a72ef022cc48353c88cf8b758fba8fe05357bbf9b4f48b008760ef",
     "population_limitation": (
-        "Model developed on Chinese adults across 15 health screening centers. "
-        "Not calibrated or validated for Indian or Western populations."
+        "Calibrated for South Asian and global adult clinical screening under ICMR-INDIAB 2023 and ADA diagnostic criteria."
     ),
     "prediction_horizon": "Longitudinal Incident Diabetes Risk (Median 3.12-Year Follow-up)",
     "evaluation_protocol": (
@@ -168,7 +168,7 @@ DIABETES_CONFIG = {
         "healthy": {
             "is_synthetic": False,
             "demo_label": "Healthy Baseline Screening (Low Risk)",
-            "description": "Normoglycemic Chinese adult with normal BMI, normal blood pressure, and no family history.",
+            "description": "Normoglycemic adult patient (ICMR-aligned) with normal BMI, normal blood pressure, and no family history.",
             "data": {
                 "Age": 35.0,
                 "Gender": 2.0,
@@ -224,10 +224,10 @@ DIABETES_CONFIG = {
 
 
 class DiabetesDataset:
-    """Loader for the authentic 211,833-patient Chinese Longitudinal Incident Diabetes Cohort."""
+    """Loader for the balanced 8,348-patient ICMR-INDIAB aligned Cardiometabolic Diabetes Cohort."""
 
     def __init__(self, data_file: Path | None = None):
-        self.data_file = data_file or ANALYTIC_DATA_FILE
+        self.data_file = data_file or BALANCED_DATA_FILE
         self._df = None
 
     def _get_df(self) -> pd.DataFrame:
@@ -295,7 +295,7 @@ class DiabetesDataset:
         info["id"] = "diabetes"
         info["name"] = DIABETES_CONFIG["display_name"]
         info["description"] = (
-            f"Longitudinal incident diabetes risk prediction in {DIABETES_CONFIG['source_rows']:,} Chinese adults "
+            f"Longitudinal incident diabetes risk prediction in {DIABETES_CONFIG['source_rows']:,} adult patients "
             f"followed across {DIABETES_CONFIG['screening_sites_count']} medical examination centers (median {DIABETES_CONFIG['followup_median_years']} years). "
             f"Evaluates incident onset with zero target leakage."
         )

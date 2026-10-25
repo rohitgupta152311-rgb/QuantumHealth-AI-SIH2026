@@ -1,6 +1,6 @@
 # QuantumHealth AI — Complete Quantum ML & Hybrid ML Codebase Bundle (V4 Scientific Integrity Verified)
 
-This consolidated document contains the complete, unabridged, production-ready Quantum Machine Learning (QML) and Hybrid ML implementation of **QuantumHealth AI** (Smart India Hackathon 2026, Problem Statement #26139).
+This consolidated document contains the complete, unabridged, production-ready Quantum Machine Learning (QML) and Hybrid ML implementation of **QuantumHealth AI** (National Health-Tech Hackathon, Hackathon Challenge).
 
 All four P0 release blockers and all ten scientific integrity mandates have been fully resolved, implemented, and verified with 43/43 automated tests passing.
 

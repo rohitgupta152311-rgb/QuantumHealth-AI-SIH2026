@@ -1,11 +1,21 @@
+# Render Deployment Blueprint for QuantumHealth AI (HackYard 2026 - Team Code 404)
+# Deploy with 1-click via Render Dashboard or GitHub sync
+
 services:
   - type: web
-    name: arogyadristi
-    runtime: docker
-    plan: free
+    name: quantumhealth-ai
+    env: docker
     region: oregon
-    dockerfilePath: ./Dockerfile
+    plan: standard
+    dockerfilePath: aws-deploy/Dockerfile
+    dockerContext: aws-deploy
     healthCheckPath: /api/v1/health
     envVars:
       - key: PORT
         value: 8000
+      - key: PYTHONUNBUFFERED
+        value: 1
+      - key: DEBUG
+        value: false
+      - key: QUANTUM_BACKEND
+        value: pennylane:default.qubit

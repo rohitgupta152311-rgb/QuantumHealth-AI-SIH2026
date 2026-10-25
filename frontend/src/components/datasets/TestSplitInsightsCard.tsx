@@ -39,15 +39,15 @@ export const TestSplitInsightsCard: React.FC<TestSplitInsightsCardProps> = ({
   }, [diseaseId, testPercent]);
 
   // Derived metrics fallback if backend is offline
-  const total = insights?.total_samples ?? (diseaseId === 'diabetes' ? 211833 : diseaseId === 'breast_cancer' ? 569 : diseaseId === 'kidney' ? 400 : 303);
-  const testCount = insights?.split_breakdown.test.count ?? Math.round(total * (testPercent / 100));
-  const valCount = insights?.split_breakdown.validation.count ?? Math.round((total - testCount) * 0.25);
-  const trainCount = insights?.split_breakdown.train.count ?? (total - testCount - valCount);
-  const trainPct = Math.round((trainCount / total) * 100);
-  const valPct = Math.round((valCount / total) * 100);
-  const testPct = Math.round((testCount / total) * 100);
-  const ciMargin = insights?.statistical_insights.confidence_interval_95_margin_pct ?? (diseaseId === 'diabetes' ? 0.38 : diseaseId === 'heart' ? 3.9 : diseaseId === 'breast_cancer' ? 2.8 : 3.4);
-  const powerRating = insights?.statistical_insights.power_rating ?? (testCount >= 100 ? 'High Statistical Power (p < 0.005)' : 'Adequate Clinical Verification Power (p < 0.05)');
+  const total = insights?.total_samples ?? (diseaseId === 'diabetes' ? 8348 : diseaseId === 'breast_cancer' ? 569 : diseaseId === 'kidney' ? 400 : 863);
+  const testCount = insights?.split_breakdown?.test?.count ?? Math.round(total * (testPercent / 100));
+  const valCount = insights?.split_breakdown?.validation?.count ?? Math.round((total - testCount) * 0.25);
+  const trainCount = insights?.split_breakdown?.train?.count ?? (total - testCount - valCount);
+  const trainPct = total > 0 ? Math.round((trainCount / total) * 100) : 60;
+  const valPct = total > 0 ? Math.round((valCount / total) * 100) : 20;
+  const testPct = total > 0 ? Math.round((testCount / total) * 100) : 20;
+  const ciMargin = insights?.statistical_insights?.confidence_interval_95_margin_pct ?? (diseaseId === 'diabetes' ? 2.4 : diseaseId === 'heart' ? 3.9 : diseaseId === 'breast_cancer' ? 2.8 : 3.4);
+  const powerRating = insights?.statistical_insights?.power_rating ?? (testCount >= 100 ? 'High Statistical Power (p < 0.005)' : 'Adequate Clinical Verification Power (p < 0.05)');
 
   return (
     <div className="bg-slate-900/90 border border-slate-800 rounded-xl overflow-hidden text-slate-200">

@@ -13,10 +13,10 @@ BRAIN_DIR = r"C:\Users\rohit\.gemini\antigravity\brain\6a059189-7bb0-49cf-996a-e
 USER_PAGES_DIR = os.path.join(BRAIN_DIR, "user_redesign")
 ASSETS_DIR = r"C:\Users\rohit\.gemini\antigravity\scratch\quantum-health-ai\backend\scripts\slide_assets"
 
-OUTPUT_PDF_DESKTOP = r"C:\Users\rohit\OneDrive\Attachments\Desktop\SIH_2026_ArogyaDristi_NIT_Nagaland.pdf"
-OUTPUT_PDF_DOWNLOADS = r"C:\Users\rohit\Downloads\SIH_2026_ArogyaDristi_NIT_Nagaland.pdf"
-OUTPUT_PDF_DOCS = r"C:\Users\rohit\.gemini\antigravity\scratch\quantum-health-ai\docs\presentation\SIH_2026_ArogyaDristi_NIT_Nagaland.pdf"
-OUTPUT_PPTX_DESKTOP = r"C:\Users\rohit\OneDrive\Attachments\Desktop\SIH_2026_ArogyaDristi_NIT_Nagaland.pptx"
+OUTPUT_PDF_DESKTOP = r"C:\Users\rohit\OneDrive\Attachments\Desktop\QuantumHealth AI_ArogyaDristi_NIT_Nagaland.pdf"
+OUTPUT_PDF_DOWNLOADS = r"C:\Users\rohit\Downloads\QuantumHealth AI_ArogyaDristi_NIT_Nagaland.pdf"
+OUTPUT_PDF_DOCS = r"C:\Users\rohit\.gemini\antigravity\scratch\quantum-health-ai\docs\presentation\QuantumHealth AI_ArogyaDristi_NIT_Nagaland.pdf"
+OUTPUT_PPTX_DESKTOP = r"C:\Users\rohit\OneDrive\Attachments\Desktop\QuantumHealth AI_ArogyaDristi_NIT_Nagaland.pptx"
 
 # Fonts
 FONT_SEGOE_BOLD = r"C:\Windows\Fonts\segoeuib.ttf"
@@ -59,7 +59,7 @@ f_reg_tag = ImageFont.truetype(FONT_SEGOE_REG, 15)
 C_NAVY = (11, 25, 44, 255)
 
 badges_p1 = [
-    (os.path.join(ASSETS_DIR, "badge_icon_psid.png"), "Problem Statement ID – ", "26139", False, False),
+    (os.path.join(ASSETS_DIR, "badge_icon_psid.png"), "Problem Statement ID – ", "Challenge", False, False),
     (os.path.join(ASSETS_DIR, "badge_icon_title.png"), "Problem Statement Title –", "\nHybrid Quantum Machine Learning Platform\nfor Early Disease Detection", True, False),
     (os.path.join(ASSETS_DIR, "badge_icon_solution.png"), "Solution / Software – ", "", False, True),
     (os.path.join(ASSETS_DIR, "badge_icon_institute.png"), "Institute – ", "National Institute of Technology Nagaland", False, False),
@@ -382,7 +382,7 @@ for idx, spath in enumerate(slides_paths, start=1):
         page.insert_link({
             "kind": fitz.LINK_URI,
             "from": link_rect,
-            "uri": "https://quantumhealth-ai.onrender.com"
+            "uri": "https://quantumhealth-ai.us-east-1.elb.amazonaws.com"
         })
     
     # Add clickable links on Slide 5
@@ -405,11 +405,11 @@ for idx, spath in enumerate(slides_paths, start=1):
         
         # Live ArogyaDristi Web App
         app_rect = fitz.Rect(1020 * sx, 660 * sy, 1440 * sx, 730 * sy)
-        page.insert_link({"kind": fitz.LINK_URI, "from": app_rect, "uri": "https://quantumhealth-ai.onrender.com"})
+        page.insert_link({"kind": fitz.LINK_URI, "from": app_rect, "uri": "https://quantumhealth-ai.us-east-1.elb.amazonaws.com"})
         
         # Public API Docs
         docs_rect = fitz.Rect(1020 * sx, 740 * sy, 1440 * sx, 805 * sy)
-        page.insert_link({"kind": fitz.LINK_URI, "from": docs_rect, "uri": "https://quantumhealth-ai.onrender.com/docs"})
+        page.insert_link({"kind": fitz.LINK_URI, "from": docs_rect, "uri": "https://quantumhealth-ai.us-east-1.elb.amazonaws.com/docs"})
         
         # Open Source GitHub
         gh_rect = fitz.Rect(1020 * sx, 815 * sy, 1440 * sx, 880 * sy)
@@ -417,7 +417,7 @@ for idx, spath in enumerate(slides_paths, start=1):
         
         # QR Code
         qr_rect = fitz.Rect(1460 * sx, 660 * sy, 1640 * sx, 840 * sy)
-        page.insert_link({"kind": fitz.LINK_URI, "from": qr_rect, "uri": "https://quantumhealth-ai.onrender.com"})
+        page.insert_link({"kind": fitz.LINK_URI, "from": qr_rect, "uri": "https://quantumhealth-ai.us-east-1.elb.amazonaws.com"})
 
 # Save PDF to all target locations
 os.makedirs(os.path.dirname(OUTPUT_PDF_DOCS), exist_ok=True)

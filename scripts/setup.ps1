@@ -15,7 +15,7 @@ $env:PATH = "$NodePath;" + $env:PATH
 
 Write-Host "============================================" -ForegroundColor Cyan
 Write-Host "  QuantumHealth AI — Setup Script (Windows)" -ForegroundColor Cyan
-Write-Host "  SIH 2026 | Problem Statement 26139" -ForegroundColor Cyan
+Write-Host "  QuantumHealth AI | Hackathon Challenge" -ForegroundColor Cyan
 Write-Host "============================================" -ForegroundColor Cyan
 Write-Host ""
 

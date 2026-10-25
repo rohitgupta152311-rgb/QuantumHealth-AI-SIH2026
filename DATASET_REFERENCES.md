@@ -1,6 +1,6 @@
 # 📚 QuantumHealth AI — Clinical Dataset Provenance & References
 
-**Project:** QuantumHealth AI (Smart India Hackathon 2026 — Problem Statement #26139)  
+**Project:** QuantumHealth AI (National Health-Tech Hackathon — Hackathon Challenge)  
 **Total Clinical Records:** 503,679 (~5.04 Lakh)  
 **Sources:** US Centers for Disease Control and Prevention (CDC), UCI Machine Learning Repository, National Institutes of Health (NIH)
 

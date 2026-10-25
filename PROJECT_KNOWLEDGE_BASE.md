@@ -1,19 +1,19 @@
 # QuantumHealth AI — Complete Project Knowledge Base
-# SIH 2026 Problem Statement #26139
+# QuantumHealth AI Hackathon Challenge
 # Hybrid Quantum-Classical ML for Early Disease Prediction
-# GitHub: https://github.com/rohitgupta152311-rgb/QuantumHealth-AI-SIH2026.git
+# GitHub: https://github.com/rohitgupta152311-rgb/QuantumHealth-AI-QuantumHealth AI.git
 
 ---
 
 ## PROJECT OVERVIEW
 
-QuantumHealth AI is a full-stack web application that uses a **Hybrid Quantum-Classical Machine Learning** approach for early disease prediction. It was built for the **Smart India Hackathon (SIH) 2026**, Problem Statement #26139.
+QuantumHealth AI is a full-stack web application that uses a **Hybrid Quantum-Classical Machine Learning** approach for early disease prediction. It was built for the **National Health-Tech Hackathon**, Hackathon Challenge.
 
 The application combines 3 classical ML models (Random Forest, SVM, Logistic Regression) with a PennyLane-simulated Variational Quantum Circuit (VQC) and fuses their outputs via a 60/40 weighted Consensus Engine.
 
 **Live Deployment:**
 - Frontend: Vercel (React + Vite + Tailwind CSS)
-- Backend: Render.com (FastAPI + Python)
+- Backend: AWS (FastAPI + Python)
 - Repository: GitHub
 
 ---
@@ -304,7 +304,7 @@ quantum-health-ai/
 ## CRITICAL IMPLEMENTATION DETAILS
 
 ### 1. Mock Mode (Frontend)
-In `frontend/src/services/api.ts`, there is a `MOCK_MODE` constant. When the backend is unreachable, the frontend automatically falls back to realistic mock data so the UI is always demonstrable. To connect to a real backend, change `BASE_URL` to the Render.com URL.
+In `frontend/src/services/api.ts`, there is a `MOCK_MODE` constant. When the backend is unreachable, the frontend automatically falls back to realistic mock data so the UI is always demonstrable. To connect to a real backend, change `BASE_URL` to the AWS URL.
 
 ### 2. Quantum Fallback (Backend)
 In `prediction_service.py` (lines 64-71), the quantum inference is wrapped in `try/except`. If PennyLane is not installed or crashes, it falls back to a deterministic classical approximation: `q_prob = classical_mean * 0.9 + 0.05`. This ensures the API NEVER crashes.
@@ -353,7 +353,7 @@ The ML pipeline and quantum circuit automatically adapt — no new model code ne
 **Folders:** `backend/app/api/`, `core/`, `schemas/`, `services/`
 - FastAPI routes and Pydantic validation
 - Master orchestrator (prediction_service.py)
-- Render.com deployment, environment variables
+- AWS deployment, environment variables
 
 ---
 
@@ -362,7 +362,7 @@ The ML pipeline and quantum circuit automatically adapt — no new model code ne
 - ✅ All frontend code written and functional
 - ✅ Code pushed to GitHub
 - ✅ Frontend deployed to Vercel
-- ⬜ Backend deployment to Render.com (pending)
+- ⬜ Backend deployment to AWS (pending)
 - ⬜ Connect frontend BASE_URL to live Render URL
 - ⬜ GitHub README.md with screenshots
 - ⬜ Demo video recording

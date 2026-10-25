@@ -1,111 +1,94 @@
-"""Force retrain all 4 disease models with corrected code.
-Uses the same training path as the training orchestrator.
-"""
-import sys, os, time
-sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+"""Retrain all 4 disease models with optimized hyperparameters."""
+import sys
+import os
+import time
+import json
+import asyncio
 
-import numpy as np
-from pathlib import Path
-from sklearn.model_selection import train_test_split
+# Setup paths
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 from app.datasets.loader import DatasetLoader
-from app.classical_ml.trainer import ClassicalMLTrainer
-from app.preprocessing.pipeline import PreprocessingPipeline
-from app.core.config import Settings
+from app.services.training_orchestrator import TrainingOrchestrator
+from pathlib import Path
 
-settings = Settings()
-loader = DatasetLoader()
-cache_dir = Path("models_cache")
-cache_dir.mkdir(exist_ok=True)
-
-diseases = ["heart", "breast_cancer", "kidney", "diabetes"]
-
-for disease_id in diseases:
+async def retrain_disease(disease_id: str, orchestrator: TrainingOrchestrator):
     print(f"\n{'='*60}")
-    print(f"RETRAINING: {disease_id}")
+    print(f"  TRAINING: {disease_id.upper()}")
+    print(f"{'='*60}")
+    start = time.time()
+    
+    try:
+        bundle = await orchestrator.get_or_train_models(disease_id, force_retrain=True)
+        elapsed = time.time() - start
+        
+        metrics = bundle.trainer.get_model_metrics()
+        manifest = bundle.trainer.get_manifest()
+        
+        print(f"\n  Results for {disease_id} (trained in {elapsed:.1f}s):")
+        print(f"  {'Model':<25} {'Accuracy':>10} {'F1':>8} {'AUC':>8} {'Brier':>8}")
+        print(f"  {'-'*59}")
+        
+        for m in metrics:
+            name = m.get('model_name', '?')
+            acc = m.get('accuracy', 0)
+            f1 = m.get('f1_score', 0)
+            auc = m.get('roc_auc', 0)
+            brier = m.get('brier_score', 1)
+            print(f"  {name:<25} {acc:>9.4f} {f1:>7.4f} {auc:>7.4f} {brier:>7.4f}")
+        
+        # Print alpha
+        if manifest:
+            alpha = manifest.get('hybrid_ensemble_configuration', {}).get('tuned_alpha', '?')
+            absth = manifest.get('hybrid_ensemble_configuration', {}).get('abstention_disagreement_threshold', '?')
+            print(f"\n  Alpha (quantum weight): {alpha}")
+            print(f"  Abstention threshold:  {absth}")
+        
+        return metrics
+    except Exception as e:
+        print(f"  ERROR training {disease_id}: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
+
+async def main():
+    print("QuantumHealth AI - Full Model Retraining")
+    print("="*60)
+    
+    loader = DatasetLoader()
+    cache_dir = Path("models_cache")
+    orchestrator = TrainingOrchestrator(loader, cache_dir)
+    
+    diseases = ["heart", "breast_cancer", "kidney", "diabetes"]
+    all_results = {}
+    
+    total_start = time.time()
+    for disease_id in diseases:
+        result = await retrain_disease(disease_id, orchestrator)
+        all_results[disease_id] = result
+    
+    total_elapsed = time.time() - total_start
+    
+    print(f"\n\n{'='*60}")
+    print(f"  RETRAINING COMPLETE - Total time: {total_elapsed:.1f}s")
     print(f"{'='*60}")
     
-    t0 = time.time()
-    
-    # Load disease info and extract sentinels
-    disease_info = loader.get_disease_info(disease_id)
-    sentinels_map = {}
-    for idx, f in enumerate(disease_info.get("features", [])):
-        s_list = f.get("missing_sentinels", [])
-        if s_list:
-            sentinels_map[idx] = [float(val) for val in s_list]
-    
-    # Handle diabetes special case (grouped split)
-    if disease_id == "diabetes":
-        X, y, groups, feature_names = loader.load_grouped(disease_id)
-        from sklearn.model_selection import GroupShuffleSplit
-        gss_test = GroupShuffleSplit(n_splits=1, test_size=0.20, random_state=settings.random_seed)
-        train_val_idx, test_idx = next(gss_test.split(X, y, groups))
-        X_temp, X_test = X[train_val_idx], X[test_idx]
-        y_temp, y_test = y[train_val_idx], y[test_idx]
-        groups_temp = groups[train_val_idx]
-        
-        gss_val = GroupShuffleSplit(n_splits=1, test_size=0.25, random_state=settings.random_seed)
-        train_idx, val_idx = next(gss_val.split(X_temp, y_temp, groups_temp))
-        X_train, X_val = X_temp[train_idx], X_temp[val_idx]
-        y_train, y_val = y_temp[train_idx], y_temp[val_idx]
-    else:
-        X, y, feature_names = loader.load(disease_id)
-        X_temp, X_test, y_temp, y_test = train_test_split(
-            X, y, test_size=0.20, random_state=settings.random_seed, stratify=y
-        )
-        X_train, X_val, y_train, y_val = train_test_split(
-            X_temp, y_temp, test_size=0.25, random_state=settings.random_seed, stratify=y_temp
-        )
-    
-    print(f"  Dataset: {X.shape[0]} samples, {X.shape[1]} features")
-    print(f"  Class balance: {y.mean():.4f} positive rate")
-    print(f"  Train: {len(X_train)}, Val: {len(X_val)}, Test: {len(X_test)}")
-    
-    # Create and fit pipeline
-    pipeline_path = cache_dir / f"{disease_id}_pipeline.pkl"
-    pipeline = PreprocessingPipeline(
-        n_quantum_features=settings.quantum_n_qubits,
-        model_version=f"{disease_id}_v1.0",
-        missing_sentinels=sentinels_map
-    )
-    pipeline.fit(X_train, y_train, feature_names)
-    pipeline.save(pipeline_path)
-    
-    X_train_c, X_train_q = pipeline.transform(X_train)
-    X_val_c, X_val_q = pipeline.transform(X_val)
-    X_test_c, X_test_q = pipeline.transform(X_test)
-    
-    # Train all models
-    trainer = ClassicalMLTrainer(disease_id=disease_id, models_cache_dir=cache_dir)
-    trainer.train(
-        X_train=X_train_c, y_train=y_train,
-        X_test=X_test_c, y_test=y_test,
-        feature_names=feature_names,
-        X_val=X_val_c, y_val=y_val,
-        X_train_q=X_train_q, X_val_q=X_val_q, X_test_q=X_test_q,
-        dataset_meta=disease_info, pipeline_path=pipeline_path
-    )
-    
-    elapsed = time.time() - t0
-    print(f"\n  Training completed in {elapsed:.1f}s")
-    
-    # Print key metrics
-    manifest = trainer.get_manifest()
-    if manifest:
-        alpha = manifest.get("hybrid_alpha", "N/A")
-        threshold = manifest.get("abstention_disagreement_threshold", "N/A")
-        print(f"  Hybrid alpha: {alpha}")
-        print(f"  Abstention threshold: {threshold}")
-        
-        for m in manifest.get("model_metrics", []):
-            name = m.get("model_name", "?")
-            auc = m.get("roc_auc", 0)
-            sens = m.get("sensitivity", 0)
-            f1 = m.get("f1_score", 0)
-            brier = m.get("brier_score", 0)
-            print(f"    {name:20s}  AUC={auc:.4f}  Sens={sens:.4f}  F1={f1:.4f}  Brier={brier:.4f}")
+    # Summary table
+    print(f"\n  {'Disease':<18} {'Best Classical':>15} {'VQC':>8} {'Hybrid':>8} {'Alpha':>7}")
+    print(f"  {'-'*56}")
+    for disease_id, metrics in all_results.items():
+        if metrics:
+            classical = [m for m in metrics if m.get('model_type') == 'classical']
+            quantum = [m for m in metrics if m.get('model_type') == 'quantum']
+            hybrid = [m for m in metrics if m.get('model_type') == 'hybrid']
+            
+            best_c = max((m.get('accuracy', 0) for m in classical), default=0)
+            vqc_acc = quantum[0].get('accuracy', 0) if quantum else 0
+            h_acc = hybrid[0].get('accuracy', 0) if hybrid else 0
+            alpha = hybrid[0].get('alpha_weight', '?') if hybrid else '?'
+            
+            print(f"  {disease_id:<18} {best_c:>14.2%} {vqc_acc:>7.2%} {h_acc:>7.2%} {alpha:>7}")
 
-print(f"\n{'='*60}")
-print("ALL MODELS RETRAINED SUCCESSFULLY")
-print(f"{'='*60}")
+if __name__ == "__main__":
+    asyncio.run(main())

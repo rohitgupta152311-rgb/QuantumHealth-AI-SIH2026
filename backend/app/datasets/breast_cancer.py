@@ -12,7 +12,8 @@ import numpy as np
 import pandas as pd
 from pathlib import Path
 
-DATA_FILE = Path(__file__).parent.parent.parent / "data" / "breast_cancer_wisconsin_10features_569.csv"
+DATA_FILE = Path(__file__).parent.parent.parent / "data" / "breast_cancer_wdbc_structured_569.csv"
+DATA_FILE_10 = Path(__file__).parent.parent.parent / "data" / "breast_cancer_wisconsin_10features_569.csv"
 DATA_FILE_30 = Path(__file__).parent.parent.parent / "data" / "breast_cancer_wisconsin_authentic_569.csv"
 
 # 10 Core digitized FNA nuclear morphology features (Street et al., 1993)
@@ -50,7 +51,7 @@ BREAST_CANCER_CONFIG = {
     "disease_id": "breast_cancer",
     "display_name": "Breast Tumor Cytopathology Risk",
     "is_synthetic_demonstration": False,
-    "source_citation": "Street et al., 1993. UCI Wisconsin Diagnostic Breast Cancer (WDBC).",
+    "source_citation": "Street, Wolberg, Mangasarian (1993). Nuclear feature extraction for breast tumor diagnosis. IS&T/SPIE 1993 (569 Authentic Biopsies; UCI ML Repository).",
     "source_url": "https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic)",
     "dataset_license": "CC BY 4.0",
     "source_rows": 569,
@@ -59,7 +60,7 @@ BREAST_CANCER_CONFIG = {
     "test_rows_unaugmented": 114,           # 20% of 569
     "augmentation_method": "None (authentic unaugmented clinical biopsy cohort)",
     "augmentation_applied_to": "none",
-    "class_balance_source": "62.7% benign (1) / 37.3% malignant (0)",
+    "class_balance_source": "62.7% benign (0) / 37.3% malignant (1) (569 Authentic Biopsies)",
     "evaluation_protocol": (
         "Stratified 60/20/20 split (seed=42). Preprocessing fit strictly on training split. "
         "SMOTE used only on training folds. Platt probability calibration fit on unaugmented validation split. "

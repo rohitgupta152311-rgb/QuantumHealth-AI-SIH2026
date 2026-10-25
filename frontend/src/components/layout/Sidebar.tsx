@@ -134,7 +134,7 @@ export const Sidebar: React.FC<SidebarProps> = ({ onCloseMobile }) => {
       {/* Footer — always pinned at bottom */}
       <div className="px-3 py-2.5 border-t border-slate-800/80 text-[11px] text-slate-500 flex-shrink-0">
         <div className="flex items-center justify-between">
-          <span className="font-mono">v1.0 SIH</span>
+          <span className="font-mono">v1.0 HackYard 2026</span>
           <span className="text-emerald-400 flex items-center gap-1 font-mono">
             <span className="h-1.5 w-1.5 rounded-full bg-emerald-400 animate-pulse" /> Sim
           </span>

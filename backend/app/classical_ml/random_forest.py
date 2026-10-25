@@ -7,12 +7,13 @@ class RandomForestModel:
     Random Forest Ensemble Classifier tuned for biomedical tabular diagnostics.
     Uses balanced class weights to prevent minority class bias in rare disease detection.
     """
-    def __init__(self, n_estimators: int = 150, max_depth: Optional[int] = 6, random_state: int = 42):
+    def __init__(self, n_estimators: int = 500, max_depth: Optional[int] = 12, random_state: int = 42):
         self.model = RandomForestClassifier(
             n_estimators=n_estimators,
             max_depth=max_depth,
-            min_samples_split=4,
-            min_samples_leaf=2,
+            min_samples_split=3,
+            min_samples_leaf=1,
+            max_features='sqrt',
             class_weight='balanced',
             n_jobs=-1,
             random_state=random_state

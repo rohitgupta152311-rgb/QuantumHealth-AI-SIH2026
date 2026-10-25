@@ -1,7 +1,7 @@
 import pptx
 from pptx.enum.shapes import MSO_SHAPE_TYPE
 
-prs = pptx.Presentation(r'C:\Users\rohit\OneDrive\Desktop\SIH_2026_QuantumHealth_AI_NIT_Nagaland.pptx')
+prs = pptx.Presentation(r'C:\Users\rohit\OneDrive\Desktop\QuantumHealth AI_QuantumHealth_AI_NIT_Nagaland.pptx')
 
 with open(r'backend\slides_detailed_map.txt', 'w', encoding='utf-8') as f:
     for s_idx, slide in enumerate(prs.slides):

@@ -1,6 +1,6 @@
 # Contributing to QuantumHealth AI
 
-Thank you for contributing to **QuantumHealth AI** — SIH 2026 Problem Statement 26139.
+Thank you for contributing to **QuantumHealth AI** — QuantumHealth AI Hackathon Challenge.
 
 ---
 
@@ -262,4 +262,4 @@ Create a GitHub Issue with:
 
 ---
 
-*SIH 2026 | QuantumHealth AI | Problem Statement 26139*
+*QuantumHealth AI | QuantumHealth AI | Hackathon Challenge*

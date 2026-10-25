@@ -6,7 +6,7 @@ interface FeatureImpactChartProps {
     feature: string;
     label?: string;
     contribution: number;
-    effect_on_model_score: string;
+    effect_on_model_score?: string;
     input_value: number;
     unit?: string;
   }>;
@@ -16,7 +16,7 @@ export const FeatureImpactChart: React.FC<FeatureImpactChartProps> = ({ drivers 
   if (!drivers || drivers.length === 0) return null;
 
   const data = drivers.map(d => {
-    const isIncrease = d.effect_on_model_score.toLowerCase().includes('increase');
+    const isIncrease = d.effect_on_model_score ? d.effect_on_model_score.toLowerCase().includes('increase') : true;
     const val = isIncrease ? Math.abs(d.contribution) : -Math.abs(d.contribution);
     return {
       name: d.label || d.feature,

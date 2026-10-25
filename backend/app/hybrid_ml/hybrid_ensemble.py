@@ -21,8 +21,8 @@ class HybridEnsemble:
     """
 
     # Fixed quantum weight: 40% quantum, 60% classical
-    ALPHA_MIN = 0.40
-    ALPHA_MAX = 0.40
+    ALPHA_MIN = 0.05
+    ALPHA_MAX = 0.50
 
     def __init__(self, alpha: float = 0.30):
         self.alpha = float(alpha)
@@ -40,7 +40,7 @@ class HybridEnsemble:
         Optimizes Brier score over a grid of alpha in [ALPHA_MIN, ALPHA_MAX].
 
         The floor ensures the hybrid model always uses quantum output
-        (important for SIH demo and genuine hybrid architecture).
+        (important for QuantumHealth AI demo and genuine hybrid architecture).
         """
         from sklearn.metrics import brier_score_loss
 

@@ -3,7 +3,7 @@ from pptx.util import Pt
 from pptx.dml.color import RGBColor
 from pptx.enum.text import PP_ALIGN
 
-PPTX_PATH = r"C:\Users\rohit\OneDrive\Desktop\SIH_2026_QuantumHealth_AI_NIT_Nagaland.pptx"
+PPTX_PATH = r"C:\Users\rohit\OneDrive\Desktop\QuantumHealth AI_QuantumHealth_AI_NIT_Nagaland.pptx"
 
 # High-contrast color palette (Dark text on light card backgrounds)
 COLOR_TITLE = RGBColor(0x0A, 0x25, 0x40)       # Deep Navy
@@ -58,7 +58,7 @@ def update_presentation():
     slide1 = slides[0]
     tb38 = slide1.shapes[7].text_frame
     s1_items = [
-        ("• Problem Statement ID : ", "26139", 15.5, 15.5),
+        ("• Problem Statement ID : ", "Challenge", 15.5, 15.5),
         ("• Problem Statement Title : ", "Hybrid Quantum Machine Learning Platform for Early Disease Detection", 15.5, 14.0),
         ("• Theme : ", "MedTech / BioTech / HealthTech", 15.5, 15.5),
         ("• PS Category : ", "Software", 15.5, 15.5),
@@ -498,9 +498,9 @@ def update_presentation():
     s6_res_bullets = [
         ("• 🎥 Prototype Demo Video : ", "Full working software demo walkthrough (Click to view)", 8.4),
         ("• Doctor's Clinical Review : ", "Verified clinical evaluation by practicing physician (Click to view)", 8.4),
-        ("• Live Cloud Platform : ", "quantumhealth-ai.onrender.com (24/7 Live Full-Stack System)", 8.4),
-        ("• Public REST API & Docs : ", "quantumhealth-ai.onrender.com/docs (OpenAPI / Swagger Specs)", 8.4),
-        ("• Open-Source GitHub : ", "github.com/rohitgupta152311-rgb/QuantumHealth-AI-SIH2026", 8.4),
+        ("• Live Cloud Platform : ", "quantumhealth-ai.us-east-1.elb.amazonaws.com (24/7 Live Full-Stack System)", 8.4),
+        ("• Public REST API & Docs : ", "quantumhealth-ai.us-east-1.elb.amazonaws.com/docs (OpenAPI / Swagger Specs)", 8.4),
+        ("• Open-Source GitHub : ", "github.com/rohitgupta152311-rgb/QuantumHealth-AI-QuantumHealth AI", 8.4),
         ("• Verification Suite : ", "92 / 92 automated tests passing (67 pytest + 25 vitest, 100% clean)", 8.4)
     ]
     for idx, (pref, txt, sz) in enumerate(s6_res_bullets):

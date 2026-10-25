@@ -1,0 +1,382 @@
+{
+  "version": "v10.0_authentic_clinical_only",
+  "generated_at": "2026-10-25T07:47:00Z",
+  "platform": "QuantumHealth AI",
+  "synthetic_datasets_removed": true,
+  "datasets": {
+    "diabetes": {
+      "name": "Type 2 Diabetes Clinical Risk Assessment (ICMR-INDIAB Aligned)",
+      "file": "diabetes_clinical_structured_8k.csv",
+      "authentic_clinical_rows": 8348,
+      "features_count": 11,
+      "positive_cases": 4174,
+      "negative_controls": 4174,
+      "balance_ratio": "50.0% / 50.0%",
+      "missingness_rate_pct": 0.0,
+      "provenance": "Multi-Center Longitudinal Health-Screening Cohort (Chen et al., BMJ Open 2018; Dryad DOI: 10.5061/dryad.ft8750v)",
+      "clinical_features": {
+        "Age": {
+          "min": 21.0,
+          "max": 91.0,
+          "mean": 48.26,
+          "median": 47.0,
+          "nulls": 0
+        },
+        "Gender": {
+          "min": 1.0,
+          "max": 2.0,
+          "mean": 1.36,
+          "median": 1.0,
+          "nulls": 0
+        },
+        "BMI": {
+          "min": 15.1,
+          "max": 50.1,
+          "mean": 24.7,
+          "median": 24.6,
+          "nulls": 0
+        },
+        "SBP_mmHg": {
+          "min": 72.0,
+          "max": 206.0,
+          "mean": 125.54,
+          "median": 124.0,
+          "nulls": 0
+        },
+        "DBP_mmHg": {
+          "min": 43.0,
+          "max": 140.0,
+          "mean": 77.52,
+          "median": 77.0,
+          "nulls": 0
+        },
+        "FPG_mg_dL": {
+          "min": 44.0,
+          "max": 125.9,
+          "mean": 97.4,
+          "median": 96.4,
+          "nulls": 0
+        },
+        "Cholesterol_mmol_L": {
+          "min": 2.12,
+          "max": 9.73,
+          "mean": 4.87,
+          "median": 4.8,
+          "nulls": 0
+        },
+        "Triglyceride_mmol_L": {
+          "min": 0.2,
+          "max": 20.0,
+          "mean": 1.72,
+          "median": 1.38,
+          "nulls": 0
+        },
+        "ALT_UL": {
+          "min": 3.0,
+          "max": 375.5,
+          "mean": 29.68,
+          "median": 22.0,
+          "nulls": 0
+        },
+        "CCR_umol_L": {
+          "min": 28.0,
+          "max": 307.0,
+          "mean": 71.41,
+          "median": 71.2,
+          "nulls": 0
+        },
+        "family_history_of_diabetes": {
+          "min": 0.0,
+          "max": 1.0,
+          "mean": 0.03,
+          "median": 0.0,
+          "nulls": 0
+        }
+      }
+    },
+    "heart": {
+      "name": "Cardiovascular Disease UCI Multi-Center International Clinical Cohort",
+      "file": "heart_disease_multicenter_clean_863.csv",
+      "authentic_clinical_rows": 863,
+      "features_count": 13,
+      "positive_cases": 472,
+      "negative_controls": 391,
+      "balance_ratio": "54.7% positive",
+      "missingness_rate_pct": 0.0,
+      "provenance": "UCI Machine Learning Repository Multi-Center International Study: Cleveland Clinic (303), Hungarian Institute (294), Zurich (123), Long Beach (200). (Janosi et al., 1989)",
+      "clinical_features": {
+        "age": {
+          "min": 29.0,
+          "max": 77.0,
+          "mean": 53.16,
+          "median": 54.0,
+          "nulls": 0
+        },
+        "sex": {
+          "min": 0.0,
+          "max": 1.0,
+          "mean": 0.78,
+          "median": 1.0,
+          "nulls": 0
+        },
+        "cp": {
+          "min": 0.0,
+          "max": 3.0,
+          "mean": 2.25,
+          "median": 3.0,
+          "nulls": 0
+        },
+        "trestbps": {
+          "min": 94.0,
+          "max": 200.0,
+          "mean": 132.3,
+          "median": 130.0,
+          "nulls": 0
+        },
+        "chol": {
+          "min": 100.0,
+          "max": 564.0,
+          "mean": 219.1,
+          "median": 224.0,
+          "nulls": 0
+        },
+        "fbs": {
+          "min": 0.0,
+          "max": 1.0,
+          "mean": 0.14,
+          "median": 0.0,
+          "nulls": 0
+        },
+        "restecg": {
+          "min": 0.0,
+          "max": 2.0,
+          "mean": 0.59,
+          "median": 0.0,
+          "nulls": 0
+        },
+        "thalach": {
+          "min": 71.0,
+          "max": 202.0,
+          "mean": 137.65,
+          "median": 140.0,
+          "nulls": 0
+        },
+        "exang": {
+          "min": 0.0,
+          "max": 1.0,
+          "mean": 0.39,
+          "median": 0.0,
+          "nulls": 0
+        },
+        "oldpeak": {
+          "min": 0.0,
+          "max": 6.2,
+          "mean": 0.89,
+          "median": 0.5,
+          "nulls": 0
+        },
+        "slope": {
+          "min": 0.0,
+          "max": 2.0,
+          "mean": 0.84,
+          "median": 1.0,
+          "nulls": 0
+        },
+        "ca": {
+          "min": 0.0,
+          "max": 3.0,
+          "mean": 0.47,
+          "median": 0.0,
+          "nulls": 0
+        },
+        "thal": {
+          "min": 0.0,
+          "max": 2.0,
+          "mean": 1.11,
+          "median": 2.0,
+          "nulls": 0
+        }
+      }
+    },
+    "kidney": {
+      "name": "Chronic Kidney Disease Apollo Hospitals India Clinical Cohort",
+      "file": "kidney_disease_apollo_structured_400.csv",
+      "authentic_clinical_rows": 400,
+      "features_count": 12,
+      "positive_cases": 250,
+      "negative_controls": 150,
+      "balance_ratio": "62.5% positive",
+      "missingness_rate_pct": 0.0,
+      "provenance": "Apollo Hospitals Tamil Nadu, India Clinical Nephrology Cohort (Rubini et al., 2015; UCI ML Repository)",
+      "clinical_features": {
+        "age": {
+          "min": 10.0,
+          "max": 90.0,
+          "mean": 51.67,
+          "median": 55.0,
+          "nulls": 0
+        },
+        "bp": {
+          "min": 50.0,
+          "max": 180.0,
+          "mean": 76.58,
+          "median": 80.0,
+          "nulls": 0
+        },
+        "sg": {
+          "min": 1.005,
+          "max": 1.025,
+          "mean": 1.02,
+          "median": 1.02,
+          "nulls": 0
+        },
+        "al": {
+          "min": 0.0,
+          "max": 5.0,
+          "mean": 0.9,
+          "median": 0.0,
+          "nulls": 0
+        },
+        "su": {
+          "min": 0.0,
+          "max": 5.0,
+          "mean": 0.4,
+          "median": 0.0,
+          "nulls": 0
+        },
+        "bgr": {
+          "min": 50.0,
+          "max": 490.0,
+          "mean": 145.13,
+          "median": 121.0,
+          "nulls": 0
+        },
+        "bu": {
+          "min": 10.0,
+          "max": 390.0,
+          "mean": 56.71,
+          "median": 42.0,
+          "nulls": 0
+        },
+        "sc": {
+          "min": 0.4,
+          "max": 15.0,
+          "mean": 2.67,
+          "median": 1.3,
+          "nulls": 0
+        },
+        "sod": {
+          "min": 104.0,
+          "max": 163.0,
+          "mean": 137.98,
+          "median": 138.0,
+          "nulls": 0
+        },
+        "pot": {
+          "min": 2.5,
+          "max": 7.6,
+          "mean": 4.38,
+          "median": 4.4,
+          "nulls": 0
+        },
+        "hemo": {
+          "min": 3.1,
+          "max": 17.8,
+          "mean": 12.54,
+          "median": 12.6,
+          "nulls": 0
+        },
+        "htn": {
+          "min": 0.0,
+          "max": 1.0,
+          "mean": 0.37,
+          "median": 0.0,
+          "nulls": 0
+        }
+      }
+    },
+    "breast_cancer": {
+      "name": "Wisconsin Diagnostic Breast Cancer (WDBC) 569 Fine Needle Aspirates",
+      "file": "breast_cancer_wdbc_structured_569.csv",
+      "authentic_clinical_rows": 569,
+      "features_count": 10,
+      "positive_cases": 212,
+      "negative_controls": 357,
+      "balance_ratio": "37.3% malignant",
+      "missingness_rate_pct": 0.0,
+      "provenance": "University of Wisconsin Hospitals Digitized Fine Needle Aspirate Biopsy Cohort (Street, Wolberg, Mangasarian, 1993; UCI ML Repository)",
+      "clinical_features": {
+        "mean radius": {
+          "min": 6.981,
+          "max": 28.11,
+          "mean": 14.1273,
+          "median": 13.37,
+          "nulls": 0
+        },
+        "mean texture": {
+          "min": 9.71,
+          "max": 39.28,
+          "mean": 19.2896,
+          "median": 18.84,
+          "nulls": 0
+        },
+        "mean perimeter": {
+          "min": 43.79,
+          "max": 188.5,
+          "mean": 91.969,
+          "median": 86.24,
+          "nulls": 0
+        },
+        "mean area": {
+          "min": 143.5,
+          "max": 2501.0,
+          "mean": 654.8891,
+          "median": 551.1,
+          "nulls": 0
+        },
+        "mean smoothness": {
+          "min": 0.0526,
+          "max": 0.1634,
+          "mean": 0.0964,
+          "median": 0.0959,
+          "nulls": 0
+        },
+        "mean compactness": {
+          "min": 0.0194,
+          "max": 0.3454,
+          "mean": 0.1043,
+          "median": 0.0926,
+          "nulls": 0
+        },
+        "mean concavity": {
+          "min": 0.0,
+          "max": 0.4268,
+          "mean": 0.0888,
+          "median": 0.0615,
+          "nulls": 0
+        },
+        "mean concave points": {
+          "min": 0.0,
+          "max": 0.2012,
+          "mean": 0.0489,
+          "median": 0.0335,
+          "nulls": 0
+        },
+        "mean symmetry": {
+          "min": 0.106,
+          "max": 0.304,
+          "mean": 0.1812,
+          "median": 0.1792,
+          "nulls": 0
+        },
+        "mean fractal dimension": {
+          "min": 0.05,
+          "max": 0.0974,
+          "mean": 0.0628,
+          "median": 0.0615,
+          "nulls": 0
+        }
+      }
+    }
+  }
+}

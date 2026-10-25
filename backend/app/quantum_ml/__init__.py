@@ -1,6 +1,6 @@
-﻿"""
+"""
 quantum_ml package - PennyLane-based quantum simulation layer.
-QuantumHealth AI (SIH 2026 Problem Statement 26139).
+QuantumHealth AI (HackYard 2026).
 
 All quantum circuits run on PennyLane default.qubit SIMULATOR.
 No real quantum hardware is used.

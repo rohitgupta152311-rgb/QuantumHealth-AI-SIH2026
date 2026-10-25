@@ -1,21 +1,21 @@
 {
   "disease_id": "kidney",
-  "created_at": "2026-10-03T05:06:22.589742+00:00",
+  "created_at": "2026-10-25T06:42:49.725758+00:00",
   "split_protocol": "Stratified 60/20/20 split (seed=42)",
   "split_sizes": {
-    "train_samples": 240,
-    "validation_samples": 80,
-    "test_samples": 80
+    "train_samples": 400,
+    "validation_samples": 0,
+    "test_samples": 100
   },
   "split_hashes": {
-    "train_sha256": "ae146cb4daa46200cf9b9c818930a6709a2fe32ac0581233766678fc61089306",
-    "val_sha256": "4227c7977bfad429c7d08a3dd3af81596a2f7ef9d3085b955a39f48b20d3a34d",
-    "test_sha256": "fb340956355fd4a7da07e443dea376c69aa531c7a1dd0313880473c6235bfca9"
+    "train_sha256": "576645f15deaeeb0797f9eee0f9d88b38e43001d2fe7486a5890c94a874cff84",
+    "val_sha256": "",
+    "test_sha256": "1408b2c5833ca52a14326b98220cce2ed4e62ac58f2bc706950df4616235935d"
   },
-  "preprocessing_artifact_sha256": "3d498caad7ea50ca48cc5078f49e2448037254b67398363c807e0adef75006a3",
+  "preprocessing_artifact_sha256": "bc84ea18c6a6a1ba5f840032b78540942b615fd591754b93efb1eea21f0b6201",
   "quantum_configuration": {
     "n_qubits": 6,
-    "n_layers": 2,
+    "n_layers": 3,
     "circuit_depth": 17,
     "backend": "numpy:statevector (exact simulator)",
     "pennylane_qnode_available": true,
@@ -27,18 +27,11 @@
     "tuned_alpha": 0.4,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
-    "abstention_disagreement_threshold": 0.65
+    "abstention_disagreement_threshold": 0.45
   },
   "calibration": {
     "method": "Platt Scaling (Sigmoid fitted on unaugmented validation split)",
-    "calibrated_models": [
-      "RandomForest",
-      "SVM",
-      "LogisticRegression",
-      "GradientBoosting",
-      "XGBoost",
-      "QuantumVQC"
-    ]
+    "calibrated_models": []
   },
   "models": [
     "RandomForest",
@@ -46,226 +39,9 @@
     "LogisticRegression",
     "GradientBoosting",
     "XGBoost",
-    "QuantumVQC",
-    "HybridEnsemble"
+    "QuantumVQC"
   ],
-  "dataset_metadata": {
-    "disease_id": "kidney",
-    "display_name": "Chronic Kidney Disease Risk",
-    "is_synthetic_demonstration": false,
-    "source_citation": "Rubini et al., 2015. Chronic Kidney Disease Dataset. Apollo Hospitals India / UCI ML Repository.",
-    "source_url": "https://archive.ics.uci.edu/dataset/338/chronic_kidney_disease",
-    "dataset_license": "CC BY 4.0",
-    "source_rows": 400,
-    "training_rows_unaugmented": 240,
-    "validation_rows_unaugmented": 80,
-    "test_rows_unaugmented": 80,
-    "augmentation_method": "None (authentic unaugmented clinical cohort)",
-    "augmentation_applied_to": "none",
-    "class_balance_source": "62.5% CKD positive / 37.5% negative",
-    "evaluation_protocol": "Stratified 60/20/20 split (seed=42). Preprocessing fit strictly on training split. Platt probability calibration fit on unaugmented validation split. Final reported metrics computed once on locked test split.",
-    "split_seed": 42,
-    "features": [
-      {
-        "name": "age",
-        "label": "Patient Age",
-        "unit": "years",
-        "min_val": 10.0,
-        "max_val": 90.0,
-        "missing_sentinels": [],
-        "required": true,
-        "description": "Patient age in years"
-      },
-      {
-        "name": "bp",
-        "label": "Blood Pressure",
-        "unit": "mm Hg",
-        "min_val": 50.0,
-        "max_val": 180.0,
-        "missing_sentinels": [
-          0.0
-        ],
-        "required": true,
-        "description": "Diastolic blood pressure"
-      },
-      {
-        "name": "sg",
-        "label": "Specific Gravity",
-        "unit": "density",
-        "min_val": 1.005,
-        "max_val": 1.03,
-        "missing_sentinels": [],
-        "required": true,
-        "description": "Urine specific gravity density"
-      },
-      {
-        "name": "al",
-        "label": "Albumin",
-        "unit": "grade (0-5)",
-        "min_val": 0.0,
-        "max_val": 5.0,
-        "missing_sentinels": [],
-        "required": true,
-        "description": "Albumin protein in urine (0: normal, 1-5: progressive proteinuria)"
-      },
-      {
-        "name": "su",
-        "label": "Glucosuria",
-        "unit": "grade (0-5)",
-        "min_val": 0.0,
-        "max_val": 5.0,
-        "missing_sentinels": [],
-        "required": false,
-        "description": "Glucosuria / sugar detected in urine sample"
-      },
-      {
-        "name": "bgr",
-        "label": "Random Blood Glucose",
-        "unit": "mg/dL",
-        "min_val": 50.0,
-        "max_val": 490.0,
-        "missing_sentinels": [
-          0.0
-        ],
-        "required": true,
-        "description": "Random blood glucose concentration"
-      },
-      {
-        "name": "bu",
-        "label": "Blood Urea Nitrogen",
-        "unit": "mg/dL",
-        "min_val": 10.0,
-        "max_val": 390.0,
-        "missing_sentinels": [
-          0.0
-        ],
-        "required": true,
-        "description": "Blood urea nitrogen waste product"
-      },
-      {
-        "name": "sc",
-        "label": "Serum Creatinine",
-        "unit": "mg/dL",
-        "min_val": 0.4,
-        "max_val": 15.0,
-        "missing_sentinels": [
-          0.0
-        ],
-        "required": true,
-        "description": "Serum creatinine (primary filtration biomarker)"
-      },
-      {
-        "name": "sod",
-        "label": "Blood Sodium",
-        "unit": "mEq/L",
-        "min_val": 100.0,
-        "max_val": 165.0,
-        "missing_sentinels": [
-          0.0
-        ],
-        "required": true,
-        "description": "Blood serum sodium electrolyte level"
-      },
-      {
-        "name": "pot",
-        "label": "Blood Potassium",
-        "unit": "mEq/L",
-        "min_val": 2.5,
-        "max_val": 8.0,
-        "missing_sentinels": [
-          0.0
-        ],
-        "required": true,
-        "description": "Blood serum potassium electrolyte level"
-      },
-      {
-        "name": "hemo",
-        "label": "Hemoglobin",
-        "unit": "g/dL",
-        "min_val": 3.0,
-        "max_val": 18.0,
-        "missing_sentinels": [
-          0.0
-        ],
-        "required": true,
-        "description": "Blood hemoglobin concentration"
-      },
-      {
-        "name": "htn",
-        "label": "Hypertension History",
-        "unit": "binary",
-        "min_val": 0.0,
-        "max_val": 1.0,
-        "missing_sentinels": [],
-        "required": true,
-        "description": "1 = hypertensive history, 0 = normotensive"
-      }
-    ],
-    "presets": {
-      "healthy": {
-        "is_synthetic": true,
-        "demo_label": "Normal Renal Function Profile",
-        "description": "Negative proteinuria, normal serum creatinine and blood urea levels.",
-        "data": {
-          "age": 35,
-          "bp": 70,
-          "sg": 1.02,
-          "al": 0,
-          "su": 0,
-          "bgr": 95,
-          "bu": 25,
-          "sc": 0.8,
-          "sod": 140,
-          "pot": 4.2,
-          "hemo": 15.0,
-          "htn": 0
-        }
-      },
-      "moderate": {
-        "is_synthetic": true,
-        "demo_label": "Early Stage Renal Impairment",
-        "description": "Trace proteinuria, mild elevation in serum creatinine, borderline anemia.",
-        "data": {
-          "age": 52,
-          "bp": 80,
-          "sg": 1.015,
-          "al": 1,
-          "su": 1,
-          "bgr": 135,
-          "bu": 48,
-          "sc": 1.4,
-          "sod": 136,
-          "pot": 4.6,
-          "hemo": 12.2,
-          "htn": 0
-        }
-      },
-      "high_risk": {
-        "is_synthetic": true,
-        "demo_label": "Advanced Renal Disease Profile",
-        "description": "Severe proteinuria (grade 3), high serum creatinine (4.8 mg/dL), severe anemia.",
-        "data": {
-          "age": 64,
-          "bp": 95,
-          "sg": 1.008,
-          "al": 3,
-          "su": 2,
-          "bgr": 210,
-          "bu": 115,
-          "sc": 4.8,
-          "sod": 128,
-          "pot": 5.8,
-          "hemo": 8.4,
-          "htn": 1
-        }
-      }
-    },
-    "id": "kidney",
-    "name": "Chronic Kidney Disease Risk",
-    "description": "Chronic Kidney Disease (CKD) risk evaluation using 12 authentic clinical renal biomarkers from the Apollo Hospitals India cohort (400 clinical records, Rubini et al., 2015; UCI ML Repository).",
-    "dataset_size": 400,
-    "status": "ready"
-  },
+  "dataset_metadata": {},
   "test_metrics_summary": [
     {
       "model": "RandomForest",
@@ -273,13 +49,13 @@
       "accuracy": 1.0,
       "roc_auc": 1.0,
       "pr_auc": 1.0,
-      "brier_score": 0.0015,
+      "brier_score": 0.0103,
       "sensitivity": 1.0,
       "specificity": 1.0,
       "f1_score": 1.0,
-      "is_calibrated": true,
+      "is_calibrated": false,
       "confidence_intervals": {
-        "valid_bootstrap_samples": 200,
+        "valid_bootstrap_samples": 1000,
         "f1_95_ci": [
           1.0,
           1.0
@@ -289,8 +65,8 @@
           1.0
         ],
         "brier_95_ci": [
-          0.0008,
-          0.0024
+          0.005,
+          0.0168
         ],
         "accuracy_95_ci": [
           1.0,
@@ -301,30 +77,30 @@
     {
       "model": "SVM",
       "type": "classical",
-      "accuracy": 0.9875,
-      "roc_auc": 0.9987,
-      "pr_auc": 0.9992,
-      "brier_score": 0.0121,
-      "sensitivity": 0.98,
+      "accuracy": 1.0,
+      "roc_auc": 1.0,
+      "pr_auc": 1.0,
+      "brier_score": 0.0033,
+      "sensitivity": 1.0,
       "specificity": 1.0,
-      "f1_score": 0.9899,
-      "is_calibrated": true,
+      "f1_score": 1.0,
+      "is_calibrated": false,
       "confidence_intervals": {
-        "valid_bootstrap_samples": 200,
+        "valid_bootstrap_samples": 1000,
         "f1_95_ci": [
-          0.9684,
+          1.0,
           1.0
         ],
         "roc_auc_95_ci": [
-          0.9939,
+          1.0,
           1.0
         ],
         "brier_95_ci": [
-          0.0021,
-          0.0293
+          0.0008,
+          0.0073
         ],
         "accuracy_95_ci": [
-          0.9625,
+          1.0,
           1.0
         ]
       }
@@ -332,18 +108,18 @@
     {
       "model": "LogisticRegression",
       "type": "classical",
-      "accuracy": 0.975,
+      "accuracy": 0.99,
       "roc_auc": 1.0,
       "pr_auc": 1.0,
-      "brier_score": 0.0204,
-      "sensitivity": 0.96,
+      "brier_score": 0.0047,
+      "sensitivity": 0.9828,
       "specificity": 1.0,
-      "f1_score": 0.9796,
-      "is_calibrated": true,
+      "f1_score": 0.9913,
+      "is_calibrated": false,
       "confidence_intervals": {
-        "valid_bootstrap_samples": 200,
+        "valid_bootstrap_samples": 1000,
         "f1_95_ci": [
-          0.9505,
+          0.9697,
           1.0
         ],
         "roc_auc_95_ci": [
@@ -351,11 +127,11 @@
           1.0
         ],
         "brier_95_ci": [
-          0.0072,
-          0.0364
+          0.0009,
+          0.011
         ],
         "accuracy_95_ci": [
-          0.9375,
+          0.97,
           1.0
         ]
       }
@@ -363,18 +139,18 @@
     {
       "model": "GradientBoosting",
       "type": "classical",
-      "accuracy": 0.975,
+      "accuracy": 0.98,
       "roc_auc": 1.0,
       "pr_auc": 1.0,
-      "brier_score": 0.0122,
-      "sensitivity": 0.96,
+      "brier_score": 0.0103,
+      "sensitivity": 0.9655,
       "specificity": 1.0,
-      "f1_score": 0.9796,
-      "is_calibrated": true,
+      "f1_score": 0.9825,
+      "is_calibrated": false,
       "confidence_intervals": {
-        "valid_bootstrap_samples": 200,
+        "valid_bootstrap_samples": 1000,
         "f1_95_ci": [
-          0.9524,
+          0.9541,
           1.0
         ],
         "roc_auc_95_ci": [
@@ -382,11 +158,11 @@
           1.0
         ],
         "brier_95_ci": [
-          0.0029,
-          0.0227
+          0.0009,
+          0.0237
         ],
         "accuracy_95_ci": [
-          0.9375,
+          0.95,
           1.0
         ]
       }
@@ -394,30 +170,30 @@
     {
       "model": "XGBoost",
       "type": "classical",
-      "accuracy": 0.975,
-      "roc_auc": 0.9993,
-      "pr_auc": 0.9996,
-      "brier_score": 0.0196,
-      "sensitivity": 0.96,
+      "accuracy": 0.98,
+      "roc_auc": 0.9984,
+      "pr_auc": 0.9988,
+      "brier_score": 0.0182,
+      "sensitivity": 0.9655,
       "specificity": 1.0,
-      "f1_score": 0.9796,
-      "is_calibrated": true,
+      "f1_score": 0.9825,
+      "is_calibrated": false,
       "confidence_intervals": {
-        "valid_bootstrap_samples": 200,
+        "valid_bootstrap_samples": 1000,
         "f1_95_ci": [
-          0.9473,
+          0.9541,
           1.0
         ],
         "roc_auc_95_ci": [
-          0.9962,
+          0.9938,
           1.0
         ],
         "brier_95_ci": [
-          0.0037,
-          0.0359
+          0.0048,
+          0.0358
         ],
         "accuracy_95_ci": [
-          0.9375,
+          0.95,
           1.0
         ]
       }
@@ -425,65 +201,34 @@
     {
       "model": "QuantumVQC",
       "type": "quantum",
-      "accuracy": 0.9,
-      "roc_auc": 1.0,
-      "pr_auc": 1.0,
-      "brier_score": 0.1164,
-      "sensitivity": 1.0,
-      "specificity": 0.7333,
-      "f1_score": 0.9259,
-      "is_calibrated": true,
-      "confidence_intervals": {
-        "valid_bootstrap_samples": 200,
-        "f1_95_ci": [
-          0.8659,
-          0.972
-        ],
-        "roc_auc_95_ci": [
-          1.0,
-          1.0
-        ],
-        "brier_95_ci": [
-          0.0999,
-          0.1313
-        ],
-        "accuracy_95_ci": [
-          0.8375,
-          0.9625
-        ]
-      }
-    },
-    {
-      "model": "HybridEnsemble",
-      "type": "hybrid",
-      "accuracy": 1.0,
-      "roc_auc": 1.0,
-      "pr_auc": 1.0,
-      "brier_score": 0.0302,
-      "sensitivity": 1.0,
-      "specificity": 1.0,
-      "f1_score": 1.0,
+      "accuracy": 0.81,
+      "roc_auc": 0.9729,
+      "pr_auc": 0.9699,
+      "brier_score": 0.1651,
+      "sensitivity": 0.6897,
+      "specificity": 0.9762,
+      "f1_score": 0.8081,
       "is_calibrated": false,
       "confidence_intervals": {
-        "valid_bootstrap_samples": 200,
+        "valid_bootstrap_samples": 1000,
         "f1_95_ci": [
-          1.0,
-          1.0
+          0.7174,
+          0.8829
         ],
         "roc_auc_95_ci": [
-          1.0,
-          1.0
+          0.9287,
+          0.9974
         ],
         "brier_95_ci": [
-          0.0252,
-          0.0355
+          0.1465,
+          0.1851
         ],
         "accuracy_95_ci": [
-          1.0,
-          1.0
+          0.73,
+          0.88
         ]
       }
     }
   ],
-  "manifest_sha256": "71ca4d86e73e2e584ccbc5ed719653226e9eef63478492f2fcf8ea87f54366c5"
+  "manifest_sha256": "014ad80e0f9fcd9e1a00de65f7d14b1faa1176a92de1d392ef1e25b6cef1bb27"
 }

@@ -15,7 +15,7 @@ sys.path.insert(0, os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(
 
 print("=" * 60)
 print("QuantumHealth AI - Backend Verification")
-print("SIH 2026 | Problem Statement 26139")
+print("QuantumHealth AI | Hackathon Challenge")
 print("=" * 60)
 
 errors = []

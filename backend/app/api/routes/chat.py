@@ -1,6 +1,6 @@
 """
 Chatbot Route powered by Google Gemini API (google-genai SDK).
-Provides interactive clinical, quantum, and SIH jury clarification for users.
+Provides interactive clinical, quantum, and QuantumHealth AI jury clarification for users.
 Includes built-in offline clinical intelligence fallback when GEMINI_API_KEY is not configured.
 """
 import os
@@ -29,8 +29,8 @@ class ChatResponse(BaseModel):
     references: List[str] = []
     suggested_followups: List[str] = []
 
-SYSTEM_INSTRUCTION = """You are Dr. Quanta — the ArogyaDristi Clinical Decision Support Copilot and SIH 2026 Technical Advisor.
-You assist doctors, researchers, medical students, and hackathon judges with:
+SYSTEM_INSTRUCTION = """You are Dr. Quanta — the ArogyaDristi Clinical Decision Support Copilot and QuantumHealth AI Technical Advisor.
+You assist doctors, researchers, medical students, and HackYard judges with:
 1. Clinical Biomarkers & Risk Profiles: Fasting Plasma Glucose (FPG), blood pressure, BMI, lipid panels (cholesterol/triglycerides), ALT, and serum creatinine.
 2. Clinical Guidelines:
    - ICMR-INDIAB (2023): Emphasize the South Asian "Thin-Fat Indian Phenotype" where cardiometabolic risk manifests at lower BMI (overweight >= 23 kg/m², obese >= 25 kg/m²) and younger ages.
@@ -66,7 +66,7 @@ def generate_offline_clinical_reply(message: str, context: Optional[Dict[str, An
             "- **99.88% Parameter Compression**: While a classical Random Forest ensemble uses **~18,000 decision split nodes** (300 estimators × depth 8), our VQC achieves non-linear classification using only **24 trainable rotation angles** (2 layers × 6 qubits × 2 rotation gates $RY, RZ$).\n"
             "- **Ring-Topology Entanglement**: Nearest-neighbor CNOT gates create quantum entanglement across wires, capturing cross-biomarker dependencies (e.g., blood pressure interacting with glucose).\n"
             "- **NISQ Noise Resilience**: Under physical depolarizing noise rates (p ≈ 1.5-2.0%), state fidelity retention is maintained at ~74%, with Zero-Noise Extrapolation (ZNE) mitigating gate errors.\n\n"
-            "> *Key SIH Defense Note: Quantum computing here is not a gimmick—it provides extreme parameter compression and models non-linear biomarker correlations in Hilbert space.*"
+            "> *Key QuantumHealth AI Defense Note: Quantum computing here is not a gimmick—it provides extreme parameter compression and models non-linear biomarker correlations in Hilbert space.*"
         )
         refs = ["PennyLane Quantum Machine Learning (Schuld et al., 2020)", "Havlíček et al., Nature (2019) Quantum-Enhanced Feature Spaces"]
         followups = ["How does angle encoding differ from amplitude encoding?", "Can this circuit run on physical IBM Quantum QPUs?", "What is the Brier-tuned hybrid weighting?"]
@@ -116,7 +116,7 @@ def generate_offline_clinical_reply(message: str, context: Optional[Dict[str, An
     else:
         reply = (
             f"### 👋 Hello! I am Dr. Quanta, your ArogyaDristi Copilot\n\n"
-            f"I am here to answer any clinical, technical, or competition defense questions regarding our **Hybrid Quantum Machine Learning Platform** (SIH #26139).\n\n"
+            f"I am here to answer any clinical, technical, or competition defense questions regarding our **Hybrid Quantum Machine Learning Platform** (HackYard 2026 Challenge).\n\n"
             f"**You can ask me about:**\n"
             f"- **Clinical Findings**: Why a patient's risk score is {risk_pct}%, or what their biomarkers indicate.\n"
             f"- **ICMR-INDIAB Guidelines**: How the Asian Indian phenotype affects diabetes and cardiovascular thresholds.\n"

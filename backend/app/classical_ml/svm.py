@@ -6,10 +6,11 @@ class SVMModel:
     Support Vector Machine Classifier with Radial Basis Function (RBF) kernel.
     Effective for non-linear decision boundaries on scaled clinical biomarkers.
     """
-    def __init__(self, C: float = 1.0, kernel: str = 'rbf', random_state: int = 42):
+    def __init__(self, C: float = 10.0, kernel: str = 'rbf', gamma: str = 'scale', random_state: int = 42):
         self.model = SVC(
             C=C,
             kernel=kernel,
+            gamma=gamma,
             probability=True,
             class_weight='balanced',
             random_state=random_state

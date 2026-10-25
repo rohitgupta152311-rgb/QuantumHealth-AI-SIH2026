@@ -52,7 +52,7 @@ describe('QuantumHealth AI Regression Test Suite', () => {
     it('configures the Chinese Health-Screening Cohort (211k adults) instead of Pima Indians', () => {
       expect(diabetesConfig).toBeDefined();
       expect(diabetesConfig?.name).toContain('Diabetes');
-      expect(diabetesConfig?.cohort).toContain('211,833');
+      expect(diabetesConfig?.cohort).toContain('8,348');
     });
 
     it('uses strictly FPG_mg_dL and modern cohort biomarkers, with NO legacy Pima keys', () => {

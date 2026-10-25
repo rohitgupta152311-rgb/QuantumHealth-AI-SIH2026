@@ -13,8 +13,8 @@ from pptx.enum.chart import XL_CHART_TYPE, XL_LEGEND_POSITION
 sys.stdout.reconfigure(encoding='utf-8')
 
 BENCHMARK_PATH = r"C:\Users\rohit\.gemini\antigravity\scratch\quantum-health-ai\backend\measured_benchmark_results.json"
-PPTX_PATH = r"C:\Users\rohit\OneDrive\Attachments\Desktop\SIH_2026_QuantumHealth_AI_NIT_Nagaland.pptx"
-BACKUP_PATH = r"C:\Users\rohit\OneDrive\Attachments\Desktop\SIH_2026_QuantumHealth_AI_NIT_Nagaland.backup.pptx"
+PPTX_PATH = r"C:\Users\rohit\OneDrive\Attachments\Desktop\QuantumHealth AI_QuantumHealth_AI_NIT_Nagaland.pptx"
+BACKUP_PATH = r"C:\Users\rohit\OneDrive\Attachments\Desktop\QuantumHealth AI_QuantumHealth_AI_NIT_Nagaland.backup.pptx"
 ASSETS_DIR = r"C:\Users\rohit\.gemini\antigravity\scratch\quantum-health-ai\backend\scripts\slide_assets"
 
 # Colors
@@ -41,7 +41,7 @@ def is_template_shape(shape):
     name = shape.name
     if name in ["Title 1", "Title 7", "Subtitle 3", "TextBox 38", "Rectangle 9", "Rectangle 8", "Footer Placeholder 6", "Slide Number Placeholder 5"]:
         return True
-    # SIH logo in top right
+    # QuantumHealth AI logo in top right
     if shape.shape_type == pptx.enum.shapes.MSO_SHAPE_TYPE.PICTURE and shape.top < Inches(1.2) and shape.left > Inches(9.0):
         return True
     # Slide 1 bulb picture
@@ -201,7 +201,7 @@ s1 = prs.slides[0]
 for shape in s1.shapes:
     if shape.name == "Title 7":
         p = shape.text_frame.paragraphs[0]
-        p.text = "SMART INDIA HACKATHON 2026"
+        p.text = "National Health-Tech Hackathon"
         p.font.name = "Calibri"
         p.font.size = Pt(30)
         p.font.bold = True
@@ -220,7 +220,7 @@ pill_top = s1.shapes.add_shape(MSO_SHAPE.ROUNDED_RECTANGLE, Inches(0.70), Inches
 set_shape_flat_card(pill_top, bg_color=RGBColor(0xEE, 0xF2, 0xFF), border_color=RGBColor(0xC7, 0xD2, 0xFE))
 pill_top.text_frame.vertical_anchor = MSO_ANCHOR.MIDDLE
 p_pt = pill_top.text_frame.paragraphs[0]
-format_para(p_pt, "★ SMART INDIA HACKATHON 2026 • PROBLEM STATEMENT #26139", font_size=12, bold=True, color=C_NAVY, align=PP_ALIGN.CENTER, space_after=Pt(0))
+format_para(p_pt, "★ National Health-Tech Hackathon • Hackathon Challenge", font_size=12, bold=True, color=C_NAVY, align=PP_ALIGN.CENTER, space_after=Pt(0))
 
 # 2. Main Title & Hindi branding
 tb_t1, tf_t1 = add_clean_textbox(s1, Inches(0.70), Inches(1.85), Inches(6.05), Inches(1.10))
@@ -301,7 +301,7 @@ def update_footer(slide):
 update_footer(s1)
 
 s1.notes_slide.notes_text_frame.text = (
-    "Respected judges, we represent Team Code (404) from NIT Nagaland presenting Problem Statement 26139. "
+    "Respected judges, we represent Team Code (404) from NIT Nagaland presenting Hackathon Challenge. "
     "Our software, ArogyaDristi, is a hybrid quantum-classical machine learning platform engineered for early chronic disease "
     "risk assessment using routine lab biomarkers."
 )
@@ -455,7 +455,7 @@ r_pb2.font.size = Pt(13)
 r_pb2.font.bold = True
 r_pb2.font.color.rgb = C_BLUE
 r_pb2.font.underline = True
-r_pb2.hyperlink.address = "https://quantumhealth-ai.onrender.com"
+r_pb2.hyperlink.address = "https://quantumhealth-ai.us-east-1.elb.amazonaws.com"
 
 r_pb3 = p_pb.add_run()
 r_pb3.text = "   |   Development Progress: 100% Functional  •  70/70 Backend Tests Passing  •  Vite Production Verified"
@@ -911,13 +911,13 @@ r_sub1.font.bold = False
 r_sub1.font.color.rgb = C_SLATE_DARK
 
 r_sub2 = p_sublink.add_run()
-r_sub2.text = "quantumhealth-ai.onrender.com ↗"
+r_sub2.text = "quantumhealth-ai.us-east-1.elb.amazonaws.com ↗"
 r_sub2.font.name = "Calibri"
 r_sub2.font.size = Pt(11)
 r_sub2.font.bold = True
 r_sub2.font.color.rgb = C_BLUE
 r_sub2.font.underline = True
-r_sub2.hyperlink.address = "https://quantumhealth-ai.onrender.com"
+r_sub2.hyperlink.address = "https://quantumhealth-ai.us-east-1.elb.amazonaws.com"
 
 # Left side of bottom right card: Text & Links
 tb_links, tf_links = add_clean_textbox(s6, Inches(8.05), Inches(3.72), Inches(2.80), Inches(2.46))
@@ -927,13 +927,13 @@ p1 = tf_links.paragraphs[0]
 format_para(p1, "• Live ArogyaDristi Web App:", font_size=12, bold=True, color=C_NAVY, space_after=Pt(1))
 p1_sub = tf_links.add_paragraph()
 p1_r = p1_sub.add_run()
-p1_r.text = "  quantumhealth-ai.onrender.com ↗"
+p1_r.text = "  quantumhealth-ai.us-east-1.elb.amazonaws.com ↗"
 p1_r.font.name = "Calibri"
 p1_r.font.size = Pt(11)
 p1_r.font.bold = True
 p1_r.font.color.rgb = C_BLUE
 p1_r.font.underline = True
-p1_r.hyperlink.address = "https://quantumhealth-ai.onrender.com"
+p1_r.hyperlink.address = "https://quantumhealth-ai.us-east-1.elb.amazonaws.com"
 p1_sub.space_after = Pt(4)
 
 # Link 2: Public API Docs
@@ -947,7 +947,7 @@ p2_r.font.size = Pt(11)
 p2_r.font.bold = True
 p2_r.font.color.rgb = C_BLUE
 p2_r.font.underline = True
-p2_r.hyperlink.address = "https://quantumhealth-ai.onrender.com/docs"
+p2_r.hyperlink.address = "https://quantumhealth-ai.us-east-1.elb.amazonaws.com/docs"
 p2_sub.space_after = Pt(4)
 
 # Link 3: GitHub
@@ -961,7 +961,7 @@ p3_r.font.size = Pt(11)
 p3_r.font.bold = True
 p3_r.font.color.rgb = C_BLUE
 p3_r.font.underline = True
-p3_r.hyperlink.address = "https://github.com/rohitgupta152311-rgb/QuantumHealth-AI-SIH2026"
+p3_r.hyperlink.address = "https://github.com/rohitgupta152311-rgb/QuantumHealth-AI-QuantumHealth AI"
 p3_sub.space_after = Pt(4)
 
 # Link 4: Automated tests
@@ -989,13 +989,13 @@ update_footer(s6)
 
 # Save updated presentation
 prs.save(PPTX_PATH)
-alt_pptx = r"C:\Users\rohit\OneDrive\Attachments\Desktop\SIH_2026_ArogyaDristi_NIT_Nagaland.pptx"
+alt_pptx = r"C:\Users\rohit\OneDrive\Attachments\Desktop\QuantumHealth AI_ArogyaDristi_NIT_Nagaland.pptx"
 prs.save(alt_pptx)
 print(f"Successfully saved presentation to: {PPTX_PATH} and {alt_pptx}")
 
 # Also save copy to docs/presentation
 docs_dir = r"C:\Users\rohit\.gemini\antigravity\scratch\quantum-health-ai\docs\presentation"
 os.makedirs(docs_dir, exist_ok=True)
-prs.save(os.path.join(docs_dir, "SIH_2026_QuantumHealth_AI_NIT_Nagaland.pptx"))
-prs.save(os.path.join(docs_dir, "SIH_2026_ArogyaDristi_NIT_Nagaland.pptx"))
+prs.save(os.path.join(docs_dir, "QuantumHealth AI_QuantumHealth_AI_NIT_Nagaland.pptx"))
+prs.save(os.path.join(docs_dir, "QuantumHealth AI_ArogyaDristi_NIT_Nagaland.pptx"))
 print(f"Successfully saved backup copies to: {docs_dir}")

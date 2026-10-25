@@ -118,13 +118,14 @@ class InferenceEngine:
                 hybrid_prob = float(np.clip(c_mean * c_wt + q_prob * q_wt, 0.0, 1.0))
                 ratio_label = f"{round(c_wt * 100)}% Classical / {round(q_wt * 100)}% Quantum"
             else:
-                q_wt = 0.40
-                c_wt = 0.60
+                alpha = getattr(trainer.hybrid_ensemble, "alpha", getattr(trainer, "alpha_star", 0.25)) if getattr(trainer, "hybrid_ensemble", None) is not None else 0.25
+                q_wt = round(float(alpha), 2)
+                c_wt = round(1.0 - q_wt, 2)
                 if getattr(trainer, "hybrid_ensemble", None) is not None:
                     hybrid_prob = float(trainer.hybrid_ensemble.predict_proba_single(c_mean, q_prob, calibrated=True))
                 else:
-                    hybrid_prob = float(min(1.0, max(0.0, c_mean * 0.60 + q_prob * 0.40)))
-                ratio_label = "60% Classical / 40% Quantum (Clinical Default)"
+                    hybrid_prob = float(min(1.0, max(0.0, c_mean * c_wt + q_prob * q_wt)))
+                ratio_label = f"{round(c_wt * 100)}% Classical / {round(q_wt * 100)}% Quantum (Optimal CV Blend)"
 
         hybrid_pred_str = "high_risk" if hybrid_prob >= 0.5 else "low_risk"
 

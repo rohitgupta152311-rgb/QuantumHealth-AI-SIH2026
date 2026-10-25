@@ -15,8 +15,8 @@ class XGBoostModel:
     Uses scale_pos_weight for class imbalance, early stopping on validation,
     and histogram-based splitting for scalability.
     """
-    def __init__(self, n_estimators: int = 300, max_depth: int = 5,
-                 learning_rate: float = 0.05, random_state: int = 42):
+    def __init__(self, n_estimators: int = 500, max_depth: int = 7,
+                 learning_rate: float = 0.03, random_state: int = 42):
         if not XGBOOST_AVAILABLE:
             raise ImportError("XGBoost is not installed. Run: pip install xgboost")
         self.model = XGBClassifier(
@@ -25,6 +25,7 @@ class XGBoostModel:
             learning_rate=learning_rate,
             subsample=0.8,
             colsample_bytree=0.8,
+            colsample_bylevel=0.8,
             min_child_weight=3,
             gamma=0.1,
             reg_alpha=0.1,

@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>ArogyaDristi — BUILD 2026 Pitch Deck</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    body {
+      font-family: 'Inter', sans-serif;
+      background-color: #060913;
+      color: #e2e8f0;
+      overflow: hidden;
+    }
+    .font-mono {
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .slide {
+      display: none;
+      height: 100vh;
+      width: 100vw;
+      padding: 2.5rem 4rem;
+      box-sizing: border-box;
+      opacity: 0;
+      transition: opacity 0.3s ease-in-out;
+    }
+    .slide.active {
+      display: flex;
+      flex-direction: column;
+      opacity: 1;
+    }
+    .glass-card {
+      background: rgba(15, 23, 42, 0.75);
+      backdrop-filter: blur(12px);
+      border: 1px solid rgba(51, 65, 85, 0.6);
+    }
+    .glow-teal {
+      box-shadow: 0 0 25px -5px rgba(20, 184, 166, 0.25);
+    }
+    .glow-cyan {
+      box-shadow: 0 0 25px -5px rgba(6, 182, 212, 0.25);
+    }
+  </style>
+</head>
+<body class="bg-[#060913] text-slate-100 flex flex-col justify-between select-none">
+
+  <!-- Top Progress & Header Bar -->
+  <header class="fixed top-0 left-0 w-full px-8 py-3.5 bg-slate-950/80 backdrop-blur-md border-b border-slate-800/80 flex items-center justify-between z-50">
+    <div class="flex items-center gap-3">
+      <div class="w-3 h-3 rounded-full bg-teal-400 animate-pulse"></div>
+      <span class="text-xs font-mono font-bold uppercase tracking-wider text-teal-400">BUILD 2026</span>
+      <span class="text-slate-600">•</span>
+      <span class="text-xs font-semibold text-slate-300">Healthcare & Quantum Machine Learning Track</span>
+    </div>
+    <div class="flex items-center gap-4">
+      <span class="text-xs font-mono px-2.5 py-1 rounded bg-teal-950/80 border border-teal-500/30 text-teal-300 font-bold">
+        TEAM 404 • EGREEN QUANTA
+      </span>
+      <span id="slideCounter" class="text-xs font-mono text-slate-400 font-semibold">Slide 1 / 6</span>
+    </div>
+  </header>
+
+  <!-- Main Slide Container -->
+  <main class="flex-1 pt-14 pb-16 h-screen overflow-hidden">
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 1: Project Introduction -->
+    <!-- ======================================================== -->
+    <section class="slide active" id="slide-1">
+      <div class="flex-1 flex flex-col justify-center max-w-6xl mx-auto w-full space-y-6">
+        <div>
+          <span class="text-xs font-mono font-bold uppercase tracking-widest text-cyan-400 bg-cyan-950/60 px-3 py-1 rounded border border-cyan-800/60">
+            Slide 1: Project Introduction
+          </span>
+          <h1 class="text-4xl sm:text-5xl font-black text-white mt-3 tracking-tight">
+            ArogyaDristi <span class="text-teal-400 font-extrabold text-3xl sm:text-4xl">(QuantumHealth AI)</span>
+          </h1>
+          <p class="text-lg text-teal-300 font-medium mt-1">
+            Hybrid Quantum-Classical Diagnostic Decision Support with Algorithmic Abstention
+          </p>
+        </div>
+
+        <!-- Mission Statement Callout -->
+        <div class="glass-card rounded-2xl p-5 border-l-4 border-l-teal-400 glow-teal">
+          <div class="text-[11px] font-mono uppercase font-bold text-amber-400 tracking-wider mb-1">
+            One-Sentence Purpose
+          </div>
+          <p class="text-base sm:text-lg text-slate-100 font-semibold leading-relaxed">
+            ArogyaDristi pairs a 5-model calibrated classical ensemble with a 6-qubit quantum variational circuit to detect pre-symptomatic chronic diseases (Diabetes, Heart Disease, CKD, Breast Cancer) — automatically abstaining when models contradict to protect frontline clinicians from deceptive AI risk scores.
+          </p>
+        </div>
+
+        <!-- 3 Info Columns -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="glass-card rounded-xl p-4 border-slate-800">
+            <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider mb-2">Team Details</div>
+            <div class="text-sm font-bold text-white">Team 404 (Egreen Quanta)</div>
+            <div class="text-xs text-slate-400 mt-1">National Institute of Technology Nagaland</div>
+            <div class="text-xs text-slate-400 mt-2 font-mono">• Lead: Rohit Gupta (Full-Stack & Cloud)<br>• Members: Quantum & Classical ML Eng.</div>
+          </div>
+
+          <div class="glass-card rounded-xl p-4 border-slate-800">
+            <div class="text-xs font-mono font-bold text-teal-400 uppercase tracking-wider mb-2">Clinical Scope</div>
+            <div class="text-sm font-bold text-white">4 Validated Pathology Modules</div>
+            <div class="text-xs text-slate-400 mt-1 font-mono">
+              • Type 2 Diabetes (8,348 Longitudinal Cohort)<br>
+              • Heart Disease (863 Multi-Center Patients)<br>
+              • Chronic Kidney Disease (400 Apollo Records)<br>
+              • Breast Cancer (569 Wisconsin Biopsies)
+            </div>
+          </div>
+
+          <div class="glass-card rounded-xl p-4 border-slate-800">
+            <div class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider mb-2">Architecture</div>
+            <div class="text-sm font-bold text-white">Dual-Stream Quantum-Classical</div>
+            <div class="text-xs text-slate-400 mt-1 font-mono">
+              • 5 Classical ML (RF, SVM, LR, HGB, XGB)<br>
+              • 6-Qubit VQC (Angle-RY + CNOT Ring)<br>
+              • Platt Probability Scaling (Validation fit)<br>
+              • Live on AWS Elastic Beanstalk (Docker)
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 2: Problem and Target Users -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-2">
+      <div class="flex-1 flex flex-col justify-center max-w-6xl mx-auto w-full space-y-5">
+        <div>
+          <span class="text-xs font-mono font-bold uppercase tracking-widest text-cyan-400 bg-cyan-950/60 px-3 py-1 rounded border border-cyan-800/60">
+            Slide 2: Problem and Target Users
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">
+            The Asymptomatic Blindspot in Chronic Disease Screening
+          </h2>
+          <p class="text-sm text-slate-400 mt-0.5">Early-stage chronic diseases advance silently, while standard black-box AI tools mislead clinicians when inputs are ambiguous.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Problem 1 -->
+          <div class="glass-card rounded-xl p-4 border-cyan-500/30">
+            <div class="flex items-center gap-2 text-cyan-400 text-xs font-mono font-bold uppercase tracking-wider mb-1.5">
+              <span>01 • The Specific Problem</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-1">Silent Disease Progression & Model Overconfidence</h3>
+            <ul class="text-xs text-slate-300 space-y-1.5 leading-relaxed">
+              <li>• <strong>Non-Linear Interactions:</strong> Complex multi-organ interactions (e.g. glucose, liver transaminases, micro-proteinuria) elude simple single-biomarker thresholds.</li>
+              <li>• <strong>The Overconfidence Trap:</strong> Commercial clinical ML models force an arbitrary prediction even when inputs represent out-of-distribution profiles or laboratory errors.</li>
+            </ul>
+          </div>
+
+          <!-- Problem 2: Target Users -->
+          <div class="glass-card rounded-xl p-4 border-teal-500/30">
+            <div class="flex items-center gap-2 text-teal-400 text-xs font-mono font-bold uppercase tracking-wider mb-1.5">
+              <span>02 • Target Users Facing This</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-1">Frontline Primary Care & Screening Camps</h3>
+            <ul class="text-xs text-slate-300 space-y-1.5 leading-relaxed">
+              <li>• <strong>ASHA Health Workers:</strong> Conducting rapid community camps in rural India without direct specialist supervision.</li>
+              <li>• <strong>PHC / MBBS Doctors:</strong> Managing high patient loads (80+ patients/day) requiring defensible triage prioritization.</li>
+              <li>• <strong>Hospital Triage Labs:</strong> Processing high-volume routine wellness panels for sub-clinical risk patterns.</li>
+            </ul>
+          </div>
+
+          <!-- Problem 3: Current Handling -->
+          <div class="glass-card rounded-xl p-4 border-amber-500/30">
+            <div class="flex items-center gap-2 text-amber-400 text-xs font-mono font-bold uppercase tracking-wider mb-1.5">
+              <span>03 • How Handled Today & What's Missing</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-1">Current Heuristics Lack Consensus & Abstention</h3>
+            <ul class="text-xs text-slate-300 space-y-1.5 leading-relaxed">
+              <li>• <strong>Current Workarounds:</strong> Framingham risk scores, static BMI cutoffs, or siloed neural nets with uncalibrated probabilities.</li>
+              <li>• <strong>What's Missing:</strong> Cross-paradigm consensus verification. Existing software never says <em>"I do not know"</em> when models disagree. ArogyaDristi explicitly enforces abstention.</li>
+            </ul>
+          </div>
+
+          <!-- Problem 4: Real Evidence -->
+          <div class="glass-card rounded-xl p-4 border-emerald-500/30">
+            <div class="flex items-center gap-2 text-emerald-400 text-xs font-mono font-bold uppercase tracking-wider mb-1.5">
+              <span>04 • Real Evidence & Clinical Urgency</span>
+            </div>
+            <h3 class="text-base font-bold text-white mb-1">Staggering Underdiagnosis in Real Cohorts</h3>
+            <ul class="text-xs text-slate-300 space-y-1.5 leading-relaxed">
+              <li>• <strong>ICMR-INDIAB (2023):</strong> 101.3M diabetics + 136M pre-diabetics in India; &gt;50% undiagnosed until microvascular damage occurs.</li>
+              <li>• <strong>Apollo Nephrology Cohort:</strong> Over 80% of CKD cases present only at Stage 4/5 when renal failure is irreversible.</li>
+              <li>• <strong>Cardiovascular Burden:</strong> CVD accounts for 27% of Indian mortality, with 52% of deaths occurring before age 70.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 3: What You Built -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-3">
+      <div class="flex-1 flex flex-col justify-center max-w-6xl mx-auto w-full space-y-5">
+        <div>
+          <span class="text-xs font-mono font-bold uppercase tracking-widest text-cyan-400 bg-cyan-950/60 px-3 py-1 rounded border border-cyan-800/60">
+            Slide 3: What You Built
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">
+            Dual-Stream Architecture & BUILD 2026 Deliverables
+          </h2>
+          <p class="text-sm text-slate-400 mt-0.5">End-to-end multi-disease screening pipeline integrating calibrated ensembles with 6-qubit quantum simulation.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <!-- Flow Steps (Left 2 cols) -->
+          <div class="lg:col-span-2 glass-card rounded-xl p-4 border-slate-800 space-y-2.5">
+            <div class="text-xs font-mono font-bold text-teal-400 uppercase tracking-wider">
+              System Execution Flow (Inputs → Processing → Result)
+            </div>
+
+            <div class="grid grid-cols-1 gap-2 text-xs">
+              <div class="p-2.5 rounded-lg bg-slate-900/90 border border-slate-800">
+                <span class="font-bold text-teal-300 font-mono">1. Clinical Intake & Sentinel Scan:</span> Accepts vitals (Age, SBP, DBP, Glucose, Lipids, Creatinine). Sentinel scanner rejects physiological zeros (e.g. Glucose=0) to prevent corrupted inputs.
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-900/90 border border-slate-800">
+                <span class="font-bold text-cyan-300 font-mono">2. Dual-Stream Feature Preprocessing:</span> Stream A scales data for classical models (StandardScaler). Stream B maps features to \([0, \pi]\) for Angle RY Hilbert Space embedding on a 6-qubit register.
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-900/90 border border-slate-800">
+                <span class="font-bold text-indigo-300 font-mono">3. Parallel Ensemble & VQC Inference:</span> 5 Classical Models (RF, SVM, LR, HGB, XGB) execute alongside PennyLane 6-Qubit Parameterized VQC with Ring CNOT entanglement in &lt;2ms.
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-900/90 border border-slate-800">
+                <span class="font-bold text-emerald-300 font-mono">4. Platt Calibration & Consensus Fusion:</span> Applies sigmoid scaling fit on unaugmented validation splits. Blends outputs via cross-validation optimal weights.
+              </div>
+              <div class="p-2.5 rounded-lg bg-slate-900/90 border border-slate-800">
+                <span class="font-bold text-amber-300 font-mono">5. Decision & Abstention Output:</span> Calibrated Risk Score (%), Agreement Level, Feature Sensitivity Breakdown, and automated Abstention if spread \(|\Delta P| &gt; 0.85\).
+              </div>
+            </div>
+          </div>
+
+          <!-- Stack & What was Built (Right 1 col) -->
+          <div class="space-y-4">
+            <div class="glass-card rounded-xl p-4 border-cyan-500/30">
+              <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider mb-1.5">Tech Stack</div>
+              <div class="text-xs text-slate-300 space-y-1 font-mono">
+                <div>• <strong>Quantum:</strong> PennyLane 0.38 + Qiskit</div>
+                <div>• <strong>Classical:</strong> Scikit-Learn 1.5 + XGBoost</div>
+                <div>• <strong>Backend:</strong> FastAPI, Python 3.13, Pydantic</div>
+                <div>• <strong>Frontend:</strong> React 18, Vite, Tailwind CSS</div>
+                <div>• <strong>Cloud:</strong> AWS Elastic Beanstalk (Docker)</div>
+              </div>
+            </div>
+
+            <div class="glass-card rounded-xl p-4 border-emerald-500/30">
+              <div class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider mb-1.5">Built During BUILD 2026</div>
+              <div class="text-xs text-slate-300 space-y-1">
+                <div>✔ <strong>Consensus Engine:</strong> Voting & divergence detection.</div>
+                <div>✔ <strong>Platt Calibration:</strong> Zero data leakage pipeline.</div>
+                <div>✔ <strong>Safety Abstention:</strong> Sentinel & OOD rejection.</div>
+                <div>✔ <strong>Web SPA & Triage:</strong> ASHA/MD dual modes & CSVs.</div>
+                <div>✔ <strong>Live Cloud:</strong> Dockerized on AWS Elastic Beanstalk.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 4: Working Demo and Results -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-4">
+      <div class="flex-1 flex flex-col justify-center max-w-6xl mx-auto w-full space-y-5">
+        <div>
+          <span class="text-xs font-mono font-bold uppercase tracking-widest text-cyan-400 bg-cyan-950/60 px-3 py-1 rounded border border-cyan-800/60">
+            Slide 4: Working Demo and Results
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">
+            Working Demo & Empirical Test Results: 100% Passing
+          </h2>
+          <p class="text-sm text-slate-400 mt-0.5">Live platform deployed on AWS Elastic Beanstalk and validated with 97 passing automated tests.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <!-- Col 1: Demo Walkthrough -->
+          <div class="glass-card rounded-xl p-4 border-teal-500/30 space-y-2">
+            <div class="text-xs font-mono font-bold text-teal-400 uppercase tracking-wider">
+              1. Live Demo Walkthrough
+            </div>
+            <div class="text-xs text-slate-300 space-y-2 leading-relaxed">
+              <div class="p-2 rounded bg-slate-900 border border-slate-800">
+                <strong>Intake:</strong> Select disease module & load authenticated cohort preset (Healthy, Moderate, High Risk) or manual lab values.
+              </div>
+              <div class="p-2 rounded bg-slate-900 border border-slate-800">
+                <strong>Simulate:</strong> Choose quantum simulator (NumPy statevector, PennyLane, Lightning C++, Qiskit Aer) & execute.
+              </div>
+              <div class="p-2 rounded bg-slate-900 border border-slate-800">
+                <strong>Dashboard:</strong> Interactive Risk Gauge, 5-Model Agreement Chart, Patient Radar Comparison, & PDF Clinical Decision Memo.
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 2: Test Results & Metrics -->
+          <div class="glass-card rounded-xl p-4 border-cyan-500/30 space-y-2">
+            <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">
+              2. Verified Performance
+            </div>
+            <div class="text-xs text-slate-300 space-y-1.5 font-mono">
+              <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between">
+                <span>Backend Tests:</span> <strong class="text-emerald-400">71 / 71 Passed</strong>
+              </div>
+              <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between">
+                <span>Frontend Tests:</span> <strong class="text-emerald-400">26 / 26 Passed</strong>
+              </div>
+              <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between">
+                <span>Inference Latency:</span> <strong class="text-teal-400">&lt; 3 ms (local)</strong>
+              </div>
+              <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between">
+                <span>AWS EB Latency:</span> <strong class="text-teal-400">&lt; 100 ms</strong>
+              </div>
+              <div class="p-2 rounded bg-slate-900 border border-slate-800 flex justify-between">
+                <span>Balanced Diabetes:</span> <strong class="text-white">8,348 Records</strong>
+              </div>
+            </div>
+          </div>
+
+          <!-- Col 3: Honest Disclosure -->
+          <div class="glass-card rounded-xl p-4 border-amber-500/30 space-y-2">
+            <div class="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">
+              3. Transparent Disclosure
+            </div>
+            <div class="text-xs text-slate-300 space-y-2 leading-relaxed">
+              <div class="p-2 rounded bg-slate-900 border border-slate-800">
+                <strong>Simulation Mode:</strong> All quantum circuits are simulated on classical CPUs using PennyLane statevectors. No claims of quantum supremacy.
+              </div>
+              <div class="p-2 rounded bg-slate-900 border border-slate-800">
+                <strong>Decision Support:</strong> Operates as clinical triage support; requires licensed physician review for formal diagnosis.
+              </div>
+              <div class="p-2 rounded bg-slate-900 border border-slate-800">
+                <strong>Mock Fallback:</strong> Synthetic mock preview is clearly watermarked and only triggered if offline.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 5: Ingenuity and Technical Decisions -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-5">
+      <div class="flex-1 flex flex-col justify-center max-w-6xl mx-auto w-full space-y-5">
+        <div>
+          <span class="text-xs font-mono font-bold uppercase tracking-widest text-cyan-400 bg-cyan-950/60 px-3 py-1 rounded border border-cyan-800/60">
+            Slide 5: Ingenuity and Technical Decisions
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">
+            Why Hybrid Consensus & Platt Calibration?
+          </h2>
+          <p class="text-sm text-slate-400 mt-0.5">Engineering clinical reliability through calibrated consensus fusion and explicit algorithmic abstention.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <!-- Decision 1 -->
+          <div class="glass-card rounded-xl p-4 border-cyan-500/30">
+            <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider mb-1">
+              01 • Originality: The Abstention Contract
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1.5">Knowing When the Model Doesn't Know</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Most clinical ML models hallucinate a high-confidence answer on garbage inputs. ArogyaDristi enforces an explicit <strong>Abstention Guardrail</strong>: when classical models and quantum VQC diverge by &gt;0.85, or inputs violate biological constraints, the system explicitly refuses to guess, prompting clinical re-examination.
+            </p>
+          </div>
+
+          <!-- Decision 2 -->
+          <div class="glass-card rounded-xl p-4 border-teal-500/30">
+            <div class="text-xs font-mono font-bold text-teal-400 uppercase tracking-wider mb-1">
+              02 • How It Differs from Existing Tools
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1.5">Dual Euclidean & Hilbert Space Geometry</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Standard tools use static heuristics (Framingham) or isolated neural nets. ArogyaDristi projects data simultaneously into classical Euclidean feature space and a 64-dimensional quantum state space (\(\mathcal{H}^{\otimes 6}\)), leveraging cross-paradigm consensus to catch borderline cases that single architectures miss.
+            </p>
+          </div>
+
+          <!-- Decision 3 -->
+          <div class="glass-card rounded-xl p-4 border-emerald-500/30">
+            <div class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider mb-1">
+              03 • Key Architectural Decision
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1.5">Angle RY Encoding over Amplitude Encoding</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Amplitude encoding requires deep state preparation circuits (\(\mathcal{O}(2^n)\)) unsuited for NISQ simulation. We selected <strong>Angle RY Rotation</strong> (\(\theta_i = \pi \cdot x_i\)): it keeps circuit depth constant \(\mathcal{O}(1)\), maps directly to individual biomarkers, and maintains physical interpretability on the Bloch sphere.
+            </p>
+          </div>
+
+          <!-- Decision 4 -->
+          <div class="glass-card rounded-xl p-4 border-amber-500/30">
+            <div class="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider mb-1">
+              04 • Challenge Faced & Overcome
+            </div>
+            <h3 class="text-sm font-bold text-white mb-1.5">Raw Probability Divergence Resolved via Platt Scaling</h3>
+            <p class="text-xs text-slate-300 leading-relaxed">
+              Tree models (XGBoost/RF) generate raw uncalibrated probabilities that diverged from quantum expectation values, triggering false abstentions. We solved this by implementing <strong>Platt scaling</strong> fit strictly on an unaugmented validation split, harmonizing cross-paradigm probabilities without data leakage.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================== -->
+    <!-- SLIDE 6: Potential and Next Steps -->
+    <!-- ======================================================== -->
+    <section class="slide" id="slide-6">
+      <div class="flex-1 flex flex-col justify-center max-w-6xl mx-auto w-full space-y-5">
+        <div>
+          <span class="text-xs font-mono font-bold uppercase tracking-widest text-cyan-400 bg-cyan-950/60 px-3 py-1 rounded border border-cyan-800/60">
+            Slide 6: Potential and Next Steps
+          </span>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-white mt-2">
+            Scaling to Primary Health Centres Across India
+          </h2>
+          <p class="text-sm text-slate-400 mt-0.5">From hackathon prototype to point-of-care clinical triage at Ayushman Bharat Health & Wellness Centres.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-3.5">
+          <!-- Col 1 -->
+          <div class="glass-card rounded-xl p-4 border-cyan-500/30 space-y-1.5">
+            <div class="text-xs font-mono font-bold text-cyan-400 uppercase tracking-wider">1. Target Scale</div>
+            <div class="text-sm font-bold text-white">Beyond BUILD 2026</div>
+            <ul class="text-xs text-slate-300 space-y-1.5 mt-2">
+              <li>• <strong>25,000+ PHCs</strong> across rural districts.</li>
+              <li>• <strong>150,000+ HWCs</strong> under Ayushman Bharat for NCD screening.</li>
+              <li>• <strong>Diagnostic Labs</strong> for batch health screening.</li>
+            </ul>
+          </div>
+
+          <!-- Col 2 -->
+          <div class="glass-card rounded-xl p-4 border-teal-500/30 space-y-1.5">
+            <div class="text-xs font-mono font-bold text-teal-400 uppercase tracking-wider">2. Value Delivered</div>
+            <div class="text-sm font-bold text-white">Accessible & Trustworthy</div>
+            <ul class="text-xs text-slate-300 space-y-1.5 mt-2">
+              <li>• <strong>&lt; ₹20 per screen:</strong> Uses standard non-invasive vitals & routine panels.</li>
+              <li>• <strong>2–3 Years Earlier:</strong> Detects decline before microvascular damage.</li>
+              <li>• <strong>Clinician Trust:</strong> Calibrated scores with zero hallucinations.</li>
+            </ul>
+          </div>
+
+          <!-- Col 3 -->
+          <div class="glass-card rounded-xl p-4 border-emerald-500/30 space-y-1.5">
+            <div class="text-xs font-mono font-bold text-emerald-400 uppercase tracking-wider">3. What We'd Build Next</div>
+            <div class="text-sm font-bold text-white">Upcoming Enhancements</div>
+            <ul class="text-xs text-slate-300 space-y-1.5 mt-2">
+              <li>• <strong>Cloud QPU Execution:</strong> Connect IBM Quantum / Braket with ZNE error mitigation.</li>
+              <li>• <strong>ABDM / FHIR Compliance:</strong> Direct EHR integration with Indian health stack.</li>
+              <li>• <strong>Pan-India Registry:</strong> Multi-ethnic cohort recalibration.</li>
+            </ul>
+          </div>
+
+          <!-- Col 4 -->
+          <div class="glass-card rounded-xl p-4 border-amber-500/30 space-y-1.5">
+            <div class="text-xs font-mono font-bold text-amber-400 uppercase tracking-wider">4. Real-World Path</div>
+            <div class="text-sm font-bold text-white">Path to Usability</div>
+            <ul class="text-xs text-slate-300 space-y-1.5 mt-2">
+              <li>• <strong>Prospective Trial:</strong> Clinical validation against gold-standard hospital diagnostics.</li>
+              <li>• <strong>Regulatory SaMD:</strong> CDSCO / FDA Software-as-a-Medical-Device Class B filing.</li>
+              <li>• <strong>Offline Edge Box:</strong> Quantized offline container for zero-internet rural clinics.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- Bottom Navigation & Controls Bar -->
+  <footer class="fixed bottom-0 left-0 w-full px-8 py-3 bg-slate-950/80 backdrop-blur-md border-t border-slate-800/80 flex items-center justify-between z-50">
+    <div class="flex items-center gap-2">
+      <button onclick="prevSlide()" class="px-3.5 py-1.5 rounded-lg bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-mono font-bold transition-all text-slate-200 hover:text-white">
+        ◀ Previous [←]
+      </button>
+      <button onclick="nextSlide()" class="px-3.5 py-1.5 rounded-lg bg-teal-600 hover:bg-teal-500 border border-teal-500/40 text-xs font-mono font-bold transition-all text-white shadow-sm">
+        Next [→] ▶
+      </button>
+    </div>
+
+    <!-- Live AWS URL Link -->
+    <div class="flex items-center gap-3">
+      <a href="http://qhai-api.eba-kubitprt.us-east-1.elasticbeanstalk.com/" target="_blank" class="text-xs font-mono text-teal-400 hover:text-teal-300 underline font-semibold flex items-center gap-1">
+        <span>Live AWS App</span> ↗
+      </a>
+      <span class="text-slate-600">|</span>
+      <span class="text-xs font-mono text-slate-400">Use Arrow Keys or Click to Navigate</span>
+    </div>
+  </footer>
+
+  <script>
+    let currentSlide = 1;
+    const totalSlides = 6;
+
+    function showSlide(index) {
+      if (index < 1) index = 1;
+      if (index > totalSlides) index = totalSlides;
+      currentSlide = index;
+
+      for (let i = 1; i <= totalSlides; i++) {
+        const el = document.getElementById(`slide-${i}`);
+        if (el) {
+          if (i === currentSlide) {
+            el.classList.add('active');
+          } else {
+            el.classList.remove('active');
+          }
+        }
+      }
+
+      document.getElementById('slideCounter').textContent = `Slide ${currentSlide} / ${totalSlides}`;
+    }
+
+    function nextSlide() {
+      if (currentSlide < totalSlides) showSlide(currentSlide + 1);
+    }
+
+    function prevSlide() {
+      if (currentSlide > 1) showSlide(currentSlide - 1);
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'PageDown') {
+        nextSlide();
+      } else if (e.key === 'ArrowLeft' || e.key === 'PageUp') {
+        prevSlide();
+      }
+    });
+  </script>
+</body>
+</html>

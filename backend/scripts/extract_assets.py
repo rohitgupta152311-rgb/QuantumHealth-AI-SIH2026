@@ -2,7 +2,7 @@ import sys
 import os
 import pptx
 
-prs = pptx.Presentation(r'C:\Users\rohit\OneDrive\Attachments\Desktop\SIH_2026_QuantumHealth_AI_NIT_Nagaland.pptx')
+prs = pptx.Presentation(r'C:\Users\rohit\OneDrive\Attachments\Desktop\QuantumHealth AI_QuantumHealth_AI_NIT_Nagaland.pptx')
 os.makedirs('backend/scripts/slide_assets', exist_ok=True)
 pic_count = 0
 for s_idx, slide in enumerate(prs.slides, 1):

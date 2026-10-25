@@ -252,35 +252,62 @@ export const DiseaseAnalysisPage: React.FC<DiseaseAnalysisPageProps> = ({ defaul
   const handleSimulatedPreview = () => {
     const demo = getDemoMockPrediction(selectedDisease);
     localStorage.setItem('qhai_last_prediction', JSON.stringify(demo));
-    navigate('/dashboard');
+    navigate('/dashboard', { state: { result: demo } });
   };
 
   // Execute prediction
   const handlePredict = async () => {
     if (!selectedDisease) return;
     try {
-      // Sanitize formData so only valid feature keys defined in the cohort schema are transmitted
-      let payloadFeatures = formData;
+      // Build guaranteed complete, validated feature map
+      const completeFeatures: Record<string, number> = {};
+      const medians = activeConfig?.medians || {};
+
       if (activeDisease?.features && activeDisease.features.length > 0) {
-        const validKeys = new Set(activeDisease.features.map((f) => f.name));
-        payloadFeatures = Object.fromEntries(
-          Object.entries(formData).filter(([k]) => validKeys.has(k))
-        );
+        activeDisease.features.forEach((f) => {
+          const val = formData[f.name];
+          if (val !== undefined && !isNaN(val)) {
+            completeFeatures[f.name] = Number(val);
+          } else if (medians[f.name] !== undefined) {
+            completeFeatures[f.name] = Number(medians[f.name]);
+          } else {
+            const min = f.min_val ?? f.min ?? 0;
+            const max = f.max_val ?? f.max ?? 100;
+            completeFeatures[f.name] = getDefaultValue(f.name, min, max);
+          }
+        });
+      } else if (activeConfig?.medians) {
+        Object.entries(activeConfig.medians).forEach(([k, v]) => {
+          const val = formData[k];
+          completeFeatures[k] = (val !== undefined && !isNaN(val)) ? Number(val) : Number(v);
+        });
+      } else {
+        Object.assign(completeFeatures, formData);
       }
+
+      // Persist features for dashboard radar comparison
+      try {
+        if (typeof window !== 'undefined' && window.localStorage) {
+          window.localStorage.setItem(`qhai_features_${selectedDisease}`, JSON.stringify(completeFeatures));
+        }
+      } catch (e) {
+        console.warn('Unable to persist features to localStorage:', e);
+      }
+
       const res = await predict({
         disease: selectedDisease,
-        features: payloadFeatures,
+        features: completeFeatures,
         mode,
         quantum_weight: mode === 'hybrid' ? quantumWeight : undefined,
         quantum_backend: quantumBackend,
       });
       if (res) {
-        navigate('/dashboard');
+        navigate('/dashboard', { state: { result: res } });
       }
     } catch (err) {
       console.error('Diagnostic pipeline execution error:', err);
       // Auto-scroll to error notice so user has immediate visibility and action buttons
-      errorRef.current?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      errorRef.current?.scrollIntoView?.({ behavior: 'smooth', block: 'nearest' });
     }
   };
 
@@ -388,7 +415,7 @@ export const DiseaseAnalysisPage: React.FC<DiseaseAnalysisPageProps> = ({ defaul
           <AlertTriangle size={14} className="text-amber-400 shrink-0" />
           Research & Educational Decision-Support Prototype. Not a medical device and not intended for clinical diagnosis.
         </span>
-        <span className="font-mono text-slate-500 hidden md:inline">SIH 2026 Problem Statement #26139</span>
+        <span className="font-mono text-slate-500 hidden md:inline">HackYard 2026</span>
       </div>
 
       {/* Header */}
@@ -427,7 +454,7 @@ export const DiseaseAnalysisPage: React.FC<DiseaseAnalysisPageProps> = ({ defaul
         currentStep={2}
         onStepClick={(step) => {
           if (step === 1) navigate('/');
-          if (step === 3 && result) navigate('/dashboard');
+          if (step === 3 && result) navigate('/dashboard', { state: { result } });
         }}
       />
 
@@ -499,7 +526,7 @@ export const DiseaseAnalysisPage: React.FC<DiseaseAnalysisPageProps> = ({ defaul
           >
             <Users size={15} /> Batch Hospital Triage (CSV)
             <span className="px-1.5 py-0.5 rounded-full text-[10px] font-mono font-bold bg-amber-500/20 text-amber-300 border border-amber-500/30">
-              SIH High-Throughput
+              QuantumHealth AI High-Throughput
             </span>
           </button>
         </div>

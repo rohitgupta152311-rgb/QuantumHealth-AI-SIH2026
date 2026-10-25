@@ -1,5 +1,5 @@
 # QuantumHealth AI — .gitignore
-# SIH 2026 | Problem Statement 26139
+# HackYard 2026 | Healthcare & Quantum ML
 
 # ── Python ───────────────────────────────────────────────────────────────────
 __pycache__/
@@ -117,3 +117,20 @@ QuantumHealth-AI-SIH2026/
 cloudflared.exe
 backend/cloudflared.exe
 
+
+# Nested clones & archives
+QuantumHealth-AI/
+QuantumHealth-AI-SIH2026/
+*.zip
+*.tar.gz
+*.exe
+cloudflared.exe
+backend/cloudflared.exe
+*.db
+*.db-journal
+*.sqlite
+*.sqlite3
+backend/*.db
+backend/*.db-journal
+backend/*.sqlite
+backend/*.sqlite3

@@ -4,24 +4,24 @@
 
 ### Hybrid Quantum-Classical Intelligence for Pre-Symptomatic Chronic Disease Detection
 
-[![SIH 2026](https://img.shields.io/badge/SIH%202026-Problem%2026139-blue?style=for-the-badge)](https://www.sih.gov.in)
+[![QuantumHealth AI](https://img.shields.io/badge/Hackathon-Challenge-blue?style=for-the-badge)](https://quantumhealth-ai.us-east-1.elb.amazonaws.com)
 [![Team](https://img.shields.io/badge/Team-Code%20(404)-navy?style=for-the-badge)](/)
 [![Institute](https://img.shields.io/badge/Institute-NIT%20Nagaland-teal?style=for-the-badge)](https://nitnagaland.ac.in)
 [![Quantum](https://img.shields.io/badge/Quantum-PennyLane%20VQC%20(6--Qubit)-purple?style=for-the-badge)](https://pennylane.ai)
 [![Automated Tests](https://img.shields.io/badge/Tests-70%2F70%20Passing-brightgreen?style=for-the-badge)](/)
 [![License](https://img.shields.io/badge/License-MIT-yellow?style=for-the-badge)](LICENSE)
 
-**⚠️ Research & Clinical Decision-Support Prototype — Developed for Smart India Hackathon 2026**
+**⚠️ Research & Clinical Decision-Support Prototype — Developed for National Health-Tech Hackathon**
 
-[🌐 Live Prototype](https://quantumhealth-ai.onrender.com) · [📑 Interactive API Docs](https://quantumhealth-ai.onrender.com/docs) · [📐 Architecture](docs/architecture.md) · [🔬 Quantum Circuits](docs/quantum-workflow.md)
+[🌐 Live Prototype](https://quantumhealth-ai.us-east-1.elb.amazonaws.com) · [📑 Interactive API Docs](https://quantumhealth-ai.us-east-1.elb.amazonaws.com/docs) · [📐 Architecture](docs/architecture.md) · [🔬 Quantum Circuits](docs/quantum-workflow.md)
 
 </div>
 
 ---
 
-## 🎯 Smart India Hackathon (SIH) 2026 Alignment
+## 🎯 National Health-Tech Hackathon Alignment
 
-* **Problem Statement ID**: **#26139**
+* **Problem Statement ID**: **Hackathon Challenge**
 * **Title**: Hybrid Quantum Machine Learning Platform for Early Disease Detection
 * **Theme**: MedTech / BioTech / HealthTech | **Category**: Software
 * **Team**: **Code (404)** | **Institute**: National Institute of Technology Nagaland
@@ -257,7 +257,7 @@ Transparent comparison showing when classical models outperform quantum:
 
 > **Quantum Simulation Mode**: All quantum computations are performed using PennyLane's `default.qubit` software simulator. No real quantum hardware is used or required.
 
-> **Research Platform**: This is an experimental research and educational platform developed for SIH 2026. It is NOT a medical device and must NOT be used for clinical diagnosis.
+> **Research Platform**: This is an experimental research and educational platform developed for QuantumHealth AI. It is NOT a medical device and must NOT be used for clinical diagnosis.
 
 > **Quantum Advantage**: This platform does not claim guaranteed quantum advantage. Results honestly reflect experimental comparisons between classical and hybrid quantum-classical approaches.
 
@@ -271,7 +271,7 @@ MIT License — See [LICENSE](LICENSE) for details.
 
 <div align="center">
   
-**SIH 2026 | Problem Statement 26139 | Egreen Quanta | MedTech/BioTech/HealthTech**
+**QuantumHealth AI | Hackathon Challenge | Egreen Quanta | MedTech/BioTech/HealthTech**
 
 *"How can Hybrid Quantum-Classical Machine Learning be used for early disease detection when current quantum hardware is still limited?"*
 

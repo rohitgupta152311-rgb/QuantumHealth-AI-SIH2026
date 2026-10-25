@@ -84,7 +84,7 @@ export const Header: React.FC<HeaderProps> = ({ onToggleMobileSidebar, isMobileS
           </Link>
 
           <span className="hidden sm:inline-flex items-center gap-1.5 ml-2 rounded-full bg-slate-900 px-2.5 py-0.5 text-[10px] font-mono text-slate-400 border border-slate-800">
-            SIH 2026 #26139
+            HackYard 2026 ? Team 404
           </span>
         </div>
 

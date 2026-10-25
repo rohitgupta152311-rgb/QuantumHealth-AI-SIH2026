@@ -46,10 +46,10 @@ class ClassicalMLTrainer:
         self.models_cache_dir.mkdir(parents=True, exist_ok=True)
 
         self.models = {
-            "RandomForest": RandomForestModel(n_estimators=300, max_depth=8),
-            "SVM": SVMModel(),
+            "RandomForest": RandomForestModel(n_estimators=500, max_depth=12),
+            "SVM": SVMModel(C=10.0),
             "LogisticRegression": LogisticRegressionModel(),
-            "GradientBoosting": GradientBoostingModel(),
+            "GradientBoosting": GradientBoostingModel(max_iter=400, max_depth=6),
         }
         if XGBOOST_AVAILABLE:
             self.models["XGBoost"] = XGBoostModel()
@@ -164,9 +164,9 @@ class ClassicalMLTrainer:
             q_start = time.time()
             qc = QuantumClassifier(
                 n_qubits=n_qubits,
-                n_layers=2,
-                n_epochs=100,
-                max_training_samples=min(250, len(X_train_q)),
+                n_layers=3,
+                n_epochs=150,
+                max_training_samples=min(400, len(X_train_q)),
                 backend="numpy:statevector",
                 optimizer="cobyla",
                 data_reuploading=True,
@@ -181,7 +181,7 @@ class ClassicalMLTrainer:
             # CRITICAL: Use 50/50 class balance (not prevalence-preserving)
             # to prevent Platt calibrator from collapsing to the base rate
             # on extremely imbalanced datasets like diabetes (1.97% prevalence)
-            max_q_eval = 500
+            max_q_eval = 300
             if X_val_q is not None and y_val is not None and len(X_val_q) >= 10:
                 if len(X_val_q) > max_q_eval:
                     pos_idx = np.where(y_val == 1)[0]
@@ -382,7 +382,7 @@ class ClassicalMLTrainer:
             "preprocessing_artifact_sha256": prep_hash,
             "quantum_configuration": {
                 "n_qubits": n_qubits,
-                "n_layers": 2,
+                "n_layers": self.vqc_model.n_layers if self.vqc_model else 4,
                 "circuit_depth": circuit_depth,
                 "backend": "numpy:statevector (exact simulator)",
                 "pennylane_qnode_available": True,

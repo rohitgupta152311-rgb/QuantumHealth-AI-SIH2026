@@ -16,7 +16,7 @@ export const JudgeDemoMode: React.FC = () => {
       id: 1,
       title: 'Problem Understanding & India Context',
       tag: 'Criterion 1 • 25 Marks',
-      desc: 'Review clinical problem statement #SIH26139, ICMR-INDIAB epidemiological data (101M diabetics), and why pure classical/quantum fails.',
+      desc: 'Review clinical HackYard 2026 problem challenge, ICMR-INDIAB epidemiological data (101M diabetics), and why pure classical/quantum fails.',
       actionLabel: 'View Problem & Context',
       action: () => navigate('/about'),
       icon: Award,
@@ -52,7 +52,7 @@ export const JudgeDemoMode: React.FC = () => {
       id: 5,
       title: 'Technical Feasibility: 50-Test Benchmark & 95% CI',
       tag: 'Criterion 3 • 20 Marks (Part C)',
-      desc: 'Examine held-out evaluation on 211,833 BMJ Open patients, confusion matrix heatmaps, and 1000-sample bootstrap 95% confidence intervals.',
+      desc: 'Examine held-out evaluation on 8,348 clinical patients (50/50 balanced), confusion matrix heatmaps, and 1000-sample bootstrap 95% confidence intervals.',
       actionLabel: 'View Benchmark Matrix',
       action: () => navigate('/comparison'),
       icon: BarChart3,
@@ -107,7 +107,7 @@ export const JudgeDemoMode: React.FC = () => {
                   <Award size={18} />
                 </div>
                 <div>
-                  <h3 className="text-sm font-bold text-slate-100">SIH 2026 Evaluation Tour</h3>
+                  <h3 className="text-sm font-bold text-slate-100">HackYard 2026 Evaluation Tour</h3>
                   <p className="text-[10px] text-slate-400 font-mono">100-Mark Rubric Walkthrough</p>
                 </div>
               </div>
@@ -170,7 +170,7 @@ export const JudgeDemoMode: React.FC = () => {
             </div>
 
             <div className="pt-2 border-t border-slate-800 text-[10px] text-slate-400 flex items-center justify-between">
-              <span>Problem #SIH26139</span>
+              <span>HackYard 2026 Track</span>
               <span className="text-teal-400 font-mono font-bold">Test results require a dated report</span>
             </div>
           </motion.div>

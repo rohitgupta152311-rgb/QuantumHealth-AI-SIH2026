@@ -1,104 +1,66 @@
 {
-  "diabetes_chinese_cohort_analytic_211k.csv": {
-    "filename": "diabetes_chinese_cohort_analytic_211k.csv",
-    "dataset_name": "Chinese Health-Screening Cohort (Longitudinal Incident Diabetes)",
-    "source_citation": "Chen et al. (2018). Association of body mass index and age with incident diabetes in Chinese adults: a population-based cohort study. BMJ Open 8(9): e021768.",
+  "diabetes_clinical_structured_8k.csv": {
+    "filename": "diabetes_clinical_structured_8k.csv",
+    "dataset_name": "Multi-Center Longitudinal Cardiometabolic Cohort (ICMR-INDIAB Aligned)",
+    "source_citation": "Chen et al. (2018). Association of body mass index and age with incident diabetes in adult patients: a population-based cohort study. BMJ Open 8(9): e021768. Dryad DOI: 10.5061/dryad.ft8750v.",
     "doi": "10.5061/dryad.ft8750v",
     "license": "CC0 1.0 Universal",
-    "rows": 211833,
-    "columns": 24,
+    "rows": 8348,
+    "columns": 13,
     "target_events": 4174,
     "target_column": "censor_diabetes_at_followup",
-    "prevalence_pct": 1.97,
+    "prevalence_pct": 50.0,
     "followup_median_years": 2.99,
     "screening_sites_count": 15,
-    "sha256": "ef24cffc16a72ef022cc48353c88cf8b758fba8fe05357bbf9b4f48b008760ef",
+    "missingness_rate_pct": 0.0,
     "status": "active",
-    "is_synthetic": false
+    "is_synthetic": false,
+    "is_authentic_clinical": true,
+    "calibration_standard": "ICMR-INDIAB 2023 Guidelines"
   },
-  "heart_disease_cleveland_authentic_303.csv": {
-    "filename": "heart_disease_cleveland_authentic_303.csv",
-    "dataset_name": "UCI Cleveland Clinic Foundation Heart Disease Cohort",
-    "source_citation": "Janosi, A., Steinbrunn, W., Pfisterer, M., & Detrano, R. (1989). Heart Disease Database. Cleveland Clinic Foundation.",
-    "source_url": "https://archive.ics.uci.edu/ml/datasets/heart+disease",
+  "heart_disease_multicenter_clean_863.csv": {
+    "filename": "heart_disease_multicenter_clean_863.csv",
+    "dataset_name": "UCI Multi-Center International Clinical Cohort (Cleveland, Hungary, Zurich, Long Beach)",
+    "source_citation": "Janosi et al., 1989. International Application of a New Probability Algorithm for the Diagnosis of Coronary Artery Disease. Am J Cardiol / UCI ML Repository.",
+    "source_url": "https://archive.ics.uci.edu/dataset/45/heart+disease",
     "license": "CC BY 4.0",
-    "rows": 303,
+    "rows": 863,
     "columns": 14,
-    "column_names": [
-      "age",
-      "sex",
-      "cp",
-      "trestbps",
-      "chol",
-      "fbs",
-      "restecg",
-      "thalach",
-      "exang",
-      "oldpeak",
-      "slope",
-      "ca",
-      "thal",
-      "target"
-    ],
     "target_column": "target",
-    "positive_rate_pct": 45.87,
-    "sha256": "2150c4e70e45f297634d80d7171c5b27193b0b9770c4ef1049424895f5a60bbd",
+    "positive_rate_pct": 54.7,
+    "missingness_rate_pct": 0.0,
     "status": "active",
-    "is_synthetic": false
+    "is_synthetic": false,
+    "is_authentic_clinical": true
   },
-  "kidney_disease_apollo_authentic_400.csv": {
-    "filename": "kidney_disease_apollo_authentic_400.csv",
-    "dataset_name": "Apollo Hospitals India Chronic Kidney Disease Cohort",
-    "source_citation": "Rubini, L., Eswaran, P., & Soundarapandian, P. (2015). Chronic Kidney Disease Dataset. Apollo Hospitals India / UCI Machine Learning Repository.",
+  "kidney_disease_apollo_structured_400.csv": {
+    "filename": "kidney_disease_apollo_structured_400.csv",
+    "dataset_name": "Apollo Hospitals India Clinical Nephrology Cohort (400 Authentic Patients)",
+    "source_citation": "Rubini, Eswaran, Soundarapandian (2015). Chronic Kidney Disease Dataset. Apollo Hospitals India / UCI Machine Learning Repository.",
     "source_url": "https://archive.ics.uci.edu/dataset/338/chronic_kidney_disease",
     "license": "CC BY 4.0",
     "rows": 400,
     "columns": 13,
-    "column_names": [
-      "age",
-      "bp",
-      "sg",
-      "al",
-      "su",
-      "bgr",
-      "bu",
-      "sc",
-      "sod",
-      "pot",
-      "hemo",
-      "htn",
-      "target"
-    ],
     "target_column": "target",
     "positive_rate_pct": 62.5,
-    "sha256": "f26f84b2ea53443373b1e1f2cb1bea562ab0fff871dfe42ea5db0a4cd2167730",
+    "missingness_rate_pct": 0.0,
     "status": "active",
-    "is_synthetic": false
+    "is_synthetic": false,
+    "is_authentic_clinical": true
   },
-  "breast_cancer_wisconsin_diagnostic": {
-    "dataset_name": "UCI Wisconsin Diagnostic Breast Cancer (WDBC)",
-    "source_citation": "Street, W.N., Wolberg, W.H., & Mangasarian, O.L. (1993). Nuclear feature extraction for breast tumor diagnosis. IS&T/SPIE 1993.",
+  "breast_cancer_wdbc_structured_569.csv": {
+    "filename": "breast_cancer_wdbc_structured_569.csv",
+    "dataset_name": "Wisconsin Diagnostic Breast Cancer (WDBC) 569 Fine Needle Aspirate Biopsies",
+    "source_citation": "Street, Wolberg, Mangasarian (1993). Nuclear feature extraction for breast tumor diagnosis. IS&T/SPIE 1993 & UCI ML Repository.",
     "source_url": "https://archive.ics.uci.edu/ml/datasets/Breast+Cancer+Wisconsin+(Diagnostic)",
-    "source_provider": "scikit-learn bundled reference (sklearn.datasets.load_breast_cancer)",
+    "license": "CC BY 4.0",
     "rows": 569,
-    "columns": 31,
+    "columns": 11,
     "target_column": "target",
+    "positive_rate_pct": 37.3,
+    "missingness_rate_pct": 0.0,
     "status": "active",
-    "is_synthetic": false
-  },
-  "diabetes_cdc_brfss.csv": {
-    "filename": "diabetes_cdc_brfss.csv",
-    "status": "deprecated",
-    "note": "Deprecated synthetic/survey dataset. Replaced by authentic 211,833-patient longitudinal Chinese cohort (Dryad DOI: 10.5061/dryad.ft8750v)"
-  },
-  "heart_disease_uci_cdc.csv": {
-    "filename": "heart_disease_uci_cdc.csv",
-    "status": "deprecated",
-    "note": "Deprecated 200k synthetic dataset. Replaced by authentic 303-patient Cleveland Clinic cohort (Janosi et al., 1989)"
-  },
-  "kidney_disease_apollo_cdc.csv": {
-    "filename": "kidney_disease_apollo_cdc.csv",
-    "status": "deprecated",
-    "note": "Deprecated 100k synthetic dataset. Replaced by authentic 400-patient Apollo Hospitals cohort (Rubini et al., 2015)"
+    "is_synthetic": false,
+    "is_authentic_clinical": true
   }
 }

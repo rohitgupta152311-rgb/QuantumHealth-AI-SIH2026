@@ -1,5 +1,5 @@
 import React,{ useEffect,useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
 import { Badge } from '../components/ui/Badge';
 import { Button } from '../components/ui/Button';
@@ -23,6 +23,7 @@ import { predict } from '../services/api';
 
 export const HybridAIDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [data, setData] = useState<PredictionResponse | null>(null);
   const [isReportOpen, setIsReportOpen] = useState(false);
   const [evidenceBiomarker, setEvidenceBiomarker] = useState<string | null>(null);
@@ -30,6 +31,11 @@ export const HybridAIDashboard: React.FC = () => {
   const [demoError, setDemoError] = useState<string | null>(null);
 
   useEffect(() => {
+    const locResult = (location.state as any)?.result;
+    if (locResult && (locResult.status === 'completed' || locResult.status === 'abstained')) {
+      setData(locResult);
+      return;
+    }
     const saved = localStorage.getItem('qhai_last_prediction');
     if (saved) {
       try {
@@ -42,7 +48,7 @@ export const HybridAIDashboard: React.FC = () => {
         localStorage.removeItem('qhai_last_prediction');
       }
     }
-  }, []);
+  }, [location.state]);
 
   const handleLoadDemo = async () => {
     setIsLoadingDemo(true);
@@ -504,7 +510,7 @@ export const HybridAIDashboard: React.FC = () => {
 
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             {classicalDrivers.map((driver, idx) => {
-              const isIncrease = driver.effect_on_model_score.includes('increase');
+              const isIncrease = driver.effect_on_model_score ? driver.effect_on_model_score.includes('increase') : true;
               return (
                 <div key={idx} className="p-4 rounded-xl bg-slate-950/80 border border-slate-800 space-y-1.5">
                   <div className="flex items-center justify-between">
@@ -701,7 +707,7 @@ export const HybridAIDashboard: React.FC = () => {
         </p>
       </div>
 
-      {/* Visible SIH Clinical Disclaimer Banner */}
+      {/* Visible QuantumHealth AI Clinical Disclaimer Banner */}
       <div className="p-4 rounded-2xl bg-amber-500/[0.06] border border-amber-500/20 text-amber-300 text-xs flex items-start gap-3">
         <AlertTriangle size={18} className="text-amber-400 shrink-0 mt-0.5" />
         <div className="leading-relaxed">

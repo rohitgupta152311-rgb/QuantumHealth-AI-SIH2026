@@ -13,7 +13,7 @@ export const usePrediction = () => {
     try {
       const data = await predictApi(request);
       setResult(data);
-      localStorage.setItem('qhai_last_prediction', JSON.stringify(data));
+      try { if (typeof window !== 'undefined' && window.localStorage) { window.localStorage.setItem('qhai_last_prediction', JSON.stringify(data)); } } catch (e) { console.warn('localStorage unavailable:', e); }
       return data;
     } catch (err: any) {
       const msg = err.response?.data?.detail || err.message || 'Prediction failed';

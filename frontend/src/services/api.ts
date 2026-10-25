@@ -204,7 +204,7 @@ export const predict = async (request: PredictionRequest): Promise<PredictionRes
           : 'low'
     ) as 'high' | 'medium' | 'low',
     clinical_review_advised: data.consensus.disagreement_detected || data.consensus.agreement === 'disagreement',
-    classical_votes: typeof data.consensus.classical_votes === 'object'
+    classical_votes: (data.consensus.classical_votes && typeof data.consensus.classical_votes === 'object')
       ? Object.values(data.consensus.classical_votes).filter((value: any) => value === 'high_risk' || value === 1).length
       : Number(data.consensus.classical_votes || 0),
     quantum_votes: data.quantum_result?.prediction === 'high_risk' || data.quantum_result?.prediction === 1 ? 1 : 0,

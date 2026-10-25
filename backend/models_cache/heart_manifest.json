@@ -1,21 +1,21 @@
 {
   "disease_id": "heart",
-  "created_at": "2026-10-03T05:04:36.802389+00:00",
+  "created_at": "2026-10-25T02:46:56.213138+00:00",
   "split_protocol": "Stratified 60/20/20 split (seed=42)",
   "split_sizes": {
-    "train_samples": 181,
-    "validation_samples": 61,
-    "test_samples": 61
+    "train_samples": 517,
+    "validation_samples": 173,
+    "test_samples": 173
   },
   "split_hashes": {
-    "train_sha256": "4958c34c1f6d33b67894440fd702ded03fb2622363c6510c44fcef6c9374ebe4",
-    "val_sha256": "a8f099abe8eb11d9d06b8cae9400ec64b9a5c8da5ac03ab8f441c3cfa31e770f",
-    "test_sha256": "a8181d8d41b48b5b0d07880038ee58d84bafd59a6ed3d1656ee5d2e15c269dbc"
+    "train_sha256": "62532b4f5e3ca678b160936500ef378be1f43d16c4facdcbd95a59f67fca538e",
+    "val_sha256": "814d53667985d4322fa84adcbed6f77702f4b45ceccd62162911f900ad43910d",
+    "test_sha256": "43d4c1d42eda1f15f7432ccbcea583860e74913edb9c23c73011864c6a3e32cd"
   },
-  "preprocessing_artifact_sha256": "e58962be04f4d2affa10ac2dfbd3c70c2ac35e6532a8f6fd684e6cc0efd9641d",
+  "preprocessing_artifact_sha256": "465f7d695d95c95546f79a284fcc0fdb70a72e06628db3d9c630d35665940fd3",
   "quantum_configuration": {
     "n_qubits": 6,
-    "n_layers": 2,
+    "n_layers": 3,
     "circuit_depth": 17,
     "backend": "numpy:statevector (exact simulator)",
     "pennylane_qnode_available": true,
@@ -24,7 +24,7 @@
     "calibration_transform": "born_probability"
   },
   "hybrid_ensemble_configuration": {
-    "tuned_alpha": 0.4,
+    "tuned_alpha": 0.05,
     "alpha_selection_protocol": "3-fold inner cross-validation on training split",
     "calibration_method": "Platt Scaling on unaugmented validation split",
     "abstention_disagreement_threshold": 0.65
@@ -53,16 +53,16 @@
     "disease_id": "heart",
     "display_name": "Cardiovascular Disease Risk",
     "is_synthetic_demonstration": false,
-    "source_citation": "Janosi et al., 1989. UCI Heart Disease (Cleveland Clinic Foundation).",
+    "source_citation": "Janosi et al., 1989. International Application of a New Probability Algorithm for the Diagnosis of Coronary Artery Disease. Am J Cardiol / UCI ML Repository (863 Authentic Clinical Patients).",
     "source_url": "https://archive.ics.uci.edu/ml/datasets/heart+disease",
     "dataset_license": "CC BY 4.0",
-    "source_rows": 303,
-    "training_rows_unaugmented": 181,
-    "validation_rows_unaugmented": 61,
-    "test_rows_unaugmented": 61,
-    "augmentation_method": "SMOTE applied solely to training folds for class balancing",
-    "augmentation_applied_to": "training folds only",
-    "class_balance_source": "54.5% negative / 45.5% positive",
+    "source_rows": 863,
+    "training_rows_unaugmented": 518,
+    "validation_rows_unaugmented": 172,
+    "test_rows_unaugmented": 173,
+    "augmentation_method": "None (authentic unaugmented clinical cohort)",
+    "augmentation_applied_to": "none",
+    "class_balance_source": "54.7% positive / 45.3% negative (863 Authentic Multi-Center Patients)",
     "evaluation_protocol": "Stratified 60/20/20 split (seed=42). Preprocessing fit strictly on training split. SMOTE used only on training folds. Platt probability calibration fit on unaugmented validation split. Final reported metrics computed once on locked, unaugmented test split.",
     "split_seed": 42,
     "features": [
@@ -267,228 +267,228 @@
     },
     "id": "heart",
     "name": "Cardiovascular Disease Risk",
-    "description": "Cardiovascular angiographic disease risk prediction based on the UCI Cleveland Clinic Foundation cohort (303 clinical records). Evaluates resting hemodynamics, fluoroscopy, exercise-induced angina, and ST-segment depression.",
-    "dataset_size": 303,
+    "description": "Cardiovascular angiographic disease risk prediction based on the UCI Multi-Center International Clinical Study (863 authentic clinical records across Cleveland, Hungary, Zurich, and Long Beach). Evaluates resting hemodynamics, fluoroscopy, exercise-induced angina, and ST-segment depression.",
+    "dataset_size": 863,
     "status": "ready"
   },
   "test_metrics_summary": [
     {
       "model": "RandomForest",
       "type": "classical",
-      "accuracy": 0.9016,
-      "roc_auc": 0.947,
-      "pr_auc": 0.9065,
-      "brier_score": 0.0889,
-      "sensitivity": 0.9643,
-      "specificity": 0.8485,
-      "f1_score": 0.9,
+      "accuracy": 0.8324,
+      "roc_auc": 0.9134,
+      "pr_auc": 0.9151,
+      "brier_score": 0.119,
+      "sensitivity": 0.9053,
+      "specificity": 0.7436,
+      "f1_score": 0.8557,
       "is_calibrated": true,
       "confidence_intervals": {
-        "valid_bootstrap_samples": 200,
+        "valid_bootstrap_samples": 1000,
         "f1_95_ci": [
-          0.8,
-          0.9688
+          0.798,
+          0.9055
         ],
         "roc_auc_95_ci": [
-          0.8806,
-          0.9902
+          0.8651,
+          0.9535
         ],
         "brier_95_ci": [
-          0.0477,
-          0.1281
+          0.0902,
+          0.1505
         ],
         "accuracy_95_ci": [
-          0.8197,
-          0.9672
+          0.7746,
+          0.8844
         ]
       }
     },
     {
       "model": "SVM",
       "type": "classical",
-      "accuracy": 0.8361,
-      "roc_auc": 0.9264,
-      "pr_auc": 0.8772,
-      "brier_score": 0.1129,
-      "sensitivity": 0.9286,
-      "specificity": 0.7576,
-      "f1_score": 0.8387,
+      "accuracy": 0.7919,
+      "roc_auc": 0.8714,
+      "pr_auc": 0.8725,
+      "brier_score": 0.1436,
+      "sensitivity": 0.8632,
+      "specificity": 0.7051,
+      "f1_score": 0.82,
       "is_calibrated": true,
       "confidence_intervals": {
-        "valid_bootstrap_samples": 200,
+        "valid_bootstrap_samples": 1000,
         "f1_95_ci": [
-          0.7169,
-          0.9296
+          0.7553,
+          0.87
         ],
         "roc_auc_95_ci": [
-          0.8547,
-          0.9798
+          0.8103,
+          0.9188
         ],
         "brier_95_ci": [
-          0.0695,
-          0.1571
+          0.1116,
+          0.179
         ],
         "accuracy_95_ci": [
-          0.7377,
-          0.918
+          0.7283,
+          0.8439
         ]
       }
     },
     {
       "model": "LogisticRegression",
       "type": "classical",
-      "accuracy": 0.8852,
-      "roc_auc": 0.9502,
-      "pr_auc": 0.9238,
-      "brier_score": 0.0898,
-      "sensitivity": 0.9286,
-      "specificity": 0.8485,
-      "f1_score": 0.8814,
+      "accuracy": 0.8035,
+      "roc_auc": 0.874,
+      "pr_auc": 0.8941,
+      "brier_score": 0.1432,
+      "sensitivity": 0.8526,
+      "specificity": 0.7436,
+      "f1_score": 0.8265,
       "is_calibrated": true,
       "confidence_intervals": {
-        "valid_bootstrap_samples": 200,
+        "valid_bootstrap_samples": 1000,
         "f1_95_ci": [
-          0.7867,
-          0.9509
+          0.7653,
+          0.8808
         ],
         "roc_auc_95_ci": [
-          0.8903,
-          0.9923
+          0.82,
+          0.9211
         ],
         "brier_95_ci": [
-          0.0544,
-          0.1285
+          0.1118,
+          0.1765
         ],
         "accuracy_95_ci": [
-          0.8033,
-          0.9508
+          0.7457,
+          0.8613
         ]
       }
     },
     {
       "model": "GradientBoosting",
       "type": "classical",
-      "accuracy": 0.8689,
-      "roc_auc": 0.9459,
-      "pr_auc": 0.9368,
-      "brier_score": 0.0972,
-      "sensitivity": 0.9643,
-      "specificity": 0.7879,
-      "f1_score": 0.871,
+      "accuracy": 0.8208,
+      "roc_auc": 0.8935,
+      "pr_auc": 0.8863,
+      "brier_score": 0.1309,
+      "sensitivity": 0.9053,
+      "specificity": 0.7179,
+      "f1_score": 0.8473,
       "is_calibrated": true,
       "confidence_intervals": {
-        "valid_bootstrap_samples": 200,
+        "valid_bootstrap_samples": 1000,
         "f1_95_ci": [
-          0.7689,
-          0.9539
+          0.7923,
+          0.8969
         ],
         "roc_auc_95_ci": [
-          0.8891,
-          0.9903
+          0.8383,
+          0.9401
         ],
         "brier_95_ci": [
-          0.0531,
-          0.135
+          0.1016,
+          0.1611
         ],
         "accuracy_95_ci": [
-          0.7869,
-          0.9508
+          0.763,
+          0.8786
         ]
       }
     },
     {
       "model": "XGBoost",
       "type": "classical",
-      "accuracy": 0.8689,
-      "roc_auc": 0.9545,
-      "pr_auc": 0.9335,
-      "brier_score": 0.0892,
-      "sensitivity": 0.9286,
-      "specificity": 0.8182,
-      "f1_score": 0.8667,
+      "accuracy": 0.8439,
+      "roc_auc": 0.8978,
+      "pr_auc": 0.907,
+      "brier_score": 0.1266,
+      "sensitivity": 0.9053,
+      "specificity": 0.7692,
+      "f1_score": 0.8643,
       "is_calibrated": true,
       "confidence_intervals": {
-        "valid_bootstrap_samples": 200,
+        "valid_bootstrap_samples": 1000,
         "f1_95_ci": [
-          0.7777,
-          0.9524
+          0.8103,
+          0.9107
         ],
         "roc_auc_95_ci": [
-          0.8923,
-          0.9935
+          0.8453,
+          0.9413
         ],
         "brier_95_ci": [
-          0.0444,
-          0.1308
+          0.0953,
+          0.1605
         ],
         "accuracy_95_ci": [
-          0.7869,
-          0.9508
+          0.7861,
+          0.896
         ]
       }
     },
     {
       "model": "QuantumVQC",
       "type": "quantum",
-      "accuracy": 0.6066,
-      "roc_auc": 0.8052,
-      "pr_auc": 0.6784,
-      "brier_score": 0.2275,
-      "sensitivity": 0.2857,
-      "specificity": 0.8788,
-      "f1_score": 0.4,
+      "accuracy": 0.7803,
+      "roc_auc": 0.8305,
+      "pr_auc": 0.8292,
+      "brier_score": 0.1856,
+      "sensitivity": 0.9368,
+      "specificity": 0.5897,
+      "f1_score": 0.8241,
       "is_calibrated": true,
       "confidence_intervals": {
-        "valid_bootstrap_samples": 200,
+        "valid_bootstrap_samples": 1000,
         "f1_95_ci": [
-          0.2141,
-          0.5604
+          0.7624,
+          0.8761
         ],
         "roc_auc_95_ci": [
-          0.6852,
-          0.9065
+          0.766,
+          0.8906
         ],
         "brier_95_ci": [
-          0.2145,
-          0.2392
+          0.1685,
+          0.2022
         ],
         "accuracy_95_ci": [
-          0.4918,
-          0.7049
+          0.7168,
+          0.8382
         ]
       }
     },
     {
       "model": "HybridEnsemble",
       "type": "hybrid",
-      "accuracy": 0.9016,
-      "roc_auc": 0.9481,
-      "pr_auc": 0.8739,
-      "brier_score": 0.1189,
-      "sensitivity": 0.9643,
-      "specificity": 0.8485,
-      "f1_score": 0.9,
+      "accuracy": 0.8324,
+      "roc_auc": 0.9046,
+      "pr_auc": 0.9018,
+      "brier_score": 0.1241,
+      "sensitivity": 0.9053,
+      "specificity": 0.7436,
+      "f1_score": 0.8557,
       "is_calibrated": false,
       "confidence_intervals": {
-        "valid_bootstrap_samples": 200,
+        "valid_bootstrap_samples": 1000,
         "f1_95_ci": [
-          0.8,
-          0.9688
+          0.7979,
+          0.9064
         ],
         "roc_auc_95_ci": [
-          0.8814,
-          0.9936
+          0.8524,
+          0.947
         ],
         "brier_95_ci": [
-          0.094,
-          0.1445
+          0.0975,
+          0.1536
         ],
         "accuracy_95_ci": [
-          0.8197,
-          0.9672
+          0.7746,
+          0.8902
         ]
       }
     }
   ],
-  "manifest_sha256": "a7fe492b5869b07ff4da346b71808c030d97ad636539ac8fc91739d9603425b8"
+  "manifest_sha256": "d589f76bbac1bbd83c3310155c603d525175fbf27368ea1f935d770a9feaa87f"
 }

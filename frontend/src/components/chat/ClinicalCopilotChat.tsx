@@ -27,7 +27,7 @@ export const ClinicalCopilotChat: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessageItem[]>([
     {
       role: 'model',
-      text: "### 👋 Hello! I'm Dr. Quanta\nYour **Clinical Decision Support Copilot & SIH Technical Advisor**.\n\nFeel free to ask me anything about patient risk scores, ICMR-INDIAB & ADA clinical guidelines, or how our 6-qubit Variational Quantum Circuit operates.",
+      text: "### 👋 Hello! I'm Dr. Quanta\nYour **Clinical Decision Support Copilot & QuantumHealth AI Technical Advisor**.\n\nFeel free to ask me anything about patient risk scores, ICMR-INDIAB & ADA clinical guidelines, or how our 6-qubit Variational Quantum Circuit operates.",
       timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
       source: 'built-in-clinical-intelligence'
     }
