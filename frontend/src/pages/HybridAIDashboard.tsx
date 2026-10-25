@@ -1,3 +1,4 @@
+import { safeStorage } from '../utils/safeStorage';
 import React,{ useEffect,useState } from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
@@ -19,7 +20,7 @@ import { ClinicalEvidenceModal } from '../components/evidence/ClinicalEvidenceMo
 import { ProbabilityBreakdown } from '../components/charts/ProbabilityBreakdown';
 import { StepIndicator } from '../components/ui/StepIndicator';
 import { getDiseaseConfig } from '../features/disease/diseaseConfig';
-import { predict } from '../services/api';
+import { predict, getDemoMockPrediction } from '../services/api';
 
 export const HybridAIDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -36,7 +37,7 @@ export const HybridAIDashboard: React.FC = () => {
       setData(locResult);
       return;
     }
-    const saved = localStorage.getItem('qhai_last_prediction');
+    const saved = safeStorage.getItem('qhai_last_prediction');
     if (saved) {
       try {
         const parsed = JSON.parse(saved);
@@ -45,9 +46,13 @@ export const HybridAIDashboard: React.FC = () => {
           return;
         }
       } catch {
-        localStorage.removeItem('qhai_last_prediction');
+        safeStorage.removeItem('qhai_last_prediction');
       }
     }
+    // Auto-populate default verified case so dashboard is never empty on first visit
+    const defaultCase = getDemoMockPrediction('heart');
+    setData(defaultCase);
+    handleLoadDemo();
   }, [location.state]);
 
   const handleLoadDemo = async () => {
@@ -75,7 +80,7 @@ export const HybridAIDashboard: React.FC = () => {
       });
       if (demoResult) {
         setData(demoResult);
-        localStorage.setItem('qhai_last_prediction', JSON.stringify(demoResult));
+        safeStorage.setItem('qhai_last_prediction', JSON.stringify(demoResult));
       }
     } catch (err: any) {
       setDemoError(
@@ -167,7 +172,7 @@ export const HybridAIDashboard: React.FC = () => {
               size="sm"
               variant="secondary"
               onClick={() => {
-                localStorage.removeItem('qhai_last_prediction');
+                safeStorage.removeItem('qhai_last_prediction');
                 navigate('/analyze');
               }}
               leftIcon={<RefreshCw size={16} />}
@@ -249,7 +254,7 @@ export const HybridAIDashboard: React.FC = () => {
   const radarFeatures = React.useMemo(() => {
     if (!diseaseConfig) return [];
     let inputFeatures: Record<string, number> = {};
-    const storedFeaturesStr = localStorage.getItem(`qhai_features_${data.disease}`);
+    const storedFeaturesStr = safeStorage.getItem(`qhai_features_${data.disease}`);
     if (storedFeaturesStr) {
       try {
         inputFeatures = JSON.parse(storedFeaturesStr);

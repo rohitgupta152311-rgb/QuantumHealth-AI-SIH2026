@@ -1,3 +1,4 @@
+import { safeStorage } from '../utils/safeStorage';
 import { useState, useCallback } from 'react';
 import { predict as predictApi } from '../services/api';
 import type { PredictionRequest, PredictionResponse } from '../types';
@@ -13,7 +14,7 @@ export const usePrediction = () => {
     try {
       const data = await predictApi(request);
       setResult(data);
-      try { if (typeof window !== 'undefined' && window.localStorage) { window.localStorage.setItem('qhai_last_prediction', JSON.stringify(data)); } } catch (e) { console.warn('localStorage unavailable:', e); }
+      safeStorage.setItem('qhai_last_prediction', JSON.stringify(data));
       return data;
     } catch (err: any) {
       const msg = err.response?.data?.detail || err.message || 'Prediction failed';

@@ -203,8 +203,8 @@ def call_anthropic_direct(full_prompt: str, key: str) -> Optional[str]:
     return None
 
 
-def call_bedrock_claude(full_prompt: str, model_id: str = "anthropic.claude-opus-5-5", region: str = "us-east-1", api_key: Optional[str] = None) -> Optional[str]:
-    """Invoke Claude model on Amazon Bedrock using Bearer API Key authentication with multi-model fallback."""
+def call_bedrock_claude(full_prompt: str, model_id: str = "anthropic.claude-3-5-sonnet-20241022-v2:0", region: str = "us-east-1", api_key: Optional[str] = None) -> Optional[str]:
+    """Invoke Claude model on Amazon Bedrock using Bearer API Key authentication with fast failover."""
     import urllib.request
     import ssl
     import json
@@ -213,26 +213,7 @@ def call_bedrock_claude(full_prompt: str, model_id: str = "anthropic.claude-opus
     if not key:
         return None
 
-    # Priority regions: us-east-1 has the active Anthropic model catalogue
-    regions_to_try = ["us-east-1", region, "us-west-2", "ap-south-1"]
-    seen_regions = []
-    for r in regions_to_try:
-        if r not in seen_regions:
-            seen_regions.append(r)
-
-    candidate_models = [
-        model_id,
-        "anthropic.claude-opus-5-5",
-        "anthropic.claude-sonnet-4-5-20250929-v1:0",
-        "anthropic.claude-sonnet-4-20250514-v1:0",
-        "anthropic.claude-haiku-4-5-20251001-v1:0",
-        "us.anthropic.claude-3-5-sonnet-20241022-v2:0",
-    ]
-    seen_models = []
-    for m in candidate_models:
-        if m not in seen_models:
-            seen_models.append(m)
-
+    # Fast check: only try primary model in primary region with short timeout
     body = {
         "messages": [
             {
@@ -241,37 +222,32 @@ def call_bedrock_claude(full_prompt: str, model_id: str = "anthropic.claude-opus
             }
         ],
         "inferenceConfig": {
-            "maxTokens": 1200,
+            "maxTokens": 800,
             "temperature": 0.7
         }
     }
 
     ctx = ssl.create_default_context()
-
-    for r in seen_regions:
-        for m in seen_models:
-            url = f"https://bedrock-runtime.{r}.amazonaws.com/model/{m}/converse"
-            req = urllib.request.Request(
-                url,
-                data=json.dumps(body).encode("utf-8"),
-                headers={
-                    "Authorization": f"Bearer {key}",
-                    "Content-Type": "application/json"
-                }
-            )
-            try:
-                with urllib.request.urlopen(req, context=ctx, timeout=15) as resp:
-                    data = json.loads(resp.read().decode("utf-8"))
-                    output_msg = data.get("output", {}).get("message", {})
-                    contents = output_msg.get("content", [])
-                    for block in contents:
-                        if "text" in block and block["text"]:
-                            return block["text"].strip()
-            except urllib.error.HTTPError as e:
-                err_msg = e.read().decode("utf-8", errors="replace")
-                logger.info("Bedrock %s [%s] notice: %s", r, m, err_msg[:100])
-            except Exception as e:
-                logger.info("Bedrock %s [%s] request error: %s", r, m, str(e)[:100])
+    url = f"https://bedrock-runtime.{region}.amazonaws.com/model/{model_id}/converse"
+    req = urllib.request.Request(
+        url,
+        data=json.dumps(body).encode("utf-8"),
+        headers={
+            "Authorization": f"Bearer {key}",
+            "Content-Type": "application/json"
+        }
+    )
+    try:
+        with urllib.request.urlopen(req, context=ctx, timeout=3) as resp:
+            data = json.loads(resp.read().decode("utf-8"))
+            output_msg = data.get("output", {}).get("message", {})
+            contents = output_msg.get("content", [])
+            for block in contents:
+                if "text" in block and block["text"]:
+                    return block["text"].strip()
+    except Exception as e:
+        logger.info(f"Bedrock primary request notice: {e}. Falling back to internal engine.")
+        return None
 
     return None
 

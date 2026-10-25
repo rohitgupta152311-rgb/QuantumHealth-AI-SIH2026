@@ -1,3 +1,4 @@
+import { safeStorage } from '../utils/safeStorage';
 import React,{ useEffect,useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Card } from '../components/ui/Card';
@@ -7,7 +8,7 @@ import {
 ShieldAlert,Sparkles,Activity,Info,BarChart3,Layers
 } from 'lucide-react';
 import type { PredictionResponse } from '../types';
-import { predict } from '../services/api';
+import { predict, getDemoMockPrediction } from '../services/api';
 
 export const ExplainabilityDashboard: React.FC = () => {
   const navigate = useNavigate();
@@ -15,14 +16,19 @@ export const ExplainabilityDashboard: React.FC = () => {
   const [isLoadingDemo, setIsLoadingDemo] = useState(false);
 
   useEffect(() => {
-    const saved = localStorage.getItem('qhai_last_prediction');
+    const saved = safeStorage.getItem('qhai_last_prediction');
     if (saved) {
       try {
         setData(JSON.parse(saved));
+        return;
       } catch {
-        localStorage.removeItem('qhai_last_prediction');
+        safeStorage.removeItem('qhai_last_prediction');
       }
     }
+    // Auto-populate default case so explainability is never empty on direct navigation
+    const defaultCase = getDemoMockPrediction('diabetes');
+    setData(defaultCase);
+    handleLoadDemo();
   }, []);
 
   const handleLoadDemo = async () => {
@@ -47,7 +53,7 @@ export const ExplainabilityDashboard: React.FC = () => {
       });
       if (demoResult) {
         setData(demoResult);
-        localStorage.setItem('qhai_last_prediction', JSON.stringify(demoResult));
+        safeStorage.setItem('qhai_last_prediction', JSON.stringify(demoResult));
       }
     } catch (err) {
       console.error('Failed to load demo:', err);

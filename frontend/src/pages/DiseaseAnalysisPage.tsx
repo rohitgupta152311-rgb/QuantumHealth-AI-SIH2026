@@ -1,3 +1,4 @@
+import { safeStorage } from '../utils/safeStorage';
 import React, { useState, useEffect, useMemo, useCallback, useRef } from 'react';
 import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { motion } from 'framer-motion';
@@ -251,7 +252,7 @@ export const DiseaseAnalysisPage: React.FC<DiseaseAnalysisPageProps> = ({ defaul
   // Launch client-side simulated demonstration immediately
   const handleSimulatedPreview = () => {
     const demo = getDemoMockPrediction(selectedDisease);
-    localStorage.setItem('qhai_last_prediction', JSON.stringify(demo));
+    safeStorage.setItem('qhai_last_prediction', JSON.stringify(demo));
     navigate('/dashboard', { state: { result: demo } });
   };
 
@@ -286,13 +287,7 @@ export const DiseaseAnalysisPage: React.FC<DiseaseAnalysisPageProps> = ({ defaul
       }
 
       // Persist features for dashboard radar comparison
-      try {
-        if (typeof window !== 'undefined' && window.localStorage) {
-          window.localStorage.setItem(`qhai_features_${selectedDisease}`, JSON.stringify(completeFeatures));
-        }
-      } catch (e) {
-        console.warn('Unable to persist features to localStorage:', e);
-      }
+      safeStorage.setItem('qhai_features_' + selectedDisease, JSON.stringify(completeFeatures));
 
       const res = await predict({
         disease: selectedDisease,

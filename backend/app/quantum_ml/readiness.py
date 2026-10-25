@@ -10,6 +10,7 @@ All analysis is for SIMULATED quantum circuits (pennylane:default.qubit).
 """
 
 import numpy as np
+from functools import lru_cache
 from app.quantum_ml.circuits import compute_circuit_depth
 
 
@@ -177,6 +178,7 @@ class QuantumReadinessAnalyzer:
         }
 
 
+@lru_cache(maxsize=1)
 def get_available_hardware_backends() -> list:
     """Return all verified, active quantum computing and simulation backends."""
     backends = []

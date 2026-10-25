@@ -1,3 +1,4 @@
+import { safeStorage } from '../../utils/safeStorage';
 import React,{ useState,useEffect,useRef } from 'react';
 import { motion,AnimatePresence } from 'framer-motion';
 import { X,Send,Sparkles,Key,Check,Loader2,Stethoscope } from 'lucide-react';
@@ -43,10 +44,10 @@ export const ClinicalCopilotChat: React.FC = () => {
 
   // Load saved API key and latest prediction context
   useEffect(() => {
-    const savedKey = localStorage.getItem('qhai_gemini_api_key');
+    const savedKey = safeStorage.getItem('qhai_gemini_api_key');
     if (savedKey) setApiKey(savedKey);
 
-    const savedPred = localStorage.getItem('qhai_last_prediction');
+    const savedPred = safeStorage.getItem('qhai_last_prediction');
     if (savedPred) {
       try {
         const parsed = JSON.parse(savedPred);
@@ -82,9 +83,9 @@ export const ClinicalCopilotChat: React.FC = () => {
 
   const handleSaveKey = () => {
     if (apiKey.trim()) {
-      localStorage.setItem('qhai_gemini_api_key', apiKey.trim());
+      safeStorage.setItem('qhai_gemini_api_key', apiKey.trim());
     } else {
-      localStorage.removeItem('qhai_gemini_api_key');
+      safeStorage.removeItem('qhai_gemini_api_key');
     }
     setKeySaved(true);
     setTimeout(() => {
